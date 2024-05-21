@@ -125,29 +125,40 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
             
             if response.status_code == 200:
                 data = response.json()
-                # Assume we are dealing with non-streaming choices here and access the first choice's text
-                # Depending on your implementation requirements, you might need to handle streaming differently
+                # Check if 'choices' is present and non-empty
                 if 'choices' in data and data['choices']:
-                    full_response = data['choices'][0]['text'] if 'text' in data['choices'][0] else ''
-                    yield ChatResponseEvent(
-                        event=StreamEvent.STREAM_END,
-                        data=StreamEndStream(),
-                    )
-                    
-                    yield ChatResponseEvent(
-                        event=StreamEvent.FINAL_RESPONSE,
-                        data=FinalResponseStream(message=full_response),
-                    )
+                    # Extract the message content from the first choice
+                    # This example assumes that the first choice contains the relevant response
+                    if 'message' in data['choices'][0] and 'content' in data['choices'][0]['message']:
+                        message_content = data['choices'][0]['message']['content']
+                        
+                        yield ChatResponseEvent(
+                            event=StreamEvent.STREAM_END,
+                            data=StreamEndStream(),
+                        )
+                        
+                        yield ChatResponseEvent(
+                            event=StreamEvent.FINAL_RESPONSE,
+                            data=FinalResponseStream(message=message_content),
+                        )
+                    else:
+                        raise HTTPException(
+                            status_code=500,
+                            detail="Message content missing in the response."
+                        )
                 else:
                     raise HTTPException(
                         status_code=500,
-                        detail="Unexpected response format from Open Router API."
+                        detail="No choices found in the response."
                     )
             else:
-                print(e)
+                error_msg = f"API request failed with status {response.status_code}: {response.text}"
+                print(error_msg)
                 raise HTTPException(
-                    status_code=500, detail="SOMETHING WENT WRONG."
+                    status_code=response.status_code,
+                    detail=error_msg
                 )
+
 
         else:
             fmt_qa_prompt = CHAT_PROMPT.format(
