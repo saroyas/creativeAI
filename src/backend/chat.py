@@ -84,28 +84,29 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
 
         query = rephrase_query_with_history(request.query, request.history, llm)
 
-        search_response = search_tavily(query)
+        # search_response = search_tavily(query)
 
-        search_results = search_response.results
-        images = search_response.images
+        # search_results = search_response.results
+        # images = search_response.images
 
-        # Only create the task first if the model is not local
-        related_queries_task = None
-        if not is_local_model(request.model):
-            related_queries_task = asyncio.create_task(
-                generate_related_queries(query, search_results, request.model)
-            )
+        # # Only create the task first if the model is not local
+        # related_queries_task = None
+        # if not is_local_model(request.model):
+        #     related_queries_task = asyncio.create_task(
+        #         generate_related_queries(query, search_results, request.model)
+        #     )
 
-        yield ChatResponseEvent(
-            event=StreamEvent.SEARCH_RESULTS,
-            data=SearchResultStream(
-                results=search_results,
-                images=images,
-            ),
-        )
+        # yield ChatResponseEvent(
+        #     event=StreamEvent.SEARCH_RESULTS,
+        #     data=SearchResultStream(
+        #         results=search_results,
+        #         images=images,
+        #     ),
+        # )
 
         fmt_qa_prompt = CHAT_PROMPT.format(
-            my_context=format_context(search_results),
+            # Maybe we could use my context in the future for system prompts
+            my_context=" ", 
             my_query=query,
         )
 
@@ -118,16 +119,16 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
                 data=TextChunkStream(text=completion.delta or ""),
             )
 
-        related_queries = await (
-            related_queries_task
-            if related_queries_task
-            else generate_related_queries(query, search_results, request.model)
-        )
+        # related_queries = await (
+        #     related_queries_task
+        #     if related_queries_task
+        #     else generate_related_queries(query, search_results, request.model)
+        # )
 
-        yield ChatResponseEvent(
-            event=StreamEvent.RELATED_QUERIES,
-            data=RelatedQueriesStream(related_queries=related_queries),
-        )
+        # yield ChatResponseEvent(
+        #     event=StreamEvent.RELATED_QUERIES,
+        #     data=RelatedQueriesStream(related_queries=related_queries),
+        # )
 
         yield ChatResponseEvent(
             event=StreamEvent.STREAM_END,
