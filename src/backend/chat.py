@@ -101,6 +101,7 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
         # Check the model type
         if request.model == ChatModel.LLAMA_3_70B:
             message_context = create_message_history(request.query, request.history)
+            print(message_content)
             
             # Open Router API endpoint and key
             api_url = "https://openrouter.ai/api/v1/chat/completions"
@@ -122,6 +123,7 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
                     "messages": message_context
                 })
             )
+            print(response)
             
             if response.status_code == 200:
                 data = response.json()
