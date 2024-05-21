@@ -1,6 +1,9 @@
 import asyncio
 import os
 from typing import AsyncIterator, List
+import requests
+import os
+import json
 
 from fastapi import HTTPException
 from llama_index.core.llms import LLM
@@ -68,6 +71,17 @@ def format_context(search_results: List[SearchResult]) -> str:
         [f"Citation {i+1}. {str(result)}" for i, result in enumerate(search_results)]
     )
 
+def create_message_history(query: str, history: List[Message]) -> List[dict]:
+    message_history = []
+    
+    # Add the previous messages from the history
+    for msg in history:
+        message_history.append({"role": msg.role, "content": msg.content})
+
+    # Add the current query as a user message
+    message_history.append({"role": "user", "content": query})
+    
+    return message_history
 
 async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseEvent]:
     try:
@@ -83,62 +97,78 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
         )
 
         query = rephrase_query_with_history(request.query, request.history, llm)
+        
+        # Check the model type
+        if request.model == ChatModel.LLAMA_3_70B:
+            message_context = create_message_history(request.query, request.history)
+            
+            # Open Router API endpoint and key
+            api_url = "https://openrouter.ai/api/v1/chat/completions"
+            api_key = os.environ.get('GROK_API_KEY')
+            site_url = os.environ.get('YOUR_SITE_URL', 'https://yourapp.com')  # Default if not set
+            app_name = os.environ.get('YOUR_APP_NAME', 'YourAppName')  # Default if not set
+            
+            headers = {
+                "Authorization": f"Bearer {api_key}",
+                "HTTP-Referer": site_url,
+                "X-Title": app_name,
+            }
+            
+            response = requests.post(
+                url=api_url,
+                headers=headers,
+                data=json.dumps({
+                    "model": "nousresearch/nous-hermes-2-mixtral-8x7b-dpo",  # Example model; adapt as necessary
+                    "messages": message_context
+                })
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                # Handle the data received from Open Router, e.g., generating chat response events
+                full_response = data.get('text', '')
+                yield ChatResponseEvent(
+                    event=StreamEvent.STREAM_END,
+                    data=StreamEndStream(),
+                )
+                
+                yield ChatResponseEvent(
+                    event=StreamEvent.FINAL_RESPONSE,
+                    data=FinalResponseStream(message=full_response),
+                )
+            
+            else:
+                raise HTTPException(
+                    status_code=response.status_code,
+                    detail="Failed to communicate with Open Router API"
+                )
 
-        # search_response = search_tavily(query)
-
-        # search_results = search_response.results
-        # images = search_response.images
-
-        # # Only create the task first if the model is not local
-        # related_queries_task = None
-        # if not is_local_model(request.model):
-        #     related_queries_task = asyncio.create_task(
-        #         generate_related_queries(query, search_results, request.model)
-        #     )
-
-        # yield ChatResponseEvent(
-        #     event=StreamEvent.SEARCH_RESULTS,
-        #     data=SearchResultStream(
-        #         results=search_results,
-        #         images=images,
-        #     ),
-        # )
-
-        fmt_qa_prompt = CHAT_PROMPT.format(
-            # Maybe we could use my context in the future for system prompts
-            my_context=" ", 
-            my_query=query,
-        )
-
-        full_response = ""
-        response_gen = await llm.astream_complete(fmt_qa_prompt)
-        async for completion in response_gen:
-            full_response += completion.delta or ""
-            yield ChatResponseEvent(
-                event=StreamEvent.TEXT_CHUNK,
-                data=TextChunkStream(text=completion.delta or ""),
+        else:
+            fmt_qa_prompt = CHAT_PROMPT.format(
+                # Maybe we could use my context in the future for system prompts
+                my_context=" ", 
+                my_query=query,
             )
 
-        # related_queries = await (
-        #     related_queries_task
-        #     if related_queries_task
-        #     else generate_related_queries(query, search_results, request.model)
-        # )
+            full_response = ""
+            response_gen = await llm.astream_complete(fmt_qa_prompt)
+            async for completion in response_gen:
+                full_response += completion.delta or ""
+                yield ChatResponseEvent(
+                    event=StreamEvent.TEXT_CHUNK,
+                    data=TextChunkStream(text=completion.delta or ""),
+                )
 
-        # yield ChatResponseEvent(
-        #     event=StreamEvent.RELATED_QUERIES,
-        #     data=RelatedQueriesStream(related_queries=related_queries),
-        # )
+            yield ChatResponseEvent(
+                event=StreamEvent.STREAM_END,
+                data=StreamEndStream(),
+            )
 
-        yield ChatResponseEvent(
-            event=StreamEvent.STREAM_END,
-            data=StreamEndStream(),
-        )
-
-        yield ChatResponseEvent(
-            event=StreamEvent.FINAL_RESPONSE,
-            data=FinalResponseStream(message=full_response),
-        )
+            yield ChatResponseEvent(
+                event=StreamEvent.FINAL_RESPONSE,
+                data=FinalResponseStream(message=full_response),
+            )
+        
     except Exception as e:
         print(e)
         raise HTTPException(
