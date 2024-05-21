@@ -125,22 +125,28 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
             
             if response.status_code == 200:
                 data = response.json()
-                # Handle the data received from Open Router, e.g., generating chat response events
-                full_response = data.get('text', '')
-                yield ChatResponseEvent(
-                    event=StreamEvent.STREAM_END,
-                    data=StreamEndStream(),
-                )
-                
-                yield ChatResponseEvent(
-                    event=StreamEvent.FINAL_RESPONSE,
-                    data=FinalResponseStream(message=full_response),
-                )
-            
+                # Assume we are dealing with non-streaming choices here and access the first choice's text
+                # Depending on your implementation requirements, you might need to handle streaming differently
+                if 'choices' in data and data['choices']:
+                    full_response = data['choices'][0]['text'] if 'text' in data['choices'][0] else ''
+                    yield ChatResponseEvent(
+                        event=StreamEvent.STREAM_END,
+                        data=StreamEndStream(),
+                    )
+                    
+                    yield ChatResponseEvent(
+                        event=StreamEvent.FINAL_RESPONSE,
+                        data=FinalResponseStream(message=full_response),
+                    )
+                else:
+                    raise HTTPException(
+                        status_code=500,
+                        detail="Unexpected response format from Open Router API."
+                    )
             else:
+                print(e)
                 raise HTTPException(
-                    status_code=response.status_code,
-                    detail="Failed to communicate with Open Router API"
+                    status_code=500, detail="SOMETHING WENT WRONG."
                 )
 
         else:
