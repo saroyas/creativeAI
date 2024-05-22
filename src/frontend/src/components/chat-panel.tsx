@@ -86,6 +86,10 @@ export const ChatPanel = () => {
         <div className="flex items-center justify-center mb-8">
           <span className="text-3xl">Ask anything. AI liberated.</span>
         </div>
+        {/* a subtitle smaller and centered in the same style as the title */}
+        <div className="flex items-center justify-center mb-8">
+          <span className="text-xl">Private. Uncensored. Nuanced.</span>
+        </div>
         <AskInput sendMessage={handleSend} />
         <div className="w-full flex flex-row px-3 justify-between space-y-2 pt-1">
           <StarterQuestionsList handleSend={handleSend} />
