@@ -116,7 +116,6 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
                 "X-Title": app_name,
             }
             
-            print("API KEY : ", api_key)
             
             response = requests.post(
                 url=api_url,
@@ -126,10 +125,10 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
                     "messages": message_content
                 })
             )
-            print(response.json())
             
             if response.status_code == 200:
                 message_content = response.json()['choices'][0]['message']['content']
+                print("Message content", message_content)
                 yield ChatResponseEvent(
                     event=StreamEvent.STREAM_END,
                     data=StreamEndStream(),
