@@ -86,8 +86,6 @@ def create_message_history(query: str, history: List[Message]) -> List[dict]:
 
 async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseEvent]:
     try:
-        llm = get_llm(request.model)
-
         yield ChatResponseEvent(
             event=StreamEvent.BEGIN_STREAM,
             data=BeginStream(
@@ -97,8 +95,6 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
             ),
         )
 
-        query = rephrase_query_with_history(request.query, request.history, llm)
-        
         # Check the model type
         if not is_local_model(request.model):
             message_content = create_message_history(request.query, request.history)
@@ -155,6 +151,8 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
 
 
         else:
+            llm = get_llm(request.model)
+            query = rephrase_query_with_history(request.query, request.history, llm)
             fmt_qa_prompt = CHAT_PROMPT.format(
                 # Maybe we could use my context in the future for system prompts
                 my_context=" ", 
