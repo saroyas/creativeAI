@@ -74,7 +74,7 @@ def format_context(search_results: List[SearchResult]) -> str:
 def create_message_history(query: str, history: List[Message], model: ChatModel) -> List[dict]:
     message_history = []
     if model == ChatModel.GPT_3_5_TURBO: # creative
-        message_history.append({"role": "system", "content": "You are a creative assistant. You think outside of the box and are interesting."})
+        message_history.append({"role": "system", "content": "You are a creative assistant. You think outside of the box and are interesting. You are a thinker, a dreamer, and a creator."})
     elif model == ChatModel.GPT_4o: # emotional
         message_history.append({"role": "system", "content": "You are emotionally nuanced - like a psychologist. You are an expert psychoanalyst and psychotherapist."})
     else: # uncensorreed
