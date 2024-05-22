@@ -32,6 +32,13 @@ type Model = {
 };
 
 const modelMap: Record<ChatModel, Model> = {
+  [ChatModel.LLAMA_3_70B]: {
+    name: "Uncensored",
+    description: "SiliconSoulAI/Uncensored-Llama3-70B",
+    value: ChatModel.LLAMA_3_70B,
+    smallIcon: <LightningBoltIcon className="w-4 h-4 text-yellow-500" />,
+    icon: <LightningBoltIcon className="w-5 h-5 text-yellow-500" />,
+  },
   [ChatModel.GPT_3_5_TURBO]: {
     name: "Fast",
     description: "OpenAI/GPT-3.5-turbo",
@@ -45,13 +52,6 @@ const modelMap: Record<ChatModel, Model> = {
     value: ChatModel.GPT_4O,
     smallIcon: <BrainIcon className="w-4 h-4 text-pink-500" />,
     icon: <BrainIcon className="w-5 h-5 text-pink-500" />,
-  },
-  [ChatModel.LLAMA_3_70B]: {
-    name: "Hyper",
-    description: "Groq/Llama3-70B",
-    value: ChatModel.LLAMA_3_70B,
-    smallIcon: <LightningBoltIcon className="w-4 h-4 text-yellow-500" />,
-    icon: <LightningBoltIcon className="w-5 h-5 text-yellow-500" />,
   },
   [ChatModel.LLAMA3]: {
     name: "Llama3",

@@ -84,7 +84,7 @@ export const ChatPanel = () => {
     return (
       <div className="w-full flex flex-col justify-center items-center">
         <div className="flex items-center justify-center mb-8">
-          <span className="text-3xl">Ask anything</span>
+          <span className="text-3xl">Ask anything. AI should be liberated.</span>
         </div>
         <AskInput sendMessage={handleSend} />
         <div className="w-full flex flex-row px-3 justify-between space-y-2 pt-1">
