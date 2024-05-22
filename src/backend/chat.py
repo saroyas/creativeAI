@@ -100,7 +100,7 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
         query = rephrase_query_with_history(request.query, request.history, llm)
         
         # Check the model type
-        if request.model == ChatModel.LLAMA_3_70B:
+        if not is_local_model(request.model):
             message_content = create_message_history(request.query, request.history)
             print(message_content)
             
