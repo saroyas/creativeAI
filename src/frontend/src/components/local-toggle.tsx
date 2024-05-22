@@ -67,15 +67,7 @@ export function LocalToggle() {
           </div>
           <Separator className="mt-1" />
           <div className="text-xs text-muted-foreground mt-2">
-            <span>Requires Ollama setup. </span>
-            <a
-              className="text-primary hover:underline"
-              href="https://github.com/rashadphz/farfalle/"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Learn more
-            </a>
+            <span>Requires Ollama serve running. </span>
           </div>
         </div>
       </HoverCardContent>

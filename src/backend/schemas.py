@@ -33,7 +33,7 @@ LOCAL_MODELS_ENABLED = strtobool(os.getenv("ENABLE_LOCAL_MODELS", False))
 class ChatRequest(BaseModel, plugin_settings=record_all):
     query: str
     history: List[Message] = Field(default_factory=list)
-    model: ChatModel = ChatModel.GPT_3_5_TURBO
+    model: ChatModel = ChatModel.LLAMA_3_70B
 
 
 class RelatedQueries(BaseModel):

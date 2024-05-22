@@ -39,20 +39,6 @@ const modelMap: Record<ChatModel, Model> = {
     smallIcon: <LightningBoltIcon className="w-4 h-4 text-yellow-500" />,
     icon: <LightningBoltIcon className="w-5 h-5 text-yellow-500" />,
   },
-  [ChatModel.GPT_3_5_TURBO]: {
-    name: "Fast",
-    description: "OpenAI/GPT-3.5-turbo",
-    value: ChatModel.GPT_3_5_TURBO,
-    smallIcon: <RabbitIcon className="w-4 h-4 text-cyan-500" />,
-    icon: <RabbitIcon className="w-5 h-5 text-cyan-500" />,
-  },
-  [ChatModel.GPT_4O]: {
-    name: "Powerful",
-    description: "OpenAI/GPT-4o",
-    value: ChatModel.GPT_4O,
-    smallIcon: <BrainIcon className="w-4 h-4 text-pink-500" />,
-    icon: <BrainIcon className="w-5 h-5 text-pink-500" />,
-  },
   [ChatModel.LLAMA3]: {
     name: "Llama3",
     description: "ollama/llama3",

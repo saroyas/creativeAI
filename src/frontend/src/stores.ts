@@ -23,7 +23,7 @@ const useStore = create<StoreState>()(
     (set) => ({
       searchResults: [],
       messages: [],
-      model: ChatModel.GPT_3_5_TURBO,
+      model: ChatModel.LLAMA_3_70B,
       addMessage: (message) =>
         set((state) => ({ messages: [...state.messages, message] })),
       setModel: (model) => set({ model }),
@@ -39,7 +39,7 @@ const useStore = create<StoreState>()(
           const newLocalMode = !state.localMode;
           const newModel = newLocalMode
             ? ChatModel.LLAMA3
-            : ChatModel.GPT_3_5_TURBO;
+            : ChatModel.LLAMA_3_70B;
           return { localMode: newLocalMode, model: newModel };
         }),
     }),
