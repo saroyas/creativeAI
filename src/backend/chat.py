@@ -83,6 +83,7 @@ def create_message_history(query: str, history: List[Message]) -> List[dict]:
     
     return message_history
 
+
 async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseEvent]:
     try:
         llm = get_llm(request.model)
@@ -101,7 +102,6 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
         # Check the model type
         if request.model == ChatModel.LLAMA_3_70B:
             message_content = create_message_history(request.query, request.history)
-            print(message_content)
             
             # Open Router API endpoint and key
             api_url = "https://openrouter.ai/api/v1/chat/completions"
@@ -109,40 +109,43 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
             site_url = os.environ.get('YOUR_SITE_URL', 'https://yourapp.com')  # Default if not set
             app_name = os.environ.get('YOUR_APP_NAME', 'YourAppName')  # Default if not set
             
-            
             headers = {
                 "Authorization": f"Bearer {api_key}",
                 "HTTP-Referer": site_url,
                 "X-Title": app_name,
             }
             
-            
             response = requests.post(
                 url=api_url,
                 headers=headers,
                 data=json.dumps({
                     "model": "nousresearch/nous-hermes-2-mixtral-8x7b-dpo",  # Example model; adapt as necessary
-                    "messages": message_content
-                })
+                    "messages": message_content,
+                    "stream": True
+                }),
+                stream=True  # Enable streaming response
             )
             
             if response.status_code == 200:
-                message_content = response.json()['choices'][0]['message']['content']
-                print("Message content", message_content)
-                yield ChatResponseEvent(
-                    event=StreamEvent.TEXT_CHUNK,
-                    data=TextChunkStream(text=message_content),
-                )
-                
-                
+                async for line in response.iter_lines():
+                    if line:
+                        decoded_line = line.decode('utf-8')
+                        # Assuming the stream response is JSON lines
+                        json_line = json.loads(decoded_line)
+                        message_chunk = json_line['choices'][0]['delta']['content']
+                        yield ChatResponseEvent(
+                            event=StreamEvent.TEXT_CHUNK,
+                            data=TextChunkStream(text=message_chunk),
+                        )
+
                 yield ChatResponseEvent(
                     event=StreamEvent.STREAM_END,
                     data=StreamEndStream(),
                 )
-                
+
                 yield ChatResponseEvent(
                     event=StreamEvent.FINAL_RESPONSE,
-                    data=FinalResponseStream(message=message_content),
+                    data=FinalResponseStream(message=""),
                 )
             else:
                 error_msg = f"API request failed with status {response.status_code}: {response.text}"
@@ -151,8 +154,6 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
                     status_code=response.status_code,
                     detail=error_msg
                 )
-
-
         else:
             fmt_qa_prompt = CHAT_PROMPT.format(
                 # Maybe we could use my context in the future for system prompts
