@@ -83,7 +83,7 @@ export const ChatPanel = () => {
   } else {
     return (
       <div className="w-full flex flex-col justify-center items-center">
-        <div className="flex items-center justify-center mb-8">
+        <div className="flex items-center justify-center mb-1">
           <span className="text-3xl">Ask anything. AI liberated.</span>
         </div>
         {/* a subtitle smaller and centered in the same style as the title */}
