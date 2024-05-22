@@ -4,7 +4,7 @@ const starterQuestions = [
   "why is uncensored AI better for me?",
   "tell me about the Nazi book burnings",
   "help me explore some complex emotions with nuance",
-  "be a dungeon master - start a dungeons and dragons adventure with me",
+  "start a DnD adventure with me",
 ];
 
 export const StarterQuestionsList = ({

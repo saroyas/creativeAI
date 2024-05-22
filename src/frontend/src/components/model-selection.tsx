@@ -34,21 +34,21 @@ type Model = {
 const modelMap: Record<ChatModel, Model> = {
   [ChatModel.LLAMA_3_70B]: {
     name: "Uncensored",
-    description: "SiliconSoulAI/Uncensored-Llama3-70B",
+    description: "SiliconSoulAI/Uncensored-70B",
     value: ChatModel.LLAMA_3_70B,
     smallIcon: <LightningBoltIcon className="w-4 h-4 text-yellow-500" />,
     icon: <LightningBoltIcon className="w-5 h-5 text-yellow-500" />,
   },
   [ChatModel.GPT_3_5_TURBO]: {
-    name: "Fast",
-    description: "OpenAI/GPT-3.5-turbo",
+    name: "Creative",
+    description: "SiliconSoulAI/Creative-70B",
     value: ChatModel.GPT_3_5_TURBO,
     smallIcon: <RabbitIcon className="w-4 h-4 text-cyan-500" />,
     icon: <RabbitIcon className="w-5 h-5 text-cyan-500" />,
   },
   [ChatModel.GPT_4O]: {
-    name: "Powerful",
-    description: "OpenAI/GPT-4o",
+    name: "Emotionally Intelligent",
+    description: "SiliconSoulAI/EmotionalQuotient-70B",
     value: ChatModel.GPT_4O,
     smallIcon: <BrainIcon className="w-4 h-4 text-pink-500" />,
     icon: <BrainIcon className="w-5 h-5 text-pink-500" />,
