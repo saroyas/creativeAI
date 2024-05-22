@@ -100,7 +100,7 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
         
         # Check the model type
         if request.model == ChatModel.LLAMA_3_70B:
-            message_context = create_message_history(request.query, request.history)
+            message_content = create_message_history(request.query, request.history)
             print(message_content)
             
             # Open Router API endpoint and key
@@ -120,7 +120,7 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
                 headers=headers,
                 data=json.dumps({
                     "model": "nousresearch/nous-hermes-2-mixtral-8x7b-dpo",  # Example model; adapt as necessary
-                    "messages": message_context
+                    "messages": message_content
                 })
             )
             print(response.json())
