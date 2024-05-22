@@ -109,11 +109,14 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
             site_url = os.environ.get('YOUR_SITE_URL', 'https://yourapp.com')  # Default if not set
             app_name = os.environ.get('YOUR_APP_NAME', 'YourAppName')  # Default if not set
             
+            
             headers = {
                 "Authorization": f"Bearer {api_key}",
                 "HTTP-Referer": site_url,
                 "X-Title": app_name,
             }
+            
+            print("API KEY : ", api_key)
             
             response = requests.post(
                 url=api_url,
