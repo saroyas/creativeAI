@@ -11,9 +11,9 @@ export function Navbar() {
       <div>
         <Link href="/" passHref onClick={() => location.reload()}>
           <img
-            src={theme === "light" ? "/logo-black.png" : "/logo-white.png"}
+            src={theme === "light" ? "/logo.png" : "/logo.png"}
             alt="Logo"
-            className="w-12 h-12"
+            className="w-12 h-12 rounded-lg transform transition-transform duration-200 hover:scale-110"
           />
         </Link>
       </div>

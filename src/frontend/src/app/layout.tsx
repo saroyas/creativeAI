@@ -23,7 +23,7 @@ const title = "AI Uncensored";
 const description = "Uncensored, Private, and Creative AI Assistant";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://farfalle.vercel.app/"),
+  metadataBase: new URL("https://aiuncensored.info/"),
   title,
   description,
   openGraph: {
@@ -32,9 +32,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     title,
-    description,
-    card: "summary_large_image",
-    creator: "@rashadphz",
+    description
   },
 };
 
