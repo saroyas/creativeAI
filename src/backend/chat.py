@@ -130,6 +130,12 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
                 message_content = response.json()['choices'][0]['message']['content']
                 print("Message content", message_content)
                 yield ChatResponseEvent(
+                    event=StreamEvent.TEXT_CHUNK,
+                    data=TextChunkStream(text=message_content),
+                )
+                
+                
+                yield ChatResponseEvent(
                     event=StreamEvent.STREAM_END,
                     data=StreamEndStream(),
                 )
