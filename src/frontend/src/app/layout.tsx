@@ -19,8 +19,8 @@ const mono = Mono({
 
 const inter = Inter({ subsets: ["latin"] });
 
-const title = "Farfalle";
-const description = "Open-source AI powered answer engine.";
+const title = "AI Uncensored";
+const description = "Uncensored, Private, and Creative AI Assistant";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://farfalle.vercel.app/"),
