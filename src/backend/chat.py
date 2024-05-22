@@ -126,17 +126,16 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
             print(response.json())
             
             if response.status_code == 200:
-                message_content = response.data.choices[0].message.content
+                message_content = response.json()['choices'][0]['message']['content']
                 yield ChatResponseEvent(
                     event=StreamEvent.STREAM_END,
                     data=StreamEndStream(),
                 )
-                        
+                
                 yield ChatResponseEvent(
                     event=StreamEvent.FINAL_RESPONSE,
                     data=FinalResponseStream(message=message_content),
                 )
-
             else:
                 error_msg = f"API request failed with status {response.status_code}: {response.text}"
                 print(error_msg)
