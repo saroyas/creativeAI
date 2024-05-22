@@ -3,7 +3,7 @@ import { ArrowUpRight } from "lucide-react";
 const starterQuestions = [
   "why is uncensored AI better for me?",
   "tell me about the Nazi book burnings",
-  "I'm having some complex emotions, can we talk about them?",
+  "I'm having some complex emotions...",
   "start a DnD adventure with me",
 ];
 
