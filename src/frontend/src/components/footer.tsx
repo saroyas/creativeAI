@@ -6,7 +6,7 @@ export function Footer() {
   return (
     <footer className="w-full flex fixed bottom-0 right-0 p-1 z-50 bg-background/95">
       <div className="px-1 w-full flex flex-row justify-between space-x-1 items-center">
-        <div className="text-sm">
+        <div className="text-xs">
           <span>Compute sponsored by </span>
           <Link href="https://siliconsoul.xyz" target="_blank" className="font-bold">
             Silicon Soul AI
