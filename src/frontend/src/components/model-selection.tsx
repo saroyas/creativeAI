@@ -48,7 +48,7 @@ const modelMap: Record<ChatModel, Model> = {
   },
   [ChatModel.GPT_4O]: {
     name: "Emotionally Intelligent",
-    description: "SiliconSoulAI/EmotionalQuotient-70B",
+    description: "SiliconSoulAI/EmotionalQ-70B",
     value: ChatModel.GPT_4O,
     smallIcon: <BrainIcon className="w-4 h-4 text-pink-500" />,
     icon: <BrainIcon className="w-5 h-5 text-pink-500" />,
