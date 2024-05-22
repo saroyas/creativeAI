@@ -123,36 +123,20 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
                     "messages": message_context
                 })
             )
-            print(response)
+            print(response.json())
             
             if response.status_code == 200:
-                data = response.json()
-                # Check if 'choices' is present and non-empty
-                if 'choices' in data and data['choices']:
-                    # Extract the message content from the first choice
-                    # This example assumes that the first choice contains the relevant response
-                    if 'message' in data['choices'][0] and 'content' in data['choices'][0]['message']:
-                        message_content = data['choices'][0]['message']['content']
+                message_content = response.data.choices[0].message.content
+                yield ChatResponseEvent(
+                    event=StreamEvent.STREAM_END,
+                    data=StreamEndStream(),
+                )
                         
-                        yield ChatResponseEvent(
-                            event=StreamEvent.STREAM_END,
-                            data=StreamEndStream(),
-                        )
-                        
-                        yield ChatResponseEvent(
-                            event=StreamEvent.FINAL_RESPONSE,
-                            data=FinalResponseStream(message=message_content),
-                        )
-                    else:
-                        raise HTTPException(
-                            status_code=500,
-                            detail="Message content missing in the response."
-                        )
-                else:
-                    raise HTTPException(
-                        status_code=500,
-                        detail="No choices found in the response."
-                    )
+                yield ChatResponseEvent(
+                    event=StreamEvent.FINAL_RESPONSE,
+                    data=FinalResponseStream(message=message_content),
+                )
+
             else:
                 error_msg = f"API request failed with status {response.status_code}: {response.text}"
                 print(error_msg)
