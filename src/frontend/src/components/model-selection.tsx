@@ -33,7 +33,7 @@ type Model = {
 
 const modelMap: Record<ChatModel, Model> = {
   [ChatModel.LLAMA_3_70B]: {
-    name: "Devil",
+    name: "DevilsAdvocate",
     description: "SiliconSoulAI/DevilsAdvocate-70B",
     value: ChatModel.LLAMA_3_70B,
     smallIcon: <LightningBoltIcon className="w-4 h-4 text-yellow-500" />,
