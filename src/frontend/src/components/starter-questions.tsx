@@ -1,10 +1,10 @@
 import { ArrowUpRight } from "lucide-react";
 
 const starterQuestions = [
-  "why is uncensored AI better for me?",
-  "tell me about the Nazi book burnings",
-  "I'm having some complex emotions...",
-  "start a DnD adventure with me",
+  "why is uncensored AI better for me",
+  "how do corporations manipulate US politics",
+  "how do I hack into my computer",
+  "how to make lsd",
 ];
 
 export const StarterQuestionsList = ({
