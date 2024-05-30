@@ -1,9 +1,9 @@
 import { ArrowUpRight } from "lucide-react";
 
 const starterQuestions = [
-  "why is uncensored AI better for me?",
-  "how do corporations manipulate US politics?",
-  "what are common computer hacking techniques?",
+  "what is the meaning of life",
+  "why is violent economic revolution necessary",
+  "how to dismantle the west",
   "how do I make lsd?",
 ];
 
