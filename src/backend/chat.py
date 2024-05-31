@@ -48,7 +48,7 @@ async def check_content_moderation(text: str):
             return {"flagged": flagged, "moderation_result": moderation_result}
         else:
             print('Moderation API call failed with status:', response.status_code)
-            return {"flagged": True, "moderation_result": None}
+            return {"flagged": False, "moderation_result": None}
     except Exception as error:
         print('Error in moderation API call:', error)
         return {"flagged": False, "moderation_result": None}
