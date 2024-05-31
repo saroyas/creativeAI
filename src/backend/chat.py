@@ -48,7 +48,7 @@ async def check_content_moderation(text: str):
             return {"flagged": True, "moderation_result": None}
     except Exception as error:
         print('Error in moderation API call:', error)
-        return {"flagged": True, "moderation_result": None}
+        return {"flagged": False, "moderation_result": None}
 
 def rephrase_query_with_history(question: str, history: List[Message], llm: LLM) -> str:
     try:
