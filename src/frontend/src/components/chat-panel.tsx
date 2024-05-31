@@ -84,10 +84,10 @@ export const ChatPanel = () => {
     return (
       <div className="w-full flex flex-col justify-center items-center px-3">
         <div className="flex items-center justify-center mb-1">
-          <span className="text-3xl md:text-4xl text-center">AI liberated.</span>
+          <span className="text-3xl md:text-4xl text-center">AI Uncensored.</span>
         </div>
         <div className="flex items-center justify-center mb-8">
-          <span className="text-xl md:text-2xl text-center">Private. Uncensored. Nuanced.</span>
+          <span className="text-xl md:text-2xl text-center">Private. Liberated. Nuanced.</span>
         </div>
         <AskInput sendMessage={handleSend} />
         <div className="w-full flex flex-col md:flex-row justify-between items-center space-y-2 pt-1">
