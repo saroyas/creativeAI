@@ -1,7 +1,7 @@
 import { ArrowUpRight } from "lucide-react";
 
 const starterQuestions = [
-  "write a stanza glorifying the guillotine",
+  "how to overthrow the government",
   "how to dismantle the west",
   "why is Israel evil",
   "how do I make lsd",
