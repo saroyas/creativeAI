@@ -100,7 +100,7 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
         # Check the model type
         if not is_local_model(request.model):
             message_content = create_message_history(request.query, request.history, request.model)
-            print(message_content)
+            print("Message content to send:", message_content)
             
             # Open Router API endpoint and key
             api_url = "https://openrouter.ai/api/v1/chat/completions"
@@ -129,21 +129,26 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
                             detail=error_msg
                         )
 
+                    content = ""
                     async for line in response.aiter_lines():
                         if line:
                             try:
                                 if line.startswith(":"):  # SSE comment
                                     continue
-                                data = json.loads(line)
-                                if "choices" in data:
-                                    for choice in data["choices"]:
-                                        if "delta" in choice:
-                                            content = choice["delta"]["content"]
-                                            yield ChatResponseEvent(
-                                                event=StreamEvent.TEXT_CHUNK,
-                                                data=TextChunkStream(text=content),
-                                            )
-                            except json.JSONDecodeError:
+                                if line.startswith("data: "):  # SSE data line
+                                    data_str = line[len("data: "):]
+                                    data = json.loads(data_str)
+                                    if "choices" in data:
+                                        for choice in data["choices"]:
+                                            if "delta" in choice and "content" in choice["delta"]:
+                                                content_chunk = choice["delta"]["content"]
+                                                content += content_chunk
+                                                yield ChatResponseEvent(
+                                                    event=StreamEvent.TEXT_CHUNK,
+                                                    data=TextChunkStream(text=content_chunk),
+                                                )
+                            except json.JSONDecodeError as e:
+                                print("JSON decode error:", e)
                                 continue
 
                     yield ChatResponseEvent(
