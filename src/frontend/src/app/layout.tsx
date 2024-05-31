@@ -19,7 +19,7 @@ const mono = Mono({
 
 const inter = Inter({ subsets: ["latin"] });
 
-const title = "AI Uncensored";
+const title = "AIUncensored.info";
 const description = "Uncensored, Private, and Creative AI Assistant";
 const imageUrl = "/opengraph-image.png"; // Updated path to the image in the public folder
 
