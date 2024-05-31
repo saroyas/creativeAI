@@ -21,6 +21,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 const title = "AI Uncensored";
 const description = "Uncensored, Private, and Creative AI Assistant";
+const imageUrl = "/opengraph-image.png"; // Updated path to the image in the public folder
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://aiuncensored.info/"),
@@ -29,10 +30,24 @@ export const metadata: Metadata = {
   openGraph: {
     title,
     description,
+    images: [
+      {
+        url: imageUrl,
+        width: 800,
+        height: 600,
+        alt: title,
+      },
+    ],
   },
   twitter: {
     title,
-    description
+    description,
+    images: [
+      {
+        url: imageUrl,
+        alt: title,
+      },
+    ],
   },
 };
 
