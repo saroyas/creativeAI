@@ -30,6 +30,7 @@ from backend.utils import is_local_model
 async def check_content_moderation(text: str):
     try:
         api_key = os.environ.get('OPEN_AI_KEY')
+        print("Making moderation API call...")
         async with httpx.AsyncClient() as client:
             response = await client.post(
                 'https://api.openai.com/v1/moderations',
@@ -39,6 +40,8 @@ async def check_content_moderation(text: str):
                     'Authorization': f'Bearer {api_key}'
                 }
             )
+        print(f"Response Status Code: {response.status_code}")
+
         if response.status_code == 200:
             moderation_result = response.json()['results']
             flagged = any(result['flagged'] for result in moderation_result)
