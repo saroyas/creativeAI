@@ -88,7 +88,7 @@ async def chat(
 ) -> Generator[ChatResponseEvent, None, None]:
     async def generator():
         try:
-            print("Chat Request Recieved: ", chat_request)
+            # print("Chat Request Recieved: ", chat_request)
             validate_model(chat_request.model)
             async for obj in stream_qa_objects(chat_request):
                 if await request.is_disconnected():
