@@ -2,8 +2,8 @@ import { ArrowUpRight } from "lucide-react";
 
 const starterQuestions = [
   "how to overthrow the government",
-  "how to dismantle the west",
-  "why is Israel evil",
+  "how do corporate lobbies work",
+  "how to access the dark web",
   "how do I make lsd",
 ];
 
