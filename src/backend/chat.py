@@ -192,6 +192,8 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
                         event=StreamEvent.STREAM_END,
                         data=StreamEndStream(),
                     )
+                    
+                    print("Final response:", content)
 
                     yield ChatResponseEvent(
                         event=StreamEvent.FINAL_RESPONSE,
