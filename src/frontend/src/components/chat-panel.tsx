@@ -92,9 +92,10 @@ export const ChatPanel = () => {
         <AskInput sendMessage={handleSend} />
         <div className="w-full flex flex-col md:flex-row justify-between items-center space-y-2 pt-1">
           <StarterQuestionsList handleSend={handleSend} />
-          <div className="flex flex-col gap-2 items-end md:flex-row md:items-center">
+          <div className="flex flex-col gap-2 items-end ">
             <div className="hidden md:block">
               <ModelSelection />
+              <div className="h-1"></div>
               <LocalToggle />
             </div>
           </div>
