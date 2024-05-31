@@ -30,18 +30,25 @@ from backend.utils import is_local_model
 async def check_content_moderation(text: str):
     try:
         api_key = os.environ.get('OPEN_AI_KEY')
-        response = await httpx.post('https://api.openai.com/v1/moderations', json={
-            "input": text
-        }, headers={
-            'Content-Type': 'application/json',
-            'Authorization': f'Bearer {api_key}'
-        })
-        moderation_result = response.json()['results']
-        flagged = any(result['flagged'] for result in moderation_result)
-        return { "flagged": flagged, "moderation_result": moderation_result }
+        async with httpx.AsyncClient() as client:
+            response = await client.post(
+                'https://api.openai.com/v1/moderations',
+                json={"input": text},
+                headers={
+                    'Content-Type': 'application/json',
+                    'Authorization': f'Bearer {api_key}'
+                }
+            )
+        if response.status_code == 200:
+            moderation_result = response.json()['results']
+            flagged = any(result['flagged'] for result in moderation_result)
+            return {"flagged": flagged, "moderation_result": moderation_result}
+        else:
+            print('Moderation API call failed with status:', response.status_code)
+            return {"flagged": True, "moderation_result": None}
     except Exception as error:
         print('Error in moderation API call:', error)
-        return { "flagged": True, "moderation_result": None }
+        return {"flagged": True, "moderation_result": None}
 
 def rephrase_query_with_history(question: str, history: List[Message], llm: LLM) -> str:
     try:
