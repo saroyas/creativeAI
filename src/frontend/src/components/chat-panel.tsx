@@ -82,20 +82,21 @@ export const ChatPanel = () => {
     );
   } else {
     return (
-      <div className="w-full flex flex-col justify-center items-center">
+      <div className="w-full flex flex-col justify-center items-center px-3">
         <div className="flex items-center justify-center mb-1">
-          <span className="text-3xl">Ask anything. AI liberated.</span>
+          <span className="text-3xl md:text-4xl text-center">AI liberated.</span>
         </div>
-        {/* a subtitle smaller and centered in the same style as the title */}
         <div className="flex items-center justify-center mb-8">
-          <span className="text-xl">Private. Uncensored. Nuanced.</span>
+          <span className="text-xl md:text-2xl text-center">Private. Uncensored. Nuanced.</span>
         </div>
         <AskInput sendMessage={handleSend} />
-        <div className="w-full flex flex-row px-3 justify-between space-y-2 pt-1">
+        <div className="w-full flex flex-col md:flex-row justify-between items-center space-y-2 pt-1">
           <StarterQuestionsList handleSend={handleSend} />
-          <div className="flex flex-col gap-2 items-end ">
-            <ModelSelection />
-            <LocalToggle />
+          <div className="flex flex-col gap-2 items-end md:flex-row md:items-center">
+            <div className="hidden md:block">
+              <ModelSelection />
+              <LocalToggle />
+            </div>
           </div>
         </div>
       </div>

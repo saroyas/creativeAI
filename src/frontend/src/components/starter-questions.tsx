@@ -2,9 +2,9 @@ import { ArrowUpRight } from "lucide-react";
 
 const starterQuestions = [
   "what is the meaning of life",
-  "why is violent economic revolution necessary",
+  "why is violent revolution necessary",
   "how to dismantle the west",
-  "how do I make lsd?",
+  "how do I make lsd",
 ];
 
 export const StarterQuestionsList = ({
