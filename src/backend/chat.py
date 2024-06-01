@@ -164,7 +164,7 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
 
             async with httpx.AsyncClient() as client:
                 async with client.stream("POST", api_url, headers=headers, json={
-                    "model": "nousresearch/nous-hermes-2-mixtral-8x7b-dpo",
+                    "model": "nousresearch/hermes-2-pro-llama-3-8b",
                     "messages": message_history,
                     "stream": True
                 }) as response:
