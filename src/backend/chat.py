@@ -30,7 +30,7 @@ from backend.utils import is_local_model
 async def check_content_moderation(text: str):
     try:
         api_key = os.environ.get('OPEN_AI_KEY')
-        print("Making moderation API call...")
+        # print("Making moderation API call...")
         async with httpx.AsyncClient() as client:
             response = await client.post(
                 'https://api.openai.com/v1/moderations',
@@ -40,17 +40,17 @@ async def check_content_moderation(text: str):
                     'Authorization': f'Bearer {api_key}'
                 }
             )
-        print(f"Response Status Code: {response.status_code}")
+        # print(f"Response Status Code: {response.status_code}")
 
         if response.status_code == 200:
             moderation_result = response.json()['results']
             flagged = any(result['flagged'] for result in moderation_result)
             return {"flagged": flagged, "moderation_result": moderation_result}
         else:
-            print('Moderation API call failed with status:', response.status_code)
+            # print('Moderation API call failed with status:', response.status_code)
             return {"flagged": False, "moderation_result": None}
     except Exception as error:
-        print('Error in moderation API call:', error)
+        # print('Error in moderation API call:', error)
         return {"flagged": False, "moderation_result": None}
 
 def rephrase_query_with_history(question: str, history: List[Message], llm: LLM) -> str:
@@ -135,15 +135,15 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
         # Check the model type
         if not is_local_model(request.model):
             message_history, history_str = create_message_history(request.query, request.history, request.model)
-            print("Message content to send:", message_history)
+            # print("Message content to send:", message_history)
 
             # Perform content moderation check
             moderation_check = await check_content_moderation(history_str)
             if moderation_check['flagged']:
                 if moderation_check['moderation_result'][0]['category_scores']['sexual/minors'] > 0.7:
-                    print("Underage content detected. Not generating a message.")
-                    print("Moderation flagged: ", moderation_check['flagged'])
-                    print("Moderation Result: ", moderation_check['moderation_result'])
+                    # print("Underage content detected. Not generating a message.")
+                    # print("Moderation flagged: ", moderation_check['flagged'])
+                    # print("Moderation Result: ", moderation_check['moderation_result'])
                     raise HTTPException(
                         status_code=400,
                         detail="Moderation Trigger - potentially underage content"
@@ -170,7 +170,7 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
                 }) as response:
                     if response.status_code != 200:
                         error_msg = f"API request failed with status {response.status_code}: {response.text}"
-                        print(error_msg)
+                        # print(error_msg)
                         raise HTTPException(
                             status_code=response.status_code,
                             detail=error_msg
@@ -195,7 +195,7 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
                                                     data=TextChunkStream(text=content_chunk),
                                                 )
                             except json.JSONDecodeError as e:
-                                print("JSON decode error:", e)
+                                # print("JSON decode error:", e)
                                 continue
 
                     yield ChatResponseEvent(
@@ -203,7 +203,7 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
                         data=StreamEndStream(),
                     )
                     
-                    print("Final response:", content)
+                    # print("Final response:", content)
 
                     yield ChatResponseEvent(
                         event=StreamEvent.FINAL_RESPONSE,
@@ -239,7 +239,7 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
             )
         
     except Exception as e:
-        print(e)
+        # print(e)
         raise HTTPException(
             status_code=500, detail="Model is at capacity. Please try again later."
         )

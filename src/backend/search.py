@@ -35,7 +35,7 @@ def search_tavily(query: str) -> SearchResponse:
         else:
             response = json.loads(cached_results)
     except Exception as e:
-        print(e)
+        # print(e)
         raise HTTPException(
             status_code=500,
             detail="There was an error while searching. Please try again.",
