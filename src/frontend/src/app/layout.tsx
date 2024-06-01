@@ -7,7 +7,7 @@ import "./globals.css";
 import { GeistSans } from "geist/font/sans";
 import { JetBrains_Mono as Mono } from "next/font/google";
 import { cn } from "@/lib/utils";
-import { Analytics } from "@vercel/analytics/react";
+import { Analytics } from "@vercel/analytics/react"; // Importing Analytics from Vercel
 import { Navbar } from "@/components/nav";
 import { Footer } from "@/components/footer";
 
@@ -72,7 +72,7 @@ export default function RootLayout({
               <Navbar />
               {children}
               <Toaster />
-              <Analytics />
+              <Analytics /> {/* Using the Analytics component */}
             </ThemeProvider>
           </Providers>
         </body>
