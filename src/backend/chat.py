@@ -153,7 +153,7 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
             api_url = "https://openrouter.ai/api/v1/chat/completions"
             api_key = os.environ.get('GROQ_API_KEY')
             site_url = os.environ.get('YOUR_SITE_URL', 'https://www.aiuncensored.info/')  # Default if not set
-            app_name = os.environ.get('YOUR_APP_NAME', 'AI Uncensored')  # Default if not set
+            app_name = os.environ.get('YOUR_APP_NAME', 'AI Uncensored - Private. Liberated. Nuanced.')  # Default if not set
             
             headers = {
                 "Authorization": f"Bearer {api_key}",
