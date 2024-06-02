@@ -6,14 +6,7 @@ import { ArrowUp } from "lucide-react";
 const languages = [
   "Ask anything...", // English
   "Спрашивайте что угодно...", // Russian
-  "Pregunta lo que sea...", // Spanish
-  "Demandez n'importe quoi...", // French
   "问任何问题...", // Chinese
-  "何でも聞いてください...", // Japanese
-  "이것저것 물어보세요...", // Korean
-  "Frage alles...", // German
-  "Fai qualsiasi domanda...", // Italian
-  "Faça qualquer pergunta...", // Portuguese
 ];
 
 export const AskInput = ({
@@ -34,7 +27,7 @@ export const AskInput = ({
         setPlaceholderIndex((prevIndex) => (prevIndex + 1) % languages.length);
         setFade(true);
       }, 500); // Duration of fade out
-    }, 3500);
+    }, 5500);
 
     return () => clearInterval(interval);
   }, []);
