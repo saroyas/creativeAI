@@ -33,21 +33,21 @@ type Model = {
 
 const modelMap: Record<ChatModel, Model> = {
   [ChatModel.LLAMA_3_70B]: {
-    name: "Devils Advocate",
+    name: "Advisor",
     description: "SiliconSoulAI/Devil-70B",
     value: ChatModel.LLAMA_3_70B,
     smallIcon: <LightningBoltIcon className="w-4 h-4 text-yellow-500" />,
     icon: <LightningBoltIcon className="w-5 h-5 text-yellow-500" />,
   },
   [ChatModel.GPT_3_5_TURBO]: {
-    name: "Creative",
+    name: "Creative Writer",
     description: "SiliconSoulAI/Creative-70B",
     value: ChatModel.GPT_3_5_TURBO,
     smallIcon: <RabbitIcon className="w-4 h-4 text-cyan-500" />,
     icon: <RabbitIcon className="w-5 h-5 text-cyan-500" />,
   },
   [ChatModel.GPT_4O]: {
-    name: "Emotionally Intelligent",
+    name: "Psychologist",
     description: "SiliconSoulAI/EmotionalQ-70B",
     value: ChatModel.GPT_4O,
     smallIcon: <BrainIcon className="w-4 h-4 text-pink-500" />,
@@ -96,7 +96,7 @@ const ModelItem: React.FC<{ model: Model }> = ({ model }) => (
       {model.icon}
       <div className="flex flex-col">
         <span className="font-bold">{model.name}</span>
-        <span className="text-muted-foreground">{model.description}</span>
+        {/* <span className="text-muted-foreground">{model.description}</span> */}
       </div>
     </div>
   </SelectItem>
@@ -115,7 +115,7 @@ export function ModelSelection() {
         }
       }}
     >
-      <SelectTrigger className="w-fit space-x-2 bg-transparent outline-none border-none select-none focus:ring-0 shadow-none transition-all duration-200 ease-in-out hover:scale-[1.05] text-sm">
+      <SelectTrigger className="w-fit space-x-2 bg-transparent outline-none border border-gray-700 select-none focus:ring-0 shadow-none transition-all duration-200 ease-in-out hover:scale-[1.05] text-sm">
         <SelectValue>
           <div className="flex items-center space-x-2">
             {modelMap[model].smallIcon}
