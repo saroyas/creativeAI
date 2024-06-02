@@ -82,7 +82,7 @@ export const ChatPanel = () => {
     );
   } else {
     return (
-      <div className="w-full flex flex-col justify-center items-center px-3">
+      <div className="w-full flex flex-col justify-center items-center px-1">
         <div className="flex items-center justify-center mb-1">
           <span className="text-3xl md:text-4xl text-center">
             AI Uncensored.
