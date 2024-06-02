@@ -34,7 +34,7 @@ export const AskInput = ({
         setPlaceholderIndex((prevIndex) => (prevIndex + 1) % languages.length);
         setFade(true);
       }, 500); // Duration of fade out
-    }, 3000);
+    }, 3500);
 
     return () => clearInterval(interval);
   }, []);
