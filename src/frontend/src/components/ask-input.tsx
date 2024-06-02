@@ -27,7 +27,7 @@ export const AskInput = ({
         setPlaceholderIndex((prevIndex) => (prevIndex + 1) % languages.length);
         setFade(true);
       }, 500); // Duration of fade out
-    }, 5500);
+    }, 3500); // Interval duration for placeholder change
 
     return () => clearInterval(interval);
   }, []);
@@ -52,16 +52,18 @@ export const AskInput = ({
         }}
       >
         <div className="w-full flex items-center rounded-full focus:outline-none max-h-[30vh] px-2 py-1 bg-card border-2 ">
-          <TextareaAutosize
-            className={`w-full bg-transparent text-lg resize-none h-[40px] focus:outline-none p-2 px-5 transition-opacity duration-500 ${
-              fade ? "opacity-100" : "opacity-0"
-            }`}
-            placeholder={
-              isFollowingUp ? "Ask a follow-up..." : languages[placeholderIndex]
-            }
-            onChange={(e) => setInput(e.target.value)}
-            value={input}
-          />
+          <div className="relative w-full">
+            <TextareaAutosize
+              className={`w-full bg-transparent text-lg resize-none h-[40px] focus:outline-none p-2 px-5 absolute transition-opacity duration-500 ${
+                fade ? "opacity-100" : "opacity-0"
+              }`}
+              placeholder={
+                isFollowingUp ? "Ask a follow-up..." : languages[placeholderIndex]
+              }
+              onChange={(e) => setInput(e.target.value)}
+              value={input}
+            />
+          </div>
           <Button
             type="submit"
             variant="default"
