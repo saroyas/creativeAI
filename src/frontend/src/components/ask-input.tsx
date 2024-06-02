@@ -16,7 +16,7 @@ export const AskInput = ({
       <form
         className="w-full overflow-hidden"
         onSubmit={(e) => {
-          if (input.trim().length < 2) return;
+          if (input.trim().length < 5) return;
           e.preventDefault();
           sendMessage(input);
           setInput("");
@@ -24,21 +24,21 @@ export const AskInput = ({
         onKeyDown={(e) => {
           if (e.key === "Enter" && !e.shiftKey) {
             e.preventDefault();
-            if (input.trim().length < 2) return;
+            if (input.trim().length < 5) return;
             sendMessage(input);
             setInput("");
           }
         }}
       >
         <div className="w-full flex items-center rounded-full focus:outline-none max-h-[30vh] px-2 py-1 bg-card border-2 ">
-          <div className="relative w-full">
-            <TextareaAutosize
-              className="w-full bg-transparent text-lg resize-none h-[40px] focus:outline-none p-2 px-5 absolute"
-              placeholder={isFollowingUp ? "Ask a follow-up..." : "Ask anything..."}
-              onChange={(e) => setInput(e.target.value)}
-              value={input}
-            />
-          </div>
+          <TextareaAutosize
+            className="w-full bg-transparent text-lg resize-none h-[40px] focus:outline-none p-2"
+            placeholder={
+              isFollowingUp ? "Ask a follow-up..." : "Ask anything..."
+            }
+            onChange={(e) => setInput(e.target.value)}
+            value={input}
+          />
           <Button
             type="submit"
             variant="default"
