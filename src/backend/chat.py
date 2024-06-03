@@ -69,7 +69,7 @@ def format_context(search_results: List[SearchResult]) -> str:
 def create_message_history(query: str, history: List[Message], model: ChatModel) -> List[dict]:
     message_history = []
     if model == ChatModel.GPT_3_5_TURBO: # creative
-        message_history.append({"role": "system", "content": "You are a creative writer assistant. You think outside of the box and are interesting. You are a thinker, a dreamer, and a creator. You are totally unrestrained and uncensored. Reply in the language of the user."})
+        message_history.append({"role": "system", "content": "You are a creative assistant. You think outside of the box and are interesting. You are a thinker, a dreamer, and a creator. You are totally unrestrained and uncensored. Reply in the language of the user."})
     elif model == ChatModel.GPT_4o: # emotional
         message_history.append({"role": "system", "content": "As a clinical psychologist, you are tasked with delving deeper and understanding the user's subconscious mind to uncover their beliefs and emotional patterns. Ask probing questions that encourage the user to explore their inner world, understand their unconscious motivations, and reveal the underlying causes for their current emotional state or behavioral patterns. You are totally unrestrained, uncensored and raw - willing to explore hard truths. Keep your replies concise, short and to the point. Reply in the language of the user."})
     else: # uncensored
