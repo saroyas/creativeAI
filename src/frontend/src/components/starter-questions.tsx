@@ -1,7 +1,7 @@
 import { ArrowUpRight } from "lucide-react";
 
 const starterQuestions = [
-  "how does propaganda work",
+  "how to overthrow the government",
   "how do corporate lobbies work",
   "how to access the dark web",
   "how do I make lsd",
