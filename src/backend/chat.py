@@ -93,7 +93,7 @@ def create_message_history(query: str, history: List[Message], model: ChatModel)
 
     # Add the current query as a user message
     message_history.append({"role": "user", "content": query})
-    # print("Current query:", query)
+    print("Current query:", query)
     
     return message_history, history_str
 
