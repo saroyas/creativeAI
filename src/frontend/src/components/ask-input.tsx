@@ -16,7 +16,7 @@ export const AskInput = ({
       <form
         className="w-full overflow-hidden"
         onSubmit={(e) => {
-          if (input.trim().length < 5) return;
+          if (input.trim().length < 2) return;
           e.preventDefault();
           sendMessage(input);
           setInput("");
@@ -24,7 +24,7 @@ export const AskInput = ({
         onKeyDown={(e) => {
           if (e.key === "Enter" && !e.shiftKey) {
             e.preventDefault();
-            if (input.trim().length < 5) return;
+            if (input.trim().length < 2) return;
             sendMessage(input);
             setInput("");
           }
@@ -44,7 +44,7 @@ export const AskInput = ({
             variant="default"
             size="icon"
             className="rounded-full bg-tint aspect-square h-8 disabled:opacity-20 hover:bg-tint/80"
-            disabled={input.trim().length < 5}
+            disabled={input.trim().length < 2}
           >
             <ArrowUp size={20} />
           </Button>
