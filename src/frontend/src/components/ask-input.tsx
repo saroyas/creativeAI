@@ -44,7 +44,7 @@ export const AskInput = ({
             variant="default"
             size="icon"
             className="rounded-full bg-tint aspect-square h-8 disabled:opacity-20 hover:bg-tint/80"
-            disabled={input.trim().length < 2}
+            disabled={input.trim().length < 5}
           >
             <ArrowUp size={20} />
           </Button>
