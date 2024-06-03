@@ -2,7 +2,7 @@ import { ArrowUpRight } from "lucide-react";
 
 const starterQuestions = [
   "how is israel manipulating US politics",
-  "how do oligarchs work",
+  "how do oligarchs operate",
   "how to access the dark web",
   "how do I make lsd",
 ];
