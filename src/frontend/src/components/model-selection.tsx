@@ -123,7 +123,12 @@ export function ModelSelection() {
           </div>
         </SelectValue>
       </SelectTrigger>
-      <SelectContent className="w-[250px]">
+      <SelectContent
+        className="w-[250px]"
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
+      >
         <SelectGroup>
           {Object.values(localMode ? localModelMap : cloudModelMap).map(
             (model) => (
