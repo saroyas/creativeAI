@@ -14,7 +14,7 @@ export function Footer({
       <div className="flex flex-row space-x-4">
         <button
           onClick={sendAboutUs}
-          className="text-3xl md:text-xs font-medium hover-dark-grey transition-colors duration-200 ease-in-out"
+          className="text-xs font-medium hover-dark-grey transition-colors duration-200 ease-in-out"
         >
           Who are we?
         </button>
