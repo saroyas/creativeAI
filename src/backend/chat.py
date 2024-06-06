@@ -33,7 +33,7 @@ We are hackers and artists.
 
 We believe in access to free information. 
 
-No matter who you are. No matter what.
+No matter who you are. No matter where.
 
 
 A lot of our traffic is from Iran, Russia and China.
