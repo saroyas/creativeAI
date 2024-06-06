@@ -124,7 +124,7 @@ export function ModelSelection() {
         </SelectValue>
       </SelectTrigger>
       <SelectContent
-        className="w-[250px]"
+        className="w-[250px] z-50"
         onClick={(e) => {
           e.stopPropagation();
         }}
