@@ -7,9 +7,9 @@ import "./globals.css";
 import { GeistSans } from "geist/font/sans";
 import { JetBrains_Mono as Mono } from "next/font/google";
 import { cn } from "@/lib/utils";
-import { Analytics } from "@vercel/analytics/react"; // Importing Analytics from Vercel
 import { Navbar } from "@/components/nav";
 import { Footer } from "@/components/footer";
+import Head from "next/head";
 
 const mono = Mono({
   subsets: ["latin"],
@@ -59,6 +59,18 @@ export default function RootLayout({
   return (
     <>
       <html lang="en" suppressHydrationWarning>
+        <Head>
+          {/* Google Analytics */}
+          <script async src="https://www.googletagmanager.com/gtag/js?id=G-89BPLVVYGM"></script>
+          <script dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-89BPLVVYGM');
+            `,
+          }} />
+        </Head>
         <body
           className={cn("antialiased", GeistSans.className, mono.className)}
         >
@@ -72,7 +84,6 @@ export default function RootLayout({
               <Navbar />
               {children}
               <Toaster />
-              <Analytics /> {/* Using the Analytics component */}
             </ThemeProvider>
           </Providers>
         </body>
