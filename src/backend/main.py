@@ -20,7 +20,6 @@ from backend.validators import validate_model
 
 load_dotenv()
 
-
 def create_error_event(detail: str):
     obj = ChatResponseEvent(
         data=ErrorStream(detail=detail),
@@ -31,32 +30,26 @@ def create_error_event(detail: str):
         event="error",
     )
 
-
 def configure_logging(app: FastAPI, logfire_token: str):
     if logfire_token:
         logfire.configure()
         logfire.instrument_fastapi(app)
 
-
 async def rate_limit_exceeded_handler(request: Request, exc: RateLimitExceeded):
     def generator():
         yield create_error_event("Rate limit exceeded, please try again later.")
-
     return EventSourceResponse(
         generator(),
         media_type="text/event-stream",
     )
 
-
-def configure_rate_limiting(app: FastAPI, rate_limit_enabled: bool, redis_url: str):
+def configure_rate_limiting(app: FastAPI, rate_limit_enabled: bool):
     limiter = Limiter(
         key_func=get_ipaddr,
-        enabled=strtobool(rate_limit_enabled) and redis_url is not None,
-        storage_uri=redis_url,
+        enabled=rate_limit_enabled,
     )
     app.state.limiter = limiter
     app.add_exception_handler(RateLimitExceeded, rate_limit_exceeded_handler)
-
 
 def configure_middleware(app: FastAPI):
     app.add_middleware(
@@ -67,28 +60,24 @@ def configure_middleware(app: FastAPI):
         allow_headers=["*"],  # You can restrict this to specific headers if needed
     )
 
-
 def create_app() -> FastAPI:
     app = FastAPI()
     configure_middleware(app)
     configure_logging(app, os.getenv("LOGFIRE_TOKEN"))
     configure_rate_limiting(
-        app, os.getenv("RATE_LIMIT_ENABLED", False), os.getenv("REDIS_URL")
+        app, strtobool(os.getenv("RATE_LIMIT_ENABLED", True))
     )
     return app
 
-
 app = create_app()
 
-
 @app.post("/chat")
-@app.state.limiter.limit("3/min")
+@app.state.limiter.limit("3/minute")
 async def chat(
     chat_request: ChatRequest, request: Request
 ) -> Generator[ChatResponseEvent, None, None]:
     async def generator():
         try:
-            # # print("Chat Request Recieved: ", chat_request)
             validate_model(chat_request.model)
             async for obj in stream_qa_objects(chat_request):
                 if await request.is_disconnected():
