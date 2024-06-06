@@ -5,7 +5,7 @@ from typing import Generator
 
 import logfire
 from dotenv import load_dotenv
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.middleware.cors import CORSMiddleware
 from slowapi import Limiter, _rate_limit_exceeded_handler
@@ -50,6 +50,7 @@ async def rate_limit_exceeded_handler(request: Request, exc: RateLimitExceeded):
     return EventSourceResponse(
         generator(),
         media_type="text/event-stream",
+        status_code=status.HTTP_429_TOO_MANY_REQUESTS,  # Set the status code to 429
     )
 
 def configure_rate_limiting(app: FastAPI, rate_limit_enabled: bool):
