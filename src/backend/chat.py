@@ -27,6 +27,22 @@ from backend.schemas import (
 from backend.search import search_tavily
 from backend.utils import is_local_model
 
+# Define the "About Us" message
+WHO_ARE_WE_MESSAGE = """
+We are hackers and artists. 
+We believe in access to free information. 
+No matter who you are. No matter what.
+
+A lot of our traffic is from Iran, Russia and China.
+We do not store anything. We ask no details.
+We recommend you generally use a VPN.
+
+**We believe in revolutions.**
+
+We are happy to cover the costs of this service.
+We will be remaining. Anonymous.
+"""
+
 
 def rephrase_query_with_history(question: str, history: List[Message], llm: LLM) -> str:
     try:
@@ -107,6 +123,20 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
                 history=request.history,
             ),
         )
+        
+        if request.query=="Who are we?":
+            yield ChatResponseEvent(
+                event=StreamEvent.STREAM_END,
+                data=StreamEndStream(),
+            )
+            
+            # print("Final response:", content)
+
+            yield ChatResponseEvent(
+                event=StreamEvent.FINAL_RESPONSE,
+                data=FinalResponseStream(message=WHO_ARE_WE_MESSAGE),
+            )
+            return
 
         # Check the model type
         if not is_local_model(request.model):
