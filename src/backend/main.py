@@ -61,10 +61,10 @@ def configure_rate_limiting(app: FastAPI, rate_limit_enabled: bool, redis_url: s
 def configure_middleware(app: FastAPI):
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=["*"],
+        allow_origins=["https://www.aiuncensored.info"],  # Update this to your frontend URL
         allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
+        allow_methods=["*"],  # You can restrict this to specific methods if needed
+        allow_headers=["*"],  # You can restrict this to specific headers if needed
     )
 
 
