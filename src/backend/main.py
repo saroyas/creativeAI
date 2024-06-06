@@ -37,9 +37,16 @@ def configure_logging(app: FastAPI, logfire_token: str):
         logfire.instrument_fastapi(app)
 
 async def rate_limit_exceeded_handler(request: Request, exc: RateLimitExceeded):
-    print("Rate limit exceeded")
+    ip_address = get_ipaddr(request)
+    try:
+        body = await request.json()
+    except:
+        body = "No JSON body"
+    print(f"Rate limit exceeded for IP: {ip_address}, Query: {body}")
+    
     def generator():
         yield create_error_event("Rate limit exceeded, please try again after a short break.")
+    
     return EventSourceResponse(
         generator(),
         media_type="text/event-stream",
