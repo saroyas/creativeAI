@@ -82,7 +82,7 @@ app = create_app()
 
 
 @app.post("/chat")
-@app.state.limiter.limit("10/min")
+@app.state.limiter.limit("3/min")
 async def chat(
     chat_request: ChatRequest, request: Request
 ) -> Generator[ChatResponseEvent, None, None]:
