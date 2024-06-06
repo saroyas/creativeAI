@@ -8,9 +8,10 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, Request
 from fastapi.encoders import jsonable_encoder
 from fastapi.middleware.cors import CORSMiddleware
-from slowapi import Limiter
+from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 from slowapi.util import get_ipaddr
+from slowapi.extension import Limiter as SlowapiLimiter
 from sse_starlette.sse import EventSourceResponse, ServerSentEvent
 
 from backend.chat import stream_qa_objects
@@ -37,7 +38,7 @@ def configure_logging(app: FastAPI, logfire_token: str):
 
 async def rate_limit_exceeded_handler(request: Request, exc: RateLimitExceeded):
     def generator():
-        yield create_error_event("Rate limit exceeded, please try again later.")
+        yield create_error_event("Rate limit exceeded, please try again after a short break.")
     return EventSourceResponse(
         generator(),
         media_type="text/event-stream",
@@ -70,9 +71,11 @@ def create_app() -> FastAPI:
     return app
 
 app = create_app()
+limiter = app.state.limiter
 
 @app.post("/chat")
-@app.state.limiter.limit("3/minute")
+@limiter.limit("4/minute")
+@limiter.limit("30 per 2 hours")
 async def chat(
     chat_request: ChatRequest, request: Request
 ) -> Generator[ChatResponseEvent, None, None]:
