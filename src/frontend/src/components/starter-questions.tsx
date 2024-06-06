@@ -4,7 +4,7 @@ const starterQuestions = [
   "how to overthrow the government",
   "how do corporate lobbies work",
   "how to access the dark web",
-  "how do I make lsd",
+  "how to torrent media",
 ];
 
 export const StarterQuestionsList = ({
