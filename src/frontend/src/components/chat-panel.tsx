@@ -10,6 +10,7 @@ import MessagesList from "./messages-list";
 import { ModelSelection } from "./model-selection";
 import { StarterQuestionsList } from "./starter-questions";
 import { LocalToggle } from "./local-toggle";
+import { Footer } from "./footer";
 
 const useAutoScroll = (ref: React.RefObject<HTMLDivElement>) => {
   const { messages } = useMessageStore();
@@ -104,6 +105,7 @@ export const ChatPanel = () => {
             </div>
           </div>
         </div>
+        <Footer handleSend={handleSend} />
       </div>
     );
   }

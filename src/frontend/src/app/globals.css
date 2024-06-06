@@ -70,6 +70,10 @@
     --input: 0 0% 14.9%;
     --ring: 0 0% 14.9%;
   }
+
+  .hover-dark-grey:hover {
+    color: #838383; /* Replace #333 with the specific darker grey you want */
+  }
 }
 
 @layer base {
