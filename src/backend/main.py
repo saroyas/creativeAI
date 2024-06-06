@@ -42,7 +42,7 @@ async def rate_limit_exceeded_handler(request: Request, exc: RateLimitExceeded):
         body = await request.json()
     except:
         body = "No JSON body"
-    print(f"Rate limit exceeded for IP: {ip_address}, Query: {body}")
+    print(f"Rate limit exceeded for IP: {ip_address}")
     
     def generator():
         yield create_error_event("Rate limit exceeded, please try again after a short break.")
