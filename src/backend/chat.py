@@ -51,7 +51,7 @@ We are happy to cover the costs of this service.
 We will be remaining. **Anonymous.**
 """
 
-async def stream_text_chunks(text: str, delay: float = 0.1) -> AsyncIterator[str]:
+async def stream_text_chunks(text: str, delay: float = 0.01) -> AsyncIterator[str]:
     for char in text:
         yield char
         await asyncio.sleep(delay)
