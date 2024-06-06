@@ -9,6 +9,7 @@ import { JetBrains_Mono as Mono } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { Navbar } from "@/components/nav";
 import { Footer } from "@/components/footer";
+import { GoogleAnalytics } from "@next/third-parties/google";
 
 const mono = Mono({
   subsets: ["latin"],
@@ -71,6 +72,7 @@ export default function RootLayout({
               <Navbar />
               {children}
               <Toaster />
+              <GoogleAnalytics gaId="G-89BPLVVYGM" />
             </ThemeProvider>
           </Providers>
         </body>
