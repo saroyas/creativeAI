@@ -39,7 +39,6 @@ We recommend you generally use a VPN.
 
 **We believe in revolutions.**
 
-We are happy to cover the costs of this service. <br>
 We will be remaining. **Anonymous.**
 """
 
