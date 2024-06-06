@@ -124,7 +124,7 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
             ),
         )
         
-        if request.query=="Who are we?":
+        if request.query=="About Us":
             yield ChatResponseEvent(
                 event=StreamEvent.STREAM_END,
                 data=StreamEndStream(),
