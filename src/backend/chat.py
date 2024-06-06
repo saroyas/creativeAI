@@ -29,18 +29,17 @@ from backend.utils import is_local_model
 
 # Define the "About Us" message
 WHO_ARE_WE_MESSAGE = """
-We are hackers and artists. \
-We believe in access to free information. \
+We are hackers and artists. <br>
+We believe in access to free information. <br>
 No matter who you are. No matter where.
 
-A lot of our traffic is from Iran, Russia and China. \
-We do not store anything. We ask no details. \
-We recommend you generally use a VPN. \
+A lot of our traffic is from Iran, Russia and China. <br>
+We do not store anything. We ask no details. <br>
+We recommend you generally use a VPN.
 
 **We believe in revolutions.**
 
-
-We are happy to cover the costs of this service. \
+We are happy to cover the costs of this service. <br>
 We will be remaining. **Anonymous.**
 """
 
