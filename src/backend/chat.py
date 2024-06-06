@@ -33,7 +33,6 @@ We are hackers and artists. <br>
 We believe in access to free information. <br>
 No matter who you are. No matter where.
 
-A lot of our traffic is from Iran, Russia and China. <br>
 We do not store anything. We ask no details. <br>
 We recommend you generally use a VPN.
 
