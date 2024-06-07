@@ -36,6 +36,7 @@ No matter who you are. No matter where.
 A lot of our traffic is from Iran, Russia and China.
 We do not store anything. We ask no details.
 We recommend you generally use a VPN.
+If you can, use a local ai model.
 
 **We believe in revolutions.**
 """
