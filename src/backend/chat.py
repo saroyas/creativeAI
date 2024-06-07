@@ -38,8 +38,6 @@ We do not store anything. We ask no details.
 We recommend you generally use a VPN.
 
 **We believe in revolutions.**
-
-We will be remaining. **Anonymous.**
 """
 
 async def stream_text_chunks(text: str, delay: float = 0.01) -> AsyncIterator[str]:
