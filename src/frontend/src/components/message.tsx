@@ -1,7 +1,6 @@
 import React, { FC, memo, useEffect, useMemo, useState } from "react";
 import { MemoizedReactMarkdown } from "./markdown";
 import rehypeRaw from "rehype-raw";
-
 import _ from "lodash";
 import { cn } from "@/lib/utils";
 import { AssistantMessage } from "@/types";
@@ -44,16 +43,19 @@ const Text = ({
     if (typeof node === "string") {
       const chunks = isStreaming ? chunkString(node) : [node];
       return chunks.flatMap((chunk, index) => {
-        return (
-          <span
-            key={`${index}-streaming`}
-            className={cn(
-              isStreaming ? "animate-in fade-in-25 duration-700" : ""
-            )}
-          >
-            {chunk}
-          </span>
-        );
+        const lines = chunk.split("\n");
+        return lines.map((line, lineIndex) => (
+          <React.Fragment key={`${index}-${lineIndex}-streaming`}>
+            <span
+              className={cn(
+                isStreaming ? "animate-in fade-in-25 duration-700" : ""
+              )}
+            >
+              {line}
+            </span>
+            {lineIndex < lines.length - 1 && <br />}
+          </React.Fragment>
+        ));
       });
     } else if (React.isValidElement(node)) {
       return React.cloneElement(
