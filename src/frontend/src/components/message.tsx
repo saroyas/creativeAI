@@ -34,10 +34,12 @@ const Text = ({
   children,
   isStreaming,
   containerElement = "p",
+  isListItem = false,
 }: {
   children: React.ReactNode;
   isStreaming: boolean;
   containerElement: React.ElementType;
+  isListItem?: boolean;
 }) => {
   const renderText = (node: React.ReactNode): React.ReactNode => {
     if (typeof node === "string") {
@@ -53,7 +55,7 @@ const Text = ({
             >
               {line}
             </span>
-            {lineIndex < lines.length - 1 && <br />}
+            {!isListItem && lineIndex < lines.length - 1 && <br />}
           </React.Fragment>
         ));
       });
@@ -96,7 +98,7 @@ const Paragraph = memo(
 
 const ListItem = memo(({ children }: React.HTMLProps<HTMLLIElement>) => {
   return (
-    <Text isStreaming={false} containerElement="li">
+    <Text isStreaming={false} containerElement="li" isListItem={true}>
       {children}
     </Text>
   );
@@ -105,7 +107,7 @@ const ListItem = memo(({ children }: React.HTMLProps<HTMLLIElement>) => {
 const StreamingListItem = memo(
   ({ children }: React.HTMLProps<HTMLLIElement>) => {
     return (
-      <Text isStreaming={true} containerElement="li">
+      <Text isStreaming={true} containerElement="li" isListItem={true}>
         {children}
       </Text>
     );
