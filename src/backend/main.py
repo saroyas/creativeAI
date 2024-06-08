@@ -125,6 +125,7 @@ async def chat(
 async def block_ip_middleware(request: Request, call_next):
     ip_address = get_ipaddr(request)
     if ip_address in PERMANENT_BLOCKLIST:
+        print(f"BLOCKING: {ip_address} is in permanent blocklist")
         async def blocked_generator():
             yield create_error_event("Your IP has been permanently blocked due to excessive requests.")
         return EventSourceResponse(
