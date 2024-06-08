@@ -48,6 +48,7 @@ async def rate_limit_exceeded_handler(request: Request, exc: RateLimitExceeded):
     if IP_BLOCKLIST[ip_address] >= BLOCK_THRESHOLD:
         # Add to permanent blocklist
         PERMANENT_BLOCKLIST.add(ip_address)
+        print(f"BLOCKING: Adding {ip_address} to permanent blocklist")
     
     def generator():
         yield create_error_event("Rate limit exceeded, please try again after a short break. Alternatively, try https://openrouter.ai/")
