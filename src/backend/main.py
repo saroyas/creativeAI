@@ -23,7 +23,7 @@ load_dotenv()
 
 # Initialize IP blocklist
 IP_BLOCKLIST: Dict[str, int] = defaultdict(int)
-BLOCK_THRESHOLD = 10
+BLOCK_THRESHOLD = 20
 PERMANENT_BLOCKLIST = set()
 
 def create_error_event(detail: str):
@@ -88,9 +88,8 @@ app = create_app()
 limiter = app.state.limiter
 
 @app.post("/chat")
-@limiter.limit("5/minute")
-@limiter.limit("30/hour")
-@limiter.limit("80 per 10 hours")
+@limiter.limit("3/minute")
+@limiter.limit("80 per 6 hours")
 async def chat(
     chat_request: ChatRequest, request: Request
 ) -> Generator[ChatResponseEvent, None, None]:
