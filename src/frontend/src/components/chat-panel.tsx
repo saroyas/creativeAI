@@ -89,14 +89,14 @@ export const ChatPanel = () => {
             AI Uncensored.
           </span>
         </div>
-        <div className="flex items-center justify-center mb-8">
+        {/* <div className="flex items-center justify-center mb-8">
           <span className="text-xl md:text-2xl text-center">
             Private. Liberated. Nuanced.
           </span>
-        </div>
+        </div> */}
         <div className="flex items-center justify-center mb-8">
           <span className="text-xl md:text-2xl text-center">
-            Small Outage - Back in 20
+            Recovering from small outage. (ETA 20 mins)
           </span>
         </div>
         <AskInput sendMessage={handleSend} />
