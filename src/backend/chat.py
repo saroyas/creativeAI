@@ -61,7 +61,7 @@ def rephrase_query_with_history(question: str, history: List[Message], llm: LLM)
         return question
     except Exception:
         raise HTTPException(
-            status_code=500, detail="Model is at capacity. Please try again later."
+            status_code=500, detail="Network Error. Please try again."
         )
 
 def get_llm(model: ChatModel) -> LLM:
@@ -244,5 +244,5 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
     except Exception as e:
         # print(e)
         raise HTTPException(
-            status_code=500, detail="Model is at capacity. Please try again later."
+            status_code=500, detail="Network Error. Please try again."
         )
