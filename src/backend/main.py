@@ -88,7 +88,7 @@ app = create_app()
 limiter = app.state.limiter
 
 @app.post("/chat")
-@limiter.limit("3/minute")
+@limiter.limit("4/minute")
 @limiter.limit("80 per 6 hours")
 async def chat(
     chat_request: ChatRequest, request: Request
