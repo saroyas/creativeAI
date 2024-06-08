@@ -1,7 +1,8 @@
 import asyncio
 import json
 import os
-from typing import Generator
+from typing import Generator, Dict
+from collections import defaultdict
 
 import logfire
 from dotenv import load_dotenv
@@ -21,6 +22,11 @@ from backend.validators import validate_model
 
 load_dotenv()
 
+# Initialize IP blocklist
+IP_BLOCKLIST: Dict[str, int] = defaultdict(int)
+BLOCK_THRESHOLD = 10
+PERMANENT_BLOCKLIST = set()
+
 def create_error_event(detail: str):
     obj = ChatResponseEvent(
         data=ErrorStream(detail=detail),
@@ -38,10 +44,10 @@ def configure_logging(app: FastAPI, logfire_token: str):
 
 async def rate_limit_exceeded_handler(request: Request, exc: RateLimitExceeded):
     ip_address = get_ipaddr(request)
-    try:
-        body = await request.json()
-    except:
-        body = "No JSON body"
+    IP_BLOCKLIST[ip_address] += 1
+    if IP_BLOCKLIST[ip_address] >= BLOCK_THRESHOLD:
+        # Add to permanent blocklist
+        PERMANENT_BLOCKLIST.add(ip_address)
     
     def generator():
         yield create_error_event("Rate limit exceeded, please try again after a short break. Alternatively, try https://openrouter.ai/")
@@ -101,3 +107,16 @@ async def chat(
             return
 
     return EventSourceResponse(generator(), media_type="text/event-stream")
+
+# IP Blocking Middleware
+@app.middleware("http")
+async def block_ip_middleware(request: Request, call_next):
+    ip_address = get_ipaddr(request)
+    if ip_address in PERMANENT_BLOCKLIST:
+        return EventSourceResponse(
+            create_error_event("Your IP has been permanently blocked due to excessive requests."),
+            media_type="text/event-stream",
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+        )
+    response = await call_next(request)
+    return response
