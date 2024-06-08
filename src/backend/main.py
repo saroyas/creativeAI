@@ -9,10 +9,9 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, Request, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.middleware.cors import CORSMiddleware
-from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi import Limiter
 from slowapi.errors import RateLimitExceeded
 from slowapi.util import get_ipaddr
-from slowapi.extension import Limiter as SlowapiLimiter
 from sse_starlette.sse import EventSourceResponse, ServerSentEvent
 
 from backend.chat import stream_qa_objects
@@ -50,7 +49,7 @@ async def rate_limit_exceeded_handler(request: Request, exc: RateLimitExceeded):
         PERMANENT_BLOCKLIST.add(ip_address)
         print(f"BLOCKING: Adding {ip_address} to permanent blocklist")
     
-    def generator():
+    async def generator():
         yield create_error_event("Rate limit exceeded, please try again after a short break. Alternatively, try https://openrouter.ai/")
     
     return EventSourceResponse(
@@ -81,7 +80,7 @@ def create_app() -> FastAPI:
     configure_middleware(app)
     configure_logging(app, os.getenv("LOGFIRE_TOKEN"))
     configure_rate_limiting(
-        app, strtobool(os.getenv("RATE_LIMIT_ENABLED", True))
+        app, strtobool(os.getenv("RATE_LIMIT_ENABLED", "True"))
     )
     return app
 
@@ -90,10 +89,22 @@ limiter = app.state.limiter
 
 @app.post("/chat")
 @limiter.limit("5/minute")
+@limiter.limit("30/hour")
 @limiter.limit("80 per 10 hours")
 async def chat(
     chat_request: ChatRequest, request: Request
 ) -> Generator[ChatResponseEvent, None, None]:
+    ip_address = get_ipaddr(request)
+    if ip_address in PERMANENT_BLOCKLIST:
+        # Block the request if the IP is in the permanent blocklist
+        async def blocked_generator():
+            yield create_error_event("Your IP has been permanently blocked due to excessive requests.")
+        return EventSourceResponse(
+            blocked_generator(),
+            media_type="text/event-stream",
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+        )
+    
     async def generator():
         try:
             validate_model(chat_request.model)
@@ -114,8 +125,10 @@ async def chat(
 async def block_ip_middleware(request: Request, call_next):
     ip_address = get_ipaddr(request)
     if ip_address in PERMANENT_BLOCKLIST:
+        async def blocked_generator():
+            yield create_error_event("Your IP has been permanently blocked due to excessive requests.")
         return EventSourceResponse(
-            create_error_event("Your IP has been permanently blocked due to excessive requests."),
+            blocked_generator(),
             media_type="text/event-stream",
             status_code=status.HTTP_429_TOO_MANY_REQUESTS,
         )
