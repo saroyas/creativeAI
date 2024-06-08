@@ -94,6 +94,11 @@ export const ChatPanel = () => {
             Private. Liberated. Nuanced.
           </span>
         </div>
+        <div className="flex items-center justify-center mb-8">
+          <span className="text-xl md:text-2xl text-center">
+            Small Outage - Back in 20
+          </span>
+        </div>
         <AskInput sendMessage={handleSend} />
         <div className="w-full flex flex-col md:flex-row justify-between items-center space-y-2 pt-1">
           <StarterQuestionsList handleSend={handleSend} />
