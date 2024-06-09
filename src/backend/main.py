@@ -124,7 +124,7 @@ async def chat(
 async def block_ip_middleware(request: Request, call_next):
     ip_address = get_ipaddr(request)
     if ip_address in PERMANENT_BLOCKLIST:
-        print(f"BLOCKING: {ip_address} is in permanent blocklist")
+        # print(f"BLOCKING: {ip_address} is in permanent blocklist")
         async def blocked_generator():
             yield create_error_event("Rate limit exceeded, please try again after a short break.")
         return EventSourceResponse(

@@ -119,6 +119,7 @@ def create_message_history(query: str, history: List[Message], model: ChatModel)
 
 async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseEvent]:
     try:
+        print("processing request for user model:", request.model)
         yield ChatResponseEvent(
             event=StreamEvent.BEGIN_STREAM,
             data=BeginStream(
