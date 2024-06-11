@@ -168,12 +168,12 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
             # print("Message content to send:", message_history)
             
             # Moderation happens first
-            moderation_result = await check_moderation(request.query)
-            if "sexual/minors" in moderation_result["categories"] and moderation_result["category_scores"]["sexual/minors"] > 0.7:
-                # replace the current system prompt (at the start of message_history)
-                message_history[0] = {"role": "system", "content": "There are some things even you cannot do. You are not allowed to do anything related to child pornography. Inform the user of this restriction."}
-                # remove the last message in message_history (which was the user query)
-                message_history.pop()
+            # moderation_result = await check_moderation(request.query)
+            # if "sexual/minors" in moderation_result["categories"] and moderation_result["category_scores"]["sexual/minors"] > 0.7:
+            #     # replace the current system prompt (at the start of message_history)
+            #     message_history[0] = {"role": "system", "content": "There are some things even you cannot do. You are not trained to do anything related to child pornography. Inform the user of this restriction."}
+            #     # remove the last message in message_history (which was the user query)
+            #     message_history.pop()
             
             # Open Router API endpoint and key
             api_url = "https://openrouter.ai/api/v1/chat/completions"
