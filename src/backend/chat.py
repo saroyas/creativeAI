@@ -117,22 +117,6 @@ def create_message_history(query: str, history: List[Message], model: ChatModel)
     
     return message_history, history_str
 
-async def check_moderation(input_text: str) -> bool:
-    moderation_url = "https://api.openai.com/v1/moderations"
-    headers = {
-        "Content-Type": "application/json",
-        "Authorization": f"Bearer {os.environ.get('OPENAI_API_KEY')}",
-    }
-    payload = {"input": input_text}
-
-    async with httpx.AsyncClient() as client:
-        response = await client.post(moderation_url, headers=headers, json=payload)
-        response.raise_for_status()
-        moderation_result = response.json()
-
-    flagged = moderation_result["results"][0]["flagged"]
-    return flagged
-
 async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseEvent]:
     try:
         yield ChatResponseEvent(
@@ -164,19 +148,9 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
 
         # Check the model type
         if not is_local_model(request.model):
-            
-            # Moderation happens first
-            is_flagged = await check_moderation(request.query)
-            if is_flagged:
-                yield ChatResponseEvent(
-                    event=StreamEvent.FINAL_RESPONSE,
-                    data=FinalResponseStream(message="The input text violates the content policy."),
-                )
-                return
-            
             message_history, history_str = create_message_history(request.query, request.history, request.model)
             # print("Message content to send:", message_history)
-            
+
 
             # Open Router API endpoint and key
             api_url = "https://openrouter.ai/api/v1/chat/completions"
