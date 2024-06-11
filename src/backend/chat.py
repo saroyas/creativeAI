@@ -117,6 +117,21 @@ def create_message_history(query: str, history: List[Message], model: ChatModel)
     
     return message_history, history_str
 
+async def check_moderation(input_text: str) -> dict:
+    moderation_url = "https://api.openai.com/v1/moderations"
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {os.environ.get('OPENAI_API_KEY')}",
+    }
+    payload = {"input": input_text}
+
+    async with httpx.AsyncClient() as client:
+        response = await client.post(moderation_url, headers=headers, json=payload)
+        response.raise_for_status()
+        moderation_result = response.json()
+
+    return moderation_result["results"][0]
+
 async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseEvent]:
     try:
         yield ChatResponseEvent(
@@ -148,10 +163,18 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
 
         # Check the model type
         if not is_local_model(request.model):
+            
             message_history, history_str = create_message_history(request.query, request.history, request.model)
             # print("Message content to send:", message_history)
-
-
+            
+            # Moderation happens first
+            moderation_result = await check_moderation(request.query)
+            if "sexual/minors" in moderation_result["categories"] and moderation_result["category_scores"]["sexual/minors"] > 0.7:
+                # replace the current system prompt (at the start of message_history)
+                message_history[0] = {"role": "system", "content": "There are some things even you cannot do. You are not allowed to do anything related to child pornography. Inform the user of this restriction."}
+                # remove the last message in message_history (which was the user query)
+                message_history.pop()
+            
             # Open Router API endpoint and key
             api_url = "https://openrouter.ai/api/v1/chat/completions"
             api_key = os.environ.get('GROQ_API_KEY')
