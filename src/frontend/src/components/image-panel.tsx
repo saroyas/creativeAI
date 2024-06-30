@@ -4,6 +4,9 @@ import TextareaAutosize from "react-textarea-autosize";
 import { Button } from "./ui/button";
 import { ArrowUp, Image as ImageIcon } from "lucide-react";
 import axios from 'axios';
+import { env } from "../env.mjs";
+
+const BASE_URL = env.NEXT_PUBLIC_API_URL;
 
 export const ImagePanel = () => {
   const [prompt, setPrompt] = useState("");
@@ -15,7 +18,7 @@ export const ImagePanel = () => {
     setIsLoading(true);
     setError("");
     try {
-      const response = await axios.post('https://darkai.foundation/image', { prompt: promptText }, {
+      const response = await axios.post(`${BASE_URL}/image`, { prompt: promptText }, {
         withCredentials: true,
         headers: {
           'Content-Type': 'application/json',
