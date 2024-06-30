@@ -213,19 +213,20 @@ def generate_image(prompt, imageURL):
 @limiter.limit("2/minute")
 @limiter.limit("10 per 30 minutes")
 @limiter.limit("30 per 6 hours")
-async def generate_image_route(request: ImageRequest, req: Request):
-    ip_address = get_ipaddr(req)
+async def generate_image_route(image_request: ImageRequest, request: Request):
+    ip_address = get_ipaddr(request)
     if ip_address in PERMANENT_BLOCKLIST:
         return {"error": "Rate limit exceeded, please try again after a short break."}
     
     try:
-        image_url = generate_image(request.prompt, request.imageURL)
+        image_url = generate_image(image_request.prompt, image_request.imageURL)
         if image_url == "Job failed" or image_url.startswith("Failed"):
             return {"error": "Image generation failed"}
         return {"imageURL": image_url}
     except Exception as e:
         return {"error": str(e)}
-
+    
+    
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
