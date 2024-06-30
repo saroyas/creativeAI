@@ -74,13 +74,13 @@ export const ImagePanel = () => {
   };
 
   return (
-    <div className="w-full min-h-screen flex flex-col items-center justify-between py-8 bg-gray-900 text-white">
+    <div className="w-full min-h-screen flex flex-col items-center justify-between py-8">
       <div className="w-full max-w-2xl flex-grow flex flex-col items-center justify-center">
         {error && (
           <div className="text-red-400 mt-2">{error}</div>
         )}
 
-        <div className="relative w-full max-w-2xl aspect-square bg-gray-800 rounded-lg overflow-hidden">
+        <div className="relative w-full max-w-2xl aspect-square rounded-lg overflow-hidden bg-opacity-50 bg-gray-800 backdrop-blur-sm">
           {isLoading && (
             <div className="absolute inset-0 flex flex-col items-center justify-center">
               <img 
@@ -89,7 +89,7 @@ export const ImagePanel = () => {
                 className="w-full h-full object-cover"
               />
               <div className="absolute top-4 left-4 right-4 z-10">
-                <div className="w-full h-2 bg-gray-700 rounded-full overflow-hidden">
+                <div className="w-full h-2 bg-gray-200 bg-opacity-30 rounded-full overflow-hidden">
                   <div
                     className="h-full bg-blue-500 transition-all duration-1000 ease-out"
                     style={{ width: `${progress}%` }}
@@ -113,7 +113,7 @@ export const ImagePanel = () => {
           )}
 
           {!imageUrl && !isLoading && (
-            <div className="w-full h-full flex flex-col items-center justify-center text-center text-gray-400">
+            <div className="w-full h-full flex flex-col items-center justify-center text-center text-gray-300">
               <ImageIcon size={48} className="mb-4" />
               <p>Enter a prompt below to generate an image</p>
             </div>
@@ -122,7 +122,7 @@ export const ImagePanel = () => {
       </div>
 
       <form className="w-full max-w-2xl mt-8" onSubmit={handleSubmit}>
-        <div className="w-full flex items-center rounded-full focus:outline-none max-h-[30vh] px-2 py-1 bg-gray-800 border-2 border-gray-700">
+        <div className="w-full flex items-center rounded-full focus:outline-none max-h-[30vh] px-2 py-1 bg-opacity-50 bg-gray-800 backdrop-blur-sm">
           <TextareaAutosize
             className="w-full bg-transparent text-lg resize-none h-[40px] focus:outline-none p-2 text-white"
             placeholder="Describe the image you want to generate..."
@@ -134,7 +134,7 @@ export const ImagePanel = () => {
             type="submit"
             variant="default"
             size="icon"
-            className="rounded-full bg-blue-600 aspect-square h-8 disabled:opacity-20 hover:bg-blue-700"
+            className="rounded-full bg-tint aspect-square h-8 disabled:opacity-20 hover:bg-tint/80"
             disabled={prompt.trim().length < 2 || isLoading}
           >
             {isLoading ? <ImageIcon className="animate-pulse" size={20} /> : <ArrowUp size={20} />}
