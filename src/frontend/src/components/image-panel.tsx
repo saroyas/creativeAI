@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import TextareaAutosize from "react-textarea-autosize";
 import { Button } from "./ui/button";
 import { ArrowUp, Image as ImageIcon } from "lucide-react";
@@ -13,10 +13,12 @@ export const ImagePanel = () => {
   const [imageUrl, setImageUrl] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [progress, setProgress] = useState(0);
 
   const generateImage = async (promptText: string) => {
     setIsLoading(true);
     setError("");
+    setProgress(0);
     try {
       const response = await axios.post(`${BASE_URL}/image`, { prompt: promptText }, {
         withCredentials: true,
@@ -34,6 +36,7 @@ export const ImagePanel = () => {
       console.error("Error generating image:", err);
     } finally {
       setIsLoading(false);
+      setProgress(100);
     }
   };
 
@@ -43,14 +46,69 @@ export const ImagePanel = () => {
     generateImage(prompt);
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSubmit(e as unknown as React.FormEvent);
+    }
+  };
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (isLoading) {
+      interval = setInterval(() => {
+        setProgress((prev) => (prev < 100 ? prev + (100 / 30) : 100));
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [isLoading]);
+
   return (
-    <div className="w-full flex flex-col items-center space-y-4 pt-[200px]">
-      <form className="w-full max-w-2xl" onSubmit={handleSubmit}>
+    <div className="w-full min-h-screen flex flex-col items-center justify-between py-8">
+      <div className="w-full max-w-2xl flex-grow flex flex-col items-center justify-center">
+        {error && (
+          <div className="text-red-500 mt-2">{error}</div>
+        )}
+
+        {isLoading && (
+          <div className="flex flex-col items-center mb-4">
+            <img src="https://i.ibb.co/5Kf5nwH/0622.gif" alt="Loading" className="w-16 h-16 mb-4" />
+            <div className="w-full max-w-md h-2 bg-gray-200 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-blue-500 transition-all duration-1000 ease-linear"
+                style={{ width: `${progress}%` }}
+              />
+            </div>
+          </div>
+        )}
+
+        {imageUrl && (
+          <div className="mt-4 max-w-2xl">
+            <a href={imageUrl} download>
+              <img
+                src={imageUrl}
+                alt="Generated image"
+                className="w-full h-auto rounded-lg shadow-lg transition-transform duration-300 hover:scale-105 cursor-pointer"
+              />
+            </a>
+          </div>
+        )}
+
+        {!imageUrl && !isLoading && (
+          <div className="text-center text-gray-500 mt-8">
+            <ImageIcon size={48} className="mx-auto mb-4" />
+            <p>Enter a prompt below to generate an image</p>
+          </div>
+        )}
+      </div>
+
+      <form className="w-full max-w-2xl mt-8" onSubmit={handleSubmit}>
         <div className="w-full flex items-center rounded-full focus:outline-none max-h-[30vh] px-2 py-1 bg-card border-2">
           <TextareaAutosize
             className="w-full bg-transparent text-lg resize-none h-[40px] focus:outline-none p-2"
             placeholder="Describe the image you want to generate..."
             onChange={(e) => setPrompt(e.target.value)}
+            onKeyDown={handleKeyDown}
             value={prompt}
           />
           <Button
@@ -64,23 +122,6 @@ export const ImagePanel = () => {
           </Button>
         </div>
       </form>
-
-      {error && (
-        <div className="text-red-500 mt-2">{error}</div>
-      )}
-
-      {imageUrl && (
-        <div className="mt-4 max-w-2xl">
-          <img src={imageUrl} alt="Generated image" className="w-full h-auto rounded-lg shadow-lg" />
-        </div>
-      )}
-
-      {!imageUrl && !isLoading && (
-        <div className="text-center text-gray-500 mt-8">
-          <ImageIcon size={48} className="mx-auto mb-4" />
-          <p>Enter a prompt above to generate an image</p>
-        </div>
-      )}
     </div>
   );
 };
