@@ -1,4 +1,3 @@
-"use client";
 import React, { useState } from 'react';
 import TextareaAutosize from "react-textarea-autosize";
 import { Button } from "./ui/button";
@@ -15,7 +14,12 @@ export const ImagePanel = () => {
     setIsLoading(true);
     setError("");
     try {
-      const response = await axios.post('https://darkai.foundation/image', { prompt: promptText });
+      const response = await axios.post('https://darkai.foundation/image', { prompt: promptText }, {
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
       if (response.data.imageURL) {
         setImageUrl(response.data.imageURL);
       } else if (response.data.error) {
@@ -23,6 +27,7 @@ export const ImagePanel = () => {
       }
     } catch (err) {
       setError("Failed to generate image. Please try again.");
+      console.error("Error generating image:", err);
     } finally {
       setIsLoading(false);
     }
