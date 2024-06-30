@@ -19,6 +19,7 @@ export const ImagePanel = () => {
     setIsLoading(true);
     setError("");
     setProgress(0);
+    setImageUrl(""); // Clear the previous image
     try {
       const response = await axios.post(`${BASE_URL}/image`, { prompt: promptText }, {
         withCredentials: true,
@@ -57,7 +58,7 @@ export const ImagePanel = () => {
     let interval: NodeJS.Timeout;
     if (isLoading) {
       interval = setInterval(() => {
-        setProgress((prev) => (prev < 100 ? prev + (100 / 30) : 100));
+        setProgress((prev) => (prev < 90 ? prev + 10 : 90));
       }, 1000);
     }
     return () => clearInterval(interval);
@@ -70,36 +71,38 @@ export const ImagePanel = () => {
           <div className="text-red-500 mt-2">{error}</div>
         )}
 
-        {isLoading && (
-          <div className="flex flex-col items-center mb-4">
-            <img src="https://i.ibb.co/5Kf5nwH/0622.gif" alt="Loading" className="w-16 h-16 mb-4" />
-            <div className="w-full max-w-md h-2 bg-gray-200 rounded-full overflow-hidden">
-              <div
-                className="h-full bg-blue-500 transition-all duration-1000 ease-linear"
-                style={{ width: `${progress}%` }}
-              />
+        <div className="relative w-full max-w-2xl aspect-square">
+          {isLoading && (
+            <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-100 rounded-lg">
+              <img src="https://i.ibb.co/5Kf5nwH/0622.gif" alt="Loading" className="w-24 h-24 mb-4" />
+              <div className="absolute top-4 left-4 right-4">
+                <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-blue-500 transition-all duration-1000 ease-out"
+                    style={{ width: `${progress}%` }}
+                  />
+                </div>
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {imageUrl && (
-          <div className="mt-4 max-w-2xl">
-            <a href={imageUrl} download>
+          {imageUrl && !isLoading && (
+            <a href={imageUrl} download className="block w-full h-full">
               <img
                 src={imageUrl}
                 alt="Generated image"
-                className="w-full h-auto rounded-lg shadow-lg transition-transform duration-300 hover:scale-105 cursor-pointer"
+                className="w-full h-full object-cover rounded-lg shadow-lg transition-transform duration-300 hover:scale-105 cursor-pointer"
               />
             </a>
-          </div>
-        )}
+          )}
 
-        {!imageUrl && !isLoading && (
-          <div className="text-center text-gray-500 mt-8">
-            <ImageIcon size={48} className="mx-auto mb-4" />
-            <p>Enter a prompt below to generate an image</p>
-          </div>
-        )}
+          {!imageUrl && !isLoading && (
+            <div className="w-full h-full flex flex-col items-center justify-center text-center text-gray-500 bg-gray-100 rounded-lg">
+              <ImageIcon size={48} className="mb-4" />
+              <p>Enter a prompt below to generate an image</p>
+            </div>
+          )}
+        </div>
       </div>
 
       <form className="w-full max-w-2xl mt-8" onSubmit={handleSubmit}>
