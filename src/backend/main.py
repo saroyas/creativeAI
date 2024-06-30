@@ -13,6 +13,7 @@ from slowapi import Limiter
 from slowapi.errors import RateLimitExceeded
 from slowapi.util import get_ipaddr
 from sse_starlette.sse import EventSourceResponse, ServerSentEvent
+from pydantic import BaseModel
 
 from backend.chat import stream_qa_objects
 from backend.schemas import ChatRequest, ChatResponseEvent, ErrorStream
@@ -25,6 +26,9 @@ load_dotenv()
 IP_BLOCKLIST: Dict[str, int] = defaultdict(int)
 BLOCK_THRESHOLD = 20
 PERMANENT_BLOCKLIST = set()
+
+# Constants for image generation
+PRODIA_API_KEY = os.getenv('PRODIA_API_KEY')
 
 def create_error_event(detail: str):
     obj = ChatResponseEvent(
@@ -55,7 +59,7 @@ async def rate_limit_exceeded_handler(request: Request, exc: RateLimitExceeded):
     return EventSourceResponse(
         generator(),
         media_type="text/event-stream",
-        status_code=status.HTTP_429_TOO_MANY_REQUESTS,  # Set the status code to 429
+        status_code=status.HTTP_429_TOO_MANY_REQUESTS,
     )
 
 def configure_rate_limiting(app: FastAPI, rate_limit_enabled: bool):
@@ -69,10 +73,10 @@ def configure_rate_limiting(app: FastAPI, rate_limit_enabled: bool):
 def configure_middleware(app: FastAPI):
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=["https://www.aiuncensored.info"],  # Update this to your frontend URL
+        allow_origins=["https://www.aiuncensored.info"],
         allow_credentials=True,
-        allow_methods=["*"],  # You can restrict this to specific methods if needed
-        allow_headers=["*"],  # You can restrict this to specific headers if needed
+        allow_methods=["*"],
+        allow_headers=["*"],
     )
 
 def create_app() -> FastAPI:
@@ -96,7 +100,6 @@ async def chat(
 ) -> Generator[ChatResponseEvent, None, None]:
     ip_address = get_ipaddr(request)
     if ip_address in PERMANENT_BLOCKLIST:
-        # Block the request if the IP is in the permanent blocklist
         async def blocked_generator():
             yield create_error_event("Rate limit exceeded, please try again after a short break.")
         return EventSourceResponse(
@@ -125,7 +128,6 @@ async def chat(
 async def block_ip_middleware(request: Request, call_next):
     ip_address = get_ipaddr(request)
     if ip_address in PERMANENT_BLOCKLIST:
-        # print(f"BLOCKING: {ip_address} is in permanent blocklist")
         async def blocked_generator():
             yield create_error_event("Rate limit exceeded, please try again after a short break.")
         return EventSourceResponse(
@@ -135,3 +137,95 @@ async def block_ip_middleware(request: Request, call_next):
         )
     response = await call_next(request)
     return response
+
+# New code for image generation
+import requests
+import time
+
+class ImageRequest(BaseModel):
+    prompt: str
+    imageURL: str = ""
+
+def generate_image(prompt, imageURL):
+    print(f"Generating image for prompt: {prompt}")
+    url = "https://api.prodia.com/v1/sdxl/generate"
+    headers = {
+        'X-Prodia-Key': PRODIA_API_KEY,
+        'accept': 'application/json',
+        'content-type': 'application/json'
+    }
+    
+    prompt = prompt[:600]
+    payload = {
+        "model": "juggernautXL_v45.safetensors [e75f5471]",
+        "prompt": prompt,
+        "negative_prompt": "badly drawn, distorted, ugly, deformed, clothed, core_6, score_5, score_4, worst quality, low quality, text, censored, deformed, bad hand, blurry, (watermark), multiple phones, weights, bunny ears, extra hands",
+        "steps": 50,
+        "cfg_scale": 7,
+        "seed": -1,
+        "sampler": "DPM++ 2M Karras",
+        "width": 1024,
+        "height": 1024
+    }
+    if imageURL and imageURL != "":
+        print("Using image URL", imageURL)
+        payload["imageUrl"] = imageURL
+        payload["denoising_strength"] = 0.3
+
+    print("Generating image...")
+    try:
+        response = requests.post(url, json=payload, headers=headers)
+        attempts = 0
+        if response.status_code == 200:
+            job_data = response.json()
+            job_id = job_data.get('job')
+            if job_id:
+                job_url = f'https://api.prodia.com/v1/job/{job_id}'
+                while True:
+                    job_response = requests.get(job_url, headers=headers, timeout=5)
+                    if job_response.status_code == 200:
+                        job_status = job_response.json()
+                        status = job_status.get('status')
+                        if status == 'succeeded':
+                            print(f"Job succeeded - returning image URL: {job_status.get('imageUrl')}")
+                            return job_status.get('imageUrl')
+                        elif status == 'failed':
+                            print("Job failed")
+                            return "Job failed"
+                        else:
+                            print("Waiting for job to complete...")
+                            time.sleep(5)
+                    else:
+                        print("Failed to retrieve job status")
+                    if attempts >= 30:
+                        print("Failed to retrieve job status after 40 attempts")
+                        return "Failed to retrieve job status after 40 attempts"
+                    attempts += 1
+            else:
+                return "Job ID not found in the response"
+        else:
+            return "Failed to initiate the job"
+    except Exception as e:
+        print("Failed to initiate the job:", e)
+        return "Failed to initiate the job"
+
+@app.post("/image")
+@limiter.limit("2/minute")
+@limiter.limit("10 per 30 minutes")
+@limiter.limit("30 per 6 hours")
+async def generate_image_route(request: ImageRequest, req: Request):
+    ip_address = get_ipaddr(req)
+    if ip_address in PERMANENT_BLOCKLIST:
+        return {"error": "Rate limit exceeded, please try again after a short break."}
+    
+    try:
+        image_url = generate_image(request.prompt, request.imageURL)
+        if image_url == "Job failed" or image_url.startswith("Failed"):
+            return {"error": "Image generation failed"}
+        return {"imageURL": image_url, "prompt": request.prompt}
+    except Exception as e:
+        return {"error": str(e)}
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
