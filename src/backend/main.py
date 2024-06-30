@@ -222,7 +222,7 @@ async def generate_image_route(request: ImageRequest, req: Request):
         image_url = generate_image(request.prompt, request.imageURL)
         if image_url == "Job failed" or image_url.startswith("Failed"):
             return {"error": "Image generation failed"}
-        return {"imageURL": image_url, "prompt": request.prompt}
+        return {"imageURL": image_url}
     except Exception as e:
         return {"error": str(e)}
 
