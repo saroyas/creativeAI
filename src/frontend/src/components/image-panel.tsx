@@ -64,6 +64,15 @@ export const ImagePanel = () => {
     return () => clearInterval(interval);
   }, [isLoading]);
 
+  const handleImageDownload = () => {
+    const link = document.createElement('a');
+    link.href = imageUrl;
+    link.download = `generated_image_${Date.now()}.png`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div className="w-full min-h-screen flex flex-col items-center justify-between py-8">
       <div className="w-full max-w-2xl flex-grow flex flex-col items-center justify-center">
@@ -87,13 +96,16 @@ export const ImagePanel = () => {
           )}
 
           {imageUrl && !isLoading && (
-            <a href={imageUrl} download className="block w-full h-full">
+            <div 
+              className="w-full h-full cursor-pointer"
+              onClick={handleImageDownload}
+            >
               <img
                 src={imageUrl}
                 alt="Generated image"
-                className="w-full h-full object-cover rounded-lg shadow-lg transition-transform duration-300 hover:scale-105 cursor-pointer"
+                className="w-full h-full object-cover rounded-lg shadow-lg transition-transform duration-300 hover:scale-105"
               />
-            </a>
+            </div>
           )}
 
           {!imageUrl && !isLoading && (
