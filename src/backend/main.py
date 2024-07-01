@@ -224,10 +224,11 @@ def generate_image(prompt, imageURL):
             else:
                 return "Job ID not found in the response"
         else:
-            return "Failed to initiate the job"
+            return f"Failed to initiate the job. Status code: {response.status_code}, Response: {response.text}"
     except Exception as e:
         print("Failed to initiate the job:", e)
-        return "Failed to initiate the job"
+        return f"Failed to initiate the job: {str(e)}"
+    
 
 @app.post("/image")
 @limiter.limit("2/minute")
@@ -246,12 +247,10 @@ async def generate_image_route(image_request: ImageRequest, request: Request):
                 raise HTTPException(status_code=400, detail="The provided prompt contains inappropriate content and cannot be processed.")
         except Exception as e:
             print(f"Error checking for child sexual content: {e}")
-            return {"error": "Failed to check for child sexual content"}
-            
         
         image_url = generate_image(image_request.prompt, image_request.imageURL)
-        if image_url == "Job failed" or image_url.startswith("Failed"):
-            return {"error": "Image generation failed"}
+        if isinstance(image_url, str) and (image_url == "Job failed" or image_url.startswith("Failed")):
+            return {"error": image_url}
         return {"imageURL": image_url}
     except Exception as e:
         return {"error": str(e)}
