@@ -104,7 +104,7 @@ export const ImagePanel: React.FC = () => {
 
   return (
     <div className="w-full h-screen flex flex-col">
-      <div className="flex-grow overflow-auto pt-16 pb-24">
+      <div className="flex-grow overflow-auto p-10">
         <div className="max-w-2xl mx-auto h-full flex flex-col justify-center p-4">
           {error && (
             <div className="text-red-400 mb-4 mt-2">{error}</div>
