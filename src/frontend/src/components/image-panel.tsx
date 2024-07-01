@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import TextareaAutosize from "react-textarea-autosize";
 import { Button } from "./ui/button";
 import { ArrowUp, Image as ImageIcon } from "lucide-react";
@@ -8,12 +8,13 @@ import { env } from "../env.mjs";
 
 const BASE_URL = env.NEXT_PUBLIC_API_URL;
 
-export const ImagePanel = () => {
-  const [prompt, setPrompt] = useState("");
-  const [imageUrl, setImageUrl] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [progress, setProgress] = useState(0);
+export const ImagePanel: React.FC = () => {
+  const [prompt, setPrompt] = useState<string>("");
+  const [imageUrl, setImageUrl] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
+  const [progress, setProgress] = useState<number>(0);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   const generateImage = async (promptText: string) => {
     setIsLoading(true);
@@ -41,13 +42,13 @@ export const ImagePanel = () => {
     }
   };
 
-  const handleSubmit = (e: { preventDefault: () => void; }) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (prompt.trim().length < 2) return;
     generateImage(prompt);
   };
 
-  const handleKeyDown = (e: { key: string; shiftKey: any; preventDefault: () => void; }) => {
+  const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSubmit(e);
@@ -61,16 +62,44 @@ export const ImagePanel = () => {
         setProgress((prev) => (prev < 90 ? prev + 10 : 90));
       }, 1000);
     }
-    return () => clearInterval(interval);
+    return () => {
+      if (interval) clearInterval(interval);
+    };
   }, [isLoading]);
 
-  const handleImageDownload = () => {
-    const link = document.createElement('a');
-    link.href = imageUrl;
-    link.download = `generated_image_${Date.now()}.png`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  const addWatermarkAndDownload = () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    const img = new Image();
+    img.crossOrigin = "Anonymous";
+    img.onload = () => {
+      canvas.width = img.width;
+      canvas.height = img.height;
+      ctx.drawImage(img, 0, 0);
+      
+      // Add watermark
+      ctx.font = '20px Arial';
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+      ctx.textAlign = 'center';
+      ctx.fillText('Watermark', canvas.width / 2, canvas.height - 20);
+      
+      // Convert to JPEG and download
+      canvas.toBlob((blob) => {
+        if (blob) {
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = `watermarked_image_${Date.now()}.jpg`;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          URL.revokeObjectURL(url);
+        }
+      }, 'image/jpeg');
+    };
+    img.src = imageUrl;
   };
 
   return (
@@ -104,7 +133,7 @@ export const ImagePanel = () => {
               {imageUrl && !isLoading && (
                 <div 
                   className="w-full h-full cursor-pointer"
-                  onClick={handleImageDownload}
+                  onClick={addWatermarkAndDownload}
                 >
                   <img
                     src={imageUrl}
@@ -131,7 +160,7 @@ export const ImagePanel = () => {
             <TextareaAutosize
               className="w-full bg-transparent text-lg resize-none h-[40px] focus:outline-none text-white"
               placeholder="Image prompt..."
-              onChange={(e) => setPrompt(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setPrompt(e.target.value)}
               onKeyDown={handleKeyDown}
               value={prompt}
             />
@@ -147,6 +176,8 @@ export const ImagePanel = () => {
           </div>
         </form>
       </div>
+      
+      <canvas ref={canvasRef} style={{ display: 'none' }} />
     </div>
   );
 };
