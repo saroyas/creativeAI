@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { ModeToggle } from "./mode-toggle";
 import { useTheme } from "next-themes";
+import { Button } from "@/components/ui/button";
+import { ImageIcon } from "lucide-react";
 
 export function Navbar() {
   const { theme } = useTheme();
@@ -18,7 +20,16 @@ export function Navbar() {
         </Link>
       </div>
       <div>
-        <ModeToggle />
+        <Button
+          asChild
+          variant="outline"
+          className="flex items-center gap-2 hover:bg-primary hover:text-primary-foreground transition-colors duration-200"
+        >
+          <Link href="/image">
+            <ImageIcon className="w-4 h-4" />
+            Image Generator
+          </Link>
+        </Button>
       </div>
     </header>
   );
