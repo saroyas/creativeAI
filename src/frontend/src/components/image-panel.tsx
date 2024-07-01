@@ -75,13 +75,13 @@ export const ImagePanel = () => {
 
   return (
     <div className="w-full h-screen flex flex-col">
-      <div className="flex-grow overflow-auto pt-16 pb-24"> {/* Added pb-24 for bottom padding */}
+      <div className="flex-grow overflow-auto pt-16 pb-24">
         <div className="max-w-2xl mx-auto h-full flex flex-col justify-center p-4">
           {error && (
             <div className="text-red-400 mb-4 mt-2">{error}</div>
           )}
 
-          <div className="relative w-full pb-[100%]"> {/* Create a square container */}
+          <div className="relative w-full pb-[100%]">
             <div className="absolute inset-0 rounded-lg overflow-hidden bg-opacity-50 bg-gray-800 backdrop-blur-sm">
               {isLoading && (
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
@@ -125,11 +125,11 @@ export const ImagePanel = () => {
         </div>
       </div>
 
-      <div className="fixed bottom-0 left-0 right-0 p-4 bg-black bg-opacity-50 backdrop-blur-sm">
+      <div className="fixed bottom-0 left-0 right-0 p-4">
         <form className="max-w-2xl mx-auto" onSubmit={handleSubmit}>
-          <div className="w-full flex items-center rounded-full focus:outline-none max-h-[30vh] px-2 py-1 bg-opacity-50 bg-gray-800 backdrop-blur-sm">
+          <div className="w-full flex items-center rounded-full focus:outline-none max-h-[30vh] px-4 py-2 bg-opacity-50 bg-gray-800 backdrop-blur-md shadow-lg">
             <TextareaAutosize
-              className="w-full bg-transparent text-lg resize-none h-[40px] focus:outline-none p-2 text-white"
+              className="w-full bg-transparent text-lg resize-none h-[40px] focus:outline-none text-white"
               placeholder="Image prompt..."
               onChange={(e) => setPrompt(e.target.value)}
               onKeyDown={handleKeyDown}
@@ -139,7 +139,7 @@ export const ImagePanel = () => {
               type="submit"
               variant="default"
               size="icon"
-              className="rounded-full bg-tint aspect-square h-8 disabled:opacity-20 hover:bg-tint/80"
+              className="rounded-full bg-tint aspect-square h-8 disabled:opacity-20 hover:bg-tint/80 ml-2"
               disabled={prompt.trim().length < 2 || isLoading}
             >
               {isLoading ? <ImageIcon className="animate-pulse" size={20} /> : <ArrowUp size={20} />}
