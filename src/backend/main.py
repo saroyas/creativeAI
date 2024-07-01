@@ -4,7 +4,6 @@ import os
 from typing import Generator, Dict
 from collections import defaultdict
 import httpx
-import requests
 import time
 from fastapi import HTTPException, BackgroundTasks
 
@@ -33,6 +32,9 @@ PERMANENT_BLOCKLIST = set()
 
 # Constants for image generation
 PRODIA_API_KEY = os.getenv('PRODIA_API_KEY')
+
+# Store for image generation tasks
+IMAGE_TASKS: Dict[str, Dict] = {}
 
 def create_error_event(detail: str):
     obj = ChatResponseEvent(
@@ -142,9 +144,6 @@ async def block_ip_middleware(request: Request, call_next):
     response = await call_next(request)
     return response
 
-# New code for image generation
-
-
 async def check_child_sexual_content(input_text: str) -> bool:
     moderation_url = "https://api.openai.com/v1/moderations"
     headers = {
@@ -158,7 +157,7 @@ async def check_child_sexual_content(input_text: str) -> bool:
         response.raise_for_status()
         moderation_result = response.json()
 
-    result = moderation_result["results"][0]  # Access the first item in the results list
+    result = moderation_result["results"][0]
     print(f"Moderation results: {result}")
     return result["categories"]["sexual/minors"] and result["category_scores"]["sexual/minors"] > 0.7
 
@@ -166,7 +165,7 @@ class ImageRequest(BaseModel):
     prompt: str
     imageURL: str = ""
 
-async def generate_image_async(prompt: str, imageURL: str):
+async def generate_image_async(task_id: str, prompt: str, imageURL: str):
     url = "https://api.prodia.com/v1/sdxl/generate"
     headers = {
         'X-Prodia-Key': PRODIA_API_KEY,
@@ -208,10 +207,12 @@ async def generate_image_async(prompt: str, imageURL: str):
                             status = job_status.get('status')
                             if status == 'succeeded':
                                 print(f"Job succeeded - returning image URL: {job_status.get('imageUrl')}")
-                                return job_status.get('imageUrl')
+                                IMAGE_TASKS[task_id] = {"status": "completed", "image_url": job_status.get('imageUrl')}
+                                return
                             elif status == 'failed':
                                 print("Job failed")
-                                return "Job failed"
+                                IMAGE_TASKS[task_id] = {"status": "failed", "error": "Job failed"}
+                                return
                             else:
                                 print("Waiting for job to complete...")
                                 await asyncio.sleep(5)
@@ -219,22 +220,16 @@ async def generate_image_async(prompt: str, imageURL: str):
                             print("Failed to retrieve job status")
                         if attempts >= 30:
                             print("Failed to retrieve job status after 40 attempts")
-                            return "Failed to retrieve job status after 40 attempts"
+                            IMAGE_TASKS[task_id] = {"status": "failed", "error": "Failed to retrieve job status after 40 attempts"}
+                            return
                         attempts += 1
                 else:
-                    return "Job ID not found in the response"
+                    IMAGE_TASKS[task_id] = {"status": "failed", "error": "Job ID not found in the response"}
             else:
-                return f"Failed to initiate the job. Status code: {response.status_code}, Response: {response.text}"
+                IMAGE_TASKS[task_id] = {"status": "failed", "error": f"Failed to initiate the job. Status code: {response.status_code}, Response: {response.text}"}
         except Exception as e:
             print("Failed to initiate the job:", e)
-            return f"Failed to initiate the job: {str(e)}"
-    
-async def background_generate_image(prompt: str, imageURL: str):
-    image_url = await generate_image_async(prompt, imageURL)
-    # Here you can store the result or perform any other necessary actions
-    print(f"Background task completed. Image URL: {image_url}")
-
-    
+            IMAGE_TASKS[task_id] = {"status": "failed", "error": f"Failed to initiate the job: {str(e)}"}
 
 @app.post("/image")
 @limiter.limit("2/minute")
@@ -246,23 +241,32 @@ async def generate_image_route(image_request: ImageRequest, request: Request, ba
         return {"error": "Rate limit exceeded, please try again after a short break."}
     
     try:
-        try:
-            # Check for child sexual content in the prompt
-            is_inappropriate = await check_child_sexual_content(image_request.prompt)
-            if is_inappropriate:
-                raise HTTPException(status_code=400, detail="The provided prompt contains inappropriate content and cannot be processed.")
-        except Exception as e:
-            print(f"Error checking for child sexual content: {e}")
-            return {"error": "An error occurred while moderating for child sexual content."}
+        # Check for inappropriate content
+        is_inappropriate = await check_child_sexual_content(image_request.prompt)
+        if is_inappropriate:
+            raise HTTPException(status_code=400, detail="The provided prompt contains inappropriate content and cannot be processed.")
+        
+        # Generate a unique task ID
+        task_id = f"task_{len(IMAGE_TASKS) + 1}"
+        
+        # Initialize task status
+        IMAGE_TASKS[task_id] = {"status": "processing"}
         
         # Add the image generation task to background tasks
-        background_tasks.add_task(background_generate_image, image_request.prompt, image_request.imageURL)
+        background_tasks.add_task(generate_image_async, task_id, image_request.prompt, image_request.imageURL)
         
-        return {"message": "Image generation started in the background"}
+        return {"task_id": task_id, "message": "Image generation started in the background"}
     except Exception as e:
         return {"error": str(e)}
+
+@app.get("/image/status/{task_id}")
+async def check_image_status(task_id: str):
+    if task_id not in IMAGE_TASKS:
+        raise HTTPException(status_code=404, detail="Task not found")
     
-    
+    task_status = IMAGE_TASKS[task_id]
+    return task_status
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
