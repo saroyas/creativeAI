@@ -79,11 +79,30 @@ export const ImagePanel: React.FC = () => {
       canvas.height = img.height;
       ctx.drawImage(img, 0, 0);
       
-      // Add watermark
-      ctx.font = '20px Arial';
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+      // Add watermark with soft gradient background
+      const watermarkText = 'AI Uncensored';
+      const fontSize = Math.max(20, canvas.width / 30); // Responsive font size
+      ctx.font = `${fontSize}px Arial`;
+      const textWidth = ctx.measureText(watermarkText).width;
+      const padding = fontSize / 2;
+
+      const x = canvas.width / 2;
+      const y = canvas.height - fontSize;
+
+      // Create gradient background
+      const gradientHeight = fontSize * 2;
+      const gradient = ctx.createLinearGradient(0, y - gradientHeight, 0, y + padding);
+      gradient.addColorStop(0, 'rgba(0, 0, 0, 0)');
+      gradient.addColorStop(1, 'rgba(0, 0, 0, 0.5)');
+
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, y - gradientHeight, canvas.width, gradientHeight + padding);
+
+      // Add text
+      ctx.fillStyle = 'white';
       ctx.textAlign = 'center';
-      ctx.fillText('Watermark', canvas.width / 2, canvas.height - 20);
+      ctx.textBaseline = 'bottom';
+      ctx.fillText(watermarkText, x, y);
       
       // Convert to JPEG and download
       canvas.toBlob((blob) => {
@@ -91,7 +110,7 @@ export const ImagePanel: React.FC = () => {
           const url = URL.createObjectURL(blob);
           const link = document.createElement('a');
           link.href = url;
-          link.download = `watermarked_image_${Date.now()}.jpg`;
+          link.download = `aiuncensored_${Date.now()}.jpg`;
           document.body.appendChild(link);
           link.click();
           document.body.removeChild(link);
