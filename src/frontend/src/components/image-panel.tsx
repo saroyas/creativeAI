@@ -119,11 +119,6 @@ export const ImagePanel: React.FC = () => {
       ctx.shadowOffsetX = 0;
       ctx.shadowOffsetY = 0;
 
-      // Add a subtle border to the entire image
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
-      ctx.lineWidth = 2;
-      ctx.strokeRect(0, 0, canvas.width, canvas.height);
-      
       // Convert to JPEG and download
       canvas.toBlob((blob) => {
         if (blob) {
