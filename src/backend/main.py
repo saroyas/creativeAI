@@ -3,6 +3,10 @@ import json
 import os
 from typing import Generator, Dict
 from collections import defaultdict
+import httpx
+import requests
+import time
+from fastapi import HTTPException
 
 import logfire
 from dotenv import load_dotenv
@@ -139,8 +143,23 @@ async def block_ip_middleware(request: Request, call_next):
     return response
 
 # New code for image generation
-import requests
-import time
+
+
+async def check_child_sexual_content(input_text: str) -> bool:
+    moderation_url = "https://api.openai.com/v1/moderations"
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {os.environ.get('OPENAI_API_KEY')}",
+    }
+    payload = {"input": input_text}
+
+    async with httpx.AsyncClient() as client:
+        response = await client.post(moderation_url, headers=headers, json=payload)
+        response.raise_for_status()
+        moderation_result = response.json()
+
+    result = moderation_result["results"][0]
+    return result["categories"]["sexual/minors"] and result["category_scores"]["sexual/minors"] > 0.8
 
 class ImageRequest(BaseModel):
     prompt: str
@@ -219,6 +238,13 @@ async def generate_image_route(image_request: ImageRequest, request: Request):
         return {"error": "Rate limit exceeded, please try again after a short break."}
     
     try:
+        # Check for child sexual content in the prompt
+        is_inappropriate = await check_child_sexual_content(image_request.prompt)
+        if is_inappropriate:
+            raise HTTPException(status_code=400, detail="The provided prompt contains inappropriate content and cannot be processed.")
+
+        
+        
         image_url = generate_image(image_request.prompt, image_request.imageURL)
         if image_url == "Job failed" or image_url.startswith("Failed"):
             return {"error": "Image generation failed"}
