@@ -11,7 +11,7 @@ export function Navbar() {
   return (
     <header className="w-full flex fixed p-1 z-50 px-2 bg-background justify-between items-center">
       <div>
-        <Link href="/" passHref onClick={() => location.reload()}>
+      <Link href="/" passHref>
           <img
             src={theme === "light" ? "/logo.png" : "/logo.png"}
             alt="Logo"
