@@ -166,7 +166,6 @@ class ImageRequest(BaseModel):
     imageURL: str = ""
 
 def generate_image(prompt, imageURL):
-    print(f"Generating image for prompt: {prompt}")
     url = "https://api.prodia.com/v1/sdxl/generate"
     headers = {
         'X-Prodia-Key': PRODIA_API_KEY,
