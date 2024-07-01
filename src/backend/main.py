@@ -158,7 +158,6 @@ async def check_child_sexual_content(input_text: str) -> bool:
         moderation_result = response.json()
 
     result = moderation_result["results"][0]
-    print(f"Moderation results: {result}")
     return result["categories"]["sexual/minors"] and result["category_scores"]["sexual/minors"] > 0.7
 
 class ImageRequest(BaseModel):
@@ -198,7 +197,6 @@ async def generate_image_async(task_id: str, prompt: str, imageURL: str, model: 
         payload["imageUrl"] = imageURL
         payload["denoising_strength"] = 0.3
 
-    print(f"Generating image using model: {model_id}")
     async with httpx.AsyncClient() as client:
         try:
             response = await client.post(url, json=payload, headers=headers)
@@ -222,13 +220,12 @@ async def generate_image_async(task_id: str, prompt: str, imageURL: str, model: 
                                 IMAGE_TASKS[task_id] = {"status": "failed", "error": "Job failed"}
                                 return
                             else:
-                                print("Waiting for job to complete...")
                                 await asyncio.sleep(5)
                         else:
                             print("Failed to retrieve job status")
                         if attempts >= 30:
-                            print("Failed to retrieve job status after 40 attempts")
-                            IMAGE_TASKS[task_id] = {"status": "failed", "error": "Failed to retrieve job status after 40 attempts"}
+                            print("Failed to retrieve job status after 30 attempts")
+                            IMAGE_TASKS[task_id] = {"status": "failed", "error": "Failed to retrieve job status after 30 attempts"}
                             return
                         attempts += 1
                 else:
