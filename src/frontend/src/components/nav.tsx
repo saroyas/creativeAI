@@ -31,7 +31,7 @@ export function Navbar() {
           />
         </Link>
       </div>
-      <div>
+      {/* <div>
         <Button
           asChild
           variant="outline"
@@ -42,7 +42,7 @@ export function Navbar() {
             Image Generator
           </Link>
         </Button>
-      </div>
+      </div> */}
     </header>
   );
 }
