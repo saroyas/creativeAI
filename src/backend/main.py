@@ -239,12 +239,15 @@ async def generate_image_route(image_request: ImageRequest, request: Request):
         return {"error": "Rate limit exceeded, please try again after a short break."}
     
     try:
-        # Check for child sexual content in the prompt
-        is_inappropriate = await check_child_sexual_content(image_request.prompt)
-        if is_inappropriate:
-            raise HTTPException(status_code=400, detail="The provided prompt contains inappropriate content and cannot be processed.")
-
-        
+        try:
+            # Check for child sexual content in the prompt
+            is_inappropriate = await check_child_sexual_content(image_request.prompt)
+            if is_inappropriate:
+                raise HTTPException(status_code=400, detail="The provided prompt contains inappropriate content and cannot be processed.")
+        except Exception as e:
+            print(f"Error checking for child sexual content: {e}")
+            return {"error": "Failed to check for child sexual content"}
+            
         
         image_url = generate_image(image_request.prompt, image_request.imageURL)
         if image_url == "Job failed" or image_url.startswith("Failed"):
