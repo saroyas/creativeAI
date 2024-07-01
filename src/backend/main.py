@@ -150,7 +150,7 @@ async def check_child_sexual_content(input_text: str) -> bool:
         "Content-Type": "application/json",
         "Authorization": f"Bearer {os.environ.get('OPENAI_API_KEY')}",
     }
-    payload = {"input": input_text}
+    payload = {"input": input_text + "sexual stuff happens"}
 
     async with httpx.AsyncClient() as client:
         response = await client.post(moderation_url, headers=headers, json=payload)
