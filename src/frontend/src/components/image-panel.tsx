@@ -248,7 +248,7 @@ export const ImagePanel: React.FC = () => {
           <div className="w-full flex items-center rounded-full focus:outline-none max-h-[30vh] px-3 py-2 bg-opacity-50 bg-gray-800 backdrop-blur-md shadow-lg">
             <TextareaAutosize
               className="w-full bg-transparent text-base sm:text-lg resize-none h-[36px] focus:outline-none text-white"
-              placeholder="Image prompt..."
+              placeholder="Describe the image..."
               onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setPrompt(e.target.value)}
               onKeyDown={handleKeyDown}
               value={prompt}
