@@ -1,4 +1,3 @@
-"use client";
 import React, { useState, useEffect, useRef } from 'react';
 import TextareaAutosize from "react-textarea-autosize";
 import { Button } from "./ui/button";
@@ -14,6 +13,7 @@ export const ImagePanel: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const [progress, setProgress] = useState<number>(0);
+  const [taskId, setTaskId] = useState<string | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   const generateImage = async (promptText: string) => {
@@ -21,6 +21,7 @@ export const ImagePanel: React.FC = () => {
     setError("");
     setProgress(0);
     setImageUrl("");
+    setTaskId(null);
     try {
       const response = await axios.post(`${BASE_URL}/image`, { prompt: promptText }, {
         withCredentials: true,
@@ -28,18 +29,47 @@ export const ImagePanel: React.FC = () => {
           'Content-Type': 'application/json',
         },
       });
-      if (response.data.imageURL) {
-        setImageUrl(response.data.imageURL);
+      if (response.data.task_id) {
+        setTaskId(response.data.task_id);
+        pollTaskStatus(response.data.task_id);
       } else if (response.data.error) {
         setError(response.data.error);
+        setIsLoading(false);
       }
     } catch (err) {
-      setError("Failed to generate image. Please try again.");
-      console.error("Error generating image:", err);
-    } finally {
+      setError("Failed to initiate image generation. Please try again.");
+      console.error("Error initiating image generation:", err);
       setIsLoading(false);
-      setProgress(100);
     }
+  };
+
+  const pollTaskStatus = async (id: string) => {
+    const pollInterval = setInterval(async () => {
+      try {
+        const response = await axios.get(`${BASE_URL}/image/status/${id}`, {
+          withCredentials: true,
+        });
+        const status = response.data.status;
+        if (status === "completed") {
+          clearInterval(pollInterval);
+          setImageUrl(response.data.image_url);
+          setIsLoading(false);
+          setProgress(100);
+        } else if (status === "failed") {
+          clearInterval(pollInterval);
+          setError(response.data.error || "Image generation failed. Please try again.");
+          setIsLoading(false);
+        } else {
+          // Update progress for "processing" status
+          setProgress((prev) => (prev < 90 ? prev + 10 : 90));
+        }
+      } catch (err) {
+        console.error("Error polling task status:", err);
+        clearInterval(pollInterval);
+        setError("Failed to check image generation status. Please try again.");
+        setIsLoading(false);
+      }
+    }, 2000); // Poll every 2 seconds
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -54,18 +84,6 @@ export const ImagePanel: React.FC = () => {
       handleSubmit(e);
     }
   };
-
-  useEffect(() => {
-    let interval: NodeJS.Timeout | undefined;
-    if (isLoading) {
-      interval = setInterval(() => {
-        setProgress((prev) => (prev < 90 ? prev + 10 : 90));
-      }, 1000);
-    }
-    return () => {
-      if (interval) clearInterval(interval);
-    };
-  }, [isLoading]);
 
   const addWatermarkAndDownload = () => {
     const canvas = canvasRef.current;
