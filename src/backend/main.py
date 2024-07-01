@@ -159,8 +159,8 @@ async def check_child_sexual_content(input_text: str) -> bool:
         moderation_result = response.json()
 
     result = moderation_result["results"]
-    if result["category_scores"]["sexual/minors"] > 0.7:
-        print("Child sexual content detected")
+    if result["flagged"]:
+        print(f"Moderation results: {result}")
     return result["categories"]["sexual/minors"] and result["category_scores"]["sexual/minors"] > 0.7
 
 class ImageRequest(BaseModel):
