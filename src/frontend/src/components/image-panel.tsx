@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import TextareaAutosize from "react-textarea-autosize";
 import { Button } from "./ui/button";
-import { ArrowUp, Camera, Brush } from "lucide-react";
+import { ArrowUp, Camera, Brush, ImageIcon } from "lucide-react";
 import axios from 'axios';
 import { env } from "../env.mjs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
