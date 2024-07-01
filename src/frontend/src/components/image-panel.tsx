@@ -79,16 +79,14 @@ export const ImagePanel: React.FC = () => {
       canvas.height = img.height;
       ctx.drawImage(img, 0, 0);
       
-      // Improved watermark with stronger shadow
       const watermarkText = 'AI Uncensored';
       const fontSize = Math.max(16, canvas.width / 40);
-      ctx.font = `bold ${fontSize}px 'Arial', sans-serif`; // Made the font bold
+      ctx.font = `bold ${fontSize}px 'Arial', sans-serif`;
       const padding = fontSize;
 
       const x = canvas.width - padding;
       const y = canvas.height - padding;
 
-      // Create gradient background (unchanged)
       const gradientHeight = canvas.height / 3;
       const gradient = ctx.createLinearGradient(0, canvas.height - gradientHeight, 0, canvas.height);
       gradient.addColorStop(0, 'rgba(0, 0, 0, 0)');
@@ -97,29 +95,24 @@ export const ImagePanel: React.FC = () => {
       ctx.fillStyle = gradient;
       ctx.fillRect(0, canvas.height - gradientHeight, canvas.width, gradientHeight);
 
-      // Add text with stronger shadow for better visibility
-      ctx.fillStyle = 'rgba(255, 255, 255, 1)'; // Full opacity for text
+      ctx.fillStyle = 'rgba(255, 255, 255, 1)';
       ctx.textAlign = 'right';
       ctx.textBaseline = 'bottom';
       
-      // Stronger shadow
       ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
       ctx.shadowBlur = 8;
       ctx.shadowOffsetX = 2;
       ctx.shadowOffsetY = 2;
 
-      // Draw text multiple times for even stronger effect
       for (let i = 0; i < 3; i++) {
         ctx.fillText(watermarkText, x, y);
       }
 
-      // Reset shadow
       ctx.shadowColor = 'rgba(0, 0, 0, 0)';
       ctx.shadowBlur = 0;
       ctx.shadowOffsetX = 0;
       ctx.shadowOffsetY = 0;
 
-      // Convert to JPEG and download
       canvas.toBlob((blob) => {
         if (blob) {
           const url = URL.createObjectURL(blob);
@@ -137,15 +130,15 @@ export const ImagePanel: React.FC = () => {
   };
 
   return (
-    <div className="w-full h-screen flex flex-col">
-      <div className="flex-grow overflow-auto p-10">
-        <div className="max-w-2xl mx-auto h-full flex flex-col justify-center p-4">
+    <div className="w-full min-h-screen flex flex-col">
+      <div className="flex-grow overflow-auto p-0 sm:p-1 md:p-2">
+        <div className="w-full max-w-md mx-auto h-full flex flex-col justify-center">
           {error && (
-            <div className="text-red-400 mb-4 mt-2">{error}</div>
+            <div className="text-red-400 mb-2 mt-1 text-sm px-2">{error}</div>
           )}
 
           <div className="relative w-full pb-[100%]">
-            <div className="absolute inset-0 rounded-lg overflow-hidden bg-opacity-50 bg-gray-800 backdrop-blur-sm">
+            <div className="absolute inset-0 overflow-hidden bg-opacity-50 bg-gray-800 backdrop-blur-sm">
               {isLoading && (
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
                   <img 
@@ -153,8 +146,8 @@ export const ImagePanel: React.FC = () => {
                     alt="Loading" 
                     className="w-full h-full object-cover"
                   />
-                  <div className="absolute top-4 left-4 right-4 z-10">
-                    <div className="w-full h-2 bg-gray-200 bg-opacity-30 rounded-full overflow-hidden">
+                  <div className="absolute top-2 left-2 right-2 z-10">
+                    <div className="w-full h-1 bg-gray-200 bg-opacity-30 rounded-full overflow-hidden">
                       <div
                         className="h-full bg-blue-500 transition-all duration-1000 ease-out"
                         style={{ width: `${progress}%` }}
@@ -178,9 +171,9 @@ export const ImagePanel: React.FC = () => {
               )}
 
               {!imageUrl && !isLoading && (
-                <div className="w-full h-full flex flex-col items-center justify-center text-center text-gray-300">
-                  <ImageIcon size={48} className="mb-4" />
-                  <p>Enter a prompt below to generate an image</p>
+                <div className="w-full h-full flex flex-col items-center justify-center text-center text-gray-300 p-2">
+                  <ImageIcon size={36} className="mb-2" />
+                  <p className="text-sm">Enter a prompt below to generate an image</p>
                 </div>
               )}
             </div>
@@ -188,11 +181,11 @@ export const ImagePanel: React.FC = () => {
         </div>
       </div>
 
-      <div className="fixed bottom-0 left-0 right-0 p-4">
-        <form className="max-w-2xl mx-auto" onSubmit={handleSubmit}>
-          <div className="w-full flex items-center rounded-full focus:outline-none max-h-[30vh] px-4 py-2 bg-opacity-50 bg-gray-800 backdrop-blur-md shadow-lg">
+      <div className="fixed bottom-0 left-0 right-0 p-2 sm:p-4">
+        <form className="max-w-md mx-auto" onSubmit={handleSubmit}>
+          <div className="w-full flex items-center rounded-full focus:outline-none max-h-[30vh] px-3 py-2 bg-opacity-50 bg-gray-800 backdrop-blur-md shadow-lg">
             <TextareaAutosize
-              className="w-full bg-transparent text-lg resize-none h-[40px] focus:outline-none text-white"
+              className="w-full bg-transparent text-base sm:text-lg resize-none h-[36px] focus:outline-none text-white"
               placeholder="Image prompt..."
               onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setPrompt(e.target.value)}
               onKeyDown={handleKeyDown}
@@ -205,7 +198,7 @@ export const ImagePanel: React.FC = () => {
               className="rounded-full bg-tint aspect-square h-8 disabled:opacity-20 hover:bg-tint/80 ml-2"
               disabled={prompt.trim().length < 2 || isLoading}
             >
-              {isLoading ? <ImageIcon className="animate-pulse" size={20} /> : <ArrowUp size={20} />}
+              {isLoading ? <ImageIcon className="animate-pulse" size={18} /> : <ArrowUp size={18} />}
             </Button>
           </div>
         </form>
