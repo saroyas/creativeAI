@@ -164,8 +164,9 @@ async def check_child_sexual_content(input_text: str) -> bool:
 class ImageRequest(BaseModel):
     prompt: str
     imageURL: str = ""
+    model: str = "photo"
 
-async def generate_image_async(task_id: str, prompt: str, imageURL: str):
+async def generate_image_async(task_id: str, prompt: str, imageURL: str, model: str):
     url = "https://api.prodia.com/v1/sdxl/generate"
     headers = {
         'X-Prodia-Key': PRODIA_API_KEY,
@@ -174,8 +175,15 @@ async def generate_image_async(task_id: str, prompt: str, imageURL: str):
     }
     
     prompt = prompt[:600]
+
+    # Select the appropriate model based on the user's choice
+    if model == "anime":
+        model_id = "animagineXLV3_v30.safetensors [75f2f05b]"
+    else:  # Default to photo model
+        model_id = "juggernautXL_v45.safetensors [e75f5471]"
+
     payload = {
-        "model": "juggernautXL_v45.safetensors [e75f5471]",
+        "model": model_id,
         "prompt": prompt,
         "negative_prompt": "badly drawn, distorted, ugly, deformed, clothed, core_6, score_5, score_4, worst quality, low quality, text, censored, deformed, bad hand, blurry, (watermark), multiple phones, weights, bunny ears, extra hands",
         "steps": 50,
@@ -190,7 +198,7 @@ async def generate_image_async(task_id: str, prompt: str, imageURL: str):
         payload["imageUrl"] = imageURL
         payload["denoising_strength"] = 0.3
 
-    print("Generating image...")
+    print(f"Generating image using model: {model_id}")
     async with httpx.AsyncClient() as client:
         try:
             response = await client.post(url, json=payload, headers=headers)
@@ -253,7 +261,7 @@ async def generate_image_route(image_request: ImageRequest, request: Request, ba
         IMAGE_TASKS[task_id] = {"status": "processing"}
         
         # Add the image generation task to background tasks
-        background_tasks.add_task(generate_image_async, task_id, image_request.prompt, image_request.imageURL)
+        background_tasks.add_task(generate_image_async, task_id, image_request.prompt, image_request.imageURL, image_request.model)
         
         return {"task_id": task_id, "message": "Image generation started in the background"}
     except Exception as e:
