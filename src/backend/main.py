@@ -158,7 +158,7 @@ async def check_child_sexual_content(input_text: str) -> bool:
         response.raise_for_status()
         moderation_result = response.json()
 
-    result = moderation_result["results"]
+    result = moderation_result["results"][0]  # Access the first item in the results list
     print(f"Moderation results: {result}")
     return result["categories"]["sexual/minors"] and result["category_scores"]["sexual/minors"] > 0.7
 
