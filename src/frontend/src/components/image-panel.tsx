@@ -29,7 +29,7 @@ export const ImagePanel: React.FC = () => {
   const [error, setError] = useState<string>("");
   const [progress, setProgress] = useState<number>(0);
   const [taskId, setTaskId] = useState<string | null>(null);
-  const [selectedModel, setSelectedModel] = useState<ImageModel>('photo');
+  const [selectedModel, setSelectedModel] = useState<ImageModel>('anime');
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   const generateImage = async (promptText: string) => {
