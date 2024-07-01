@@ -56,7 +56,7 @@ export const ImagePanel: React.FC = () => {
         setIsLoading(false);
       }
     } catch (err) {
-      setError("Failed to initiate image generation. Please try again.");
+      setError("Too many requests for today. Try again tomorrow.");
       console.error("Error initiating image generation:", err);
       setIsLoading(false);
     }
