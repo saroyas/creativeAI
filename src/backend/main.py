@@ -6,7 +6,7 @@ from collections import defaultdict
 import httpx
 import requests
 import time
-from fastapi import HTTPException
+from fastapi import HTTPException, BackgroundTasks
 
 import logfire
 from dotenv import load_dotenv
@@ -166,7 +166,7 @@ class ImageRequest(BaseModel):
     prompt: str
     imageURL: str = ""
 
-def generate_image(prompt, imageURL):
+async def generate_image_async(prompt: str, imageURL: str):
     url = "https://api.prodia.com/v1/sdxl/generate"
     headers = {
         'X-Prodia-Key': PRODIA_API_KEY,
@@ -192,48 +192,55 @@ def generate_image(prompt, imageURL):
         payload["denoising_strength"] = 0.3
 
     print("Generating image...")
-    try:
-        response = requests.post(url, json=payload, headers=headers)
-        attempts = 0
-        if response.status_code == 200:
-            job_data = response.json()
-            job_id = job_data.get('job')
-            if job_id:
-                job_url = f'https://api.prodia.com/v1/job/{job_id}'
-                while True:
-                    job_response = requests.get(job_url, headers=headers, timeout=5)
-                    if job_response.status_code == 200:
-                        job_status = job_response.json()
-                        status = job_status.get('status')
-                        if status == 'succeeded':
-                            print(f"Job succeeded - returning image URL: {job_status.get('imageUrl')}")
-                            return job_status.get('imageUrl')
-                        elif status == 'failed':
-                            print("Job failed")
-                            return "Job failed"
+    async with httpx.AsyncClient() as client:
+        try:
+            response = await client.post(url, json=payload, headers=headers)
+            attempts = 0
+            if response.status_code == 200:
+                job_data = response.json()
+                job_id = job_data.get('job')
+                if job_id:
+                    job_url = f'https://api.prodia.com/v1/job/{job_id}'
+                    while True:
+                        job_response = await client.get(job_url, headers=headers, timeout=5)
+                        if job_response.status_code == 200:
+                            job_status = job_response.json()
+                            status = job_status.get('status')
+                            if status == 'succeeded':
+                                print(f"Job succeeded - returning image URL: {job_status.get('imageUrl')}")
+                                return job_status.get('imageUrl')
+                            elif status == 'failed':
+                                print("Job failed")
+                                return "Job failed"
+                            else:
+                                print("Waiting for job to complete...")
+                                await asyncio.sleep(5)
                         else:
-                            print("Waiting for job to complete...")
-                            time.sleep(5)
-                    else:
-                        print("Failed to retrieve job status")
-                    if attempts >= 30:
-                        print("Failed to retrieve job status after 40 attempts")
-                        return "Failed to retrieve job status after 40 attempts"
-                    attempts += 1
+                            print("Failed to retrieve job status")
+                        if attempts >= 30:
+                            print("Failed to retrieve job status after 40 attempts")
+                            return "Failed to retrieve job status after 40 attempts"
+                        attempts += 1
+                else:
+                    return "Job ID not found in the response"
             else:
-                return "Job ID not found in the response"
-        else:
-            return f"Failed to initiate the job. Status code: {response.status_code}, Response: {response.text}"
-    except Exception as e:
-        print("Failed to initiate the job:", e)
-        return f"Failed to initiate the job: {str(e)}"
+                return f"Failed to initiate the job. Status code: {response.status_code}, Response: {response.text}"
+        except Exception as e:
+            print("Failed to initiate the job:", e)
+            return f"Failed to initiate the job: {str(e)}"
+    
+async def background_generate_image(prompt: str, imageURL: str):
+    image_url = await generate_image_async(prompt, imageURL)
+    # Here you can store the result or perform any other necessary actions
+    print(f"Background task completed. Image URL: {image_url}")
+
     
 
 @app.post("/image")
 @limiter.limit("2/minute")
 @limiter.limit("10 per 30 minutes")
 @limiter.limit("15 per 24 hours")
-async def generate_image_route(image_request: ImageRequest, request: Request):
+async def generate_image_route(image_request: ImageRequest, request: Request, background_tasks: BackgroundTasks):
     ip_address = get_ipaddr(request)
     if ip_address in PERMANENT_BLOCKLIST:
         return {"error": "Rate limit exceeded, please try again after a short break."}
@@ -248,10 +255,10 @@ async def generate_image_route(image_request: ImageRequest, request: Request):
             print(f"Error checking for child sexual content: {e}")
             return {"error": "An error occurred while moderating for child sexual content."}
         
-        image_url = generate_image(image_request.prompt, image_request.imageURL)
-        if isinstance(image_url, str) and (image_url == "Job failed" or image_url.startswith("Failed")):
-            return {"error": image_url}
-        return {"imageURL": image_url}
+        # Add the image generation task to background tasks
+        background_tasks.add_task(background_generate_image, image_request.prompt, image_request.imageURL)
+        
+        return {"message": "Image generation started in the background"}
     except Exception as e:
         return {"error": str(e)}
     
