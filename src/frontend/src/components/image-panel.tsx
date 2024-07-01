@@ -79,17 +79,17 @@ export const ImagePanel: React.FC = () => {
       canvas.height = img.height;
       ctx.drawImage(img, 0, 0);
       
-      // Improved watermark with elegant design
+      // Improved watermark with stronger shadow
       const watermarkText = 'AI Uncensored';
-      const fontSize = Math.max(16, canvas.width / 40); // Slightly smaller, more elegant font size
-      ctx.font = `${fontSize}px 'Arial', sans-serif`;
+      const fontSize = Math.max(16, canvas.width / 40);
+      ctx.font = `bold ${fontSize}px 'Arial', sans-serif`; // Made the font bold
       const padding = fontSize;
 
       const x = canvas.width - padding;
       const y = canvas.height - padding;
 
-      // Create a more subtle gradient background
-      const gradientHeight = canvas.height / 3; // Gradient covers bottom third of the image
+      // Create gradient background (unchanged)
+      const gradientHeight = canvas.height / 3;
       const gradient = ctx.createLinearGradient(0, canvas.height - gradientHeight, 0, canvas.height);
       gradient.addColorStop(0, 'rgba(0, 0, 0, 0)');
       gradient.addColorStop(1, 'rgba(0, 0, 0, 0.6)');
@@ -97,15 +97,27 @@ export const ImagePanel: React.FC = () => {
       ctx.fillStyle = gradient;
       ctx.fillRect(0, canvas.height - gradientHeight, canvas.width, gradientHeight);
 
-      // Add text with shadow for better visibility
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+      // Add text with stronger shadow for better visibility
+      ctx.fillStyle = 'rgba(255, 255, 255, 1)'; // Full opacity for text
       ctx.textAlign = 'right';
       ctx.textBaseline = 'bottom';
-      ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
-      ctx.shadowBlur = 4;
+      
+      // Stronger shadow
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
+      ctx.shadowBlur = 8;
       ctx.shadowOffsetX = 2;
       ctx.shadowOffsetY = 2;
-      ctx.fillText(watermarkText, x, y);
+
+      // Draw text multiple times for even stronger effect
+      for (let i = 0; i < 3; i++) {
+        ctx.fillText(watermarkText, x, y);
+      }
+
+      // Reset shadow
+      ctx.shadowColor = 'rgba(0, 0, 0, 0)';
+      ctx.shadowBlur = 0;
+      ctx.shadowOffsetX = 0;
+      ctx.shadowOffsetY = 0;
 
       // Add a subtle border to the entire image
       ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
@@ -124,7 +136,7 @@ export const ImagePanel: React.FC = () => {
           document.body.removeChild(link);
           URL.revokeObjectURL(url);
         }
-      }, 'image/jpeg', 0.95); // Increased quality for better output
+      }, 'image/jpeg', 0.95);
     };
     img.src = imageUrl;
   };
