@@ -229,31 +229,31 @@ def generate_image(prompt, imageURL):
         return f"Failed to initiate the job: {str(e)}"
     
 
-# @app.post("/image")
-# @limiter.limit("2/minute")
-# @limiter.limit("10 per 30 minutes")
-# @limiter.limit("15 per 24 hours")
-# async def generate_image_route(image_request: ImageRequest, request: Request):
-#     ip_address = get_ipaddr(request)
-#     if ip_address in PERMANENT_BLOCKLIST:
-#         return {"error": "Rate limit exceeded, please try again after a short break."}
+@app.post("/image")
+@limiter.limit("2/minute")
+@limiter.limit("10 per 30 minutes")
+@limiter.limit("15 per 24 hours")
+async def generate_image_route(image_request: ImageRequest, request: Request):
+    ip_address = get_ipaddr(request)
+    if ip_address in PERMANENT_BLOCKLIST:
+        return {"error": "Rate limit exceeded, please try again after a short break."}
     
-#     try:
-#         try:
-#             # Check for child sexual content in the prompt
-#             is_inappropriate = await check_child_sexual_content(image_request.prompt)
-#             if is_inappropriate:
-#                 raise HTTPException(status_code=400, detail="The provided prompt contains inappropriate content and cannot be processed.")
-#         except Exception as e:
-#             print(f"Error checking for child sexual content: {e}")
-#             return {"error": "An error occurred while moderating for child sexual content."}
+    try:
+        try:
+            # Check for child sexual content in the prompt
+            is_inappropriate = await check_child_sexual_content(image_request.prompt)
+            if is_inappropriate:
+                raise HTTPException(status_code=400, detail="The provided prompt contains inappropriate content and cannot be processed.")
+        except Exception as e:
+            print(f"Error checking for child sexual content: {e}")
+            return {"error": "An error occurred while moderating for child sexual content."}
         
-#         image_url = generate_image(image_request.prompt, image_request.imageURL)
-#         if isinstance(image_url, str) and (image_url == "Job failed" or image_url.startswith("Failed")):
-#             return {"error": image_url}
-#         return {"imageURL": image_url}
-#     except Exception as e:
-#         return {"error": str(e)}
+        image_url = generate_image(image_request.prompt, image_request.imageURL)
+        if isinstance(image_url, str) and (image_url == "Job failed" or image_url.startswith("Failed")):
+            return {"error": image_url}
+        return {"imageURL": image_url}
+    except Exception as e:
+        return {"error": str(e)}
     
     
 if __name__ == "__main__":
