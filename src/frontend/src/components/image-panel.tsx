@@ -79,30 +79,38 @@ export const ImagePanel: React.FC = () => {
       canvas.height = img.height;
       ctx.drawImage(img, 0, 0);
       
-      // Add watermark with soft gradient background
+      // Improved watermark with elegant design
       const watermarkText = 'AI Uncensored';
-      const fontSize = Math.max(20, canvas.width / 30); // Responsive font size
-      ctx.font = `${fontSize}px Arial`;
-      const textWidth = ctx.measureText(watermarkText).width;
-      const padding = fontSize / 2;
+      const fontSize = Math.max(16, canvas.width / 40); // Slightly smaller, more elegant font size
+      ctx.font = `${fontSize}px 'Arial', sans-serif`;
+      const padding = fontSize;
 
-      const x = canvas.width / 2;
-      const y = canvas.height - fontSize;
+      const x = canvas.width - padding;
+      const y = canvas.height - padding;
 
-      // Create gradient background
-      const gradientHeight = fontSize * 2;
-      const gradient = ctx.createLinearGradient(0, y - gradientHeight, 0, y + padding);
+      // Create a more subtle gradient background
+      const gradientHeight = canvas.height / 3; // Gradient covers bottom third of the image
+      const gradient = ctx.createLinearGradient(0, canvas.height - gradientHeight, 0, canvas.height);
       gradient.addColorStop(0, 'rgba(0, 0, 0, 0)');
-      gradient.addColorStop(1, 'rgba(0, 0, 0, 0.5)');
+      gradient.addColorStop(1, 'rgba(0, 0, 0, 0.6)');
 
       ctx.fillStyle = gradient;
-      ctx.fillRect(0, y - gradientHeight, canvas.width, gradientHeight + padding);
+      ctx.fillRect(0, canvas.height - gradientHeight, canvas.width, gradientHeight);
 
-      // Add text
-      ctx.fillStyle = 'white';
-      ctx.textAlign = 'center';
+      // Add text with shadow for better visibility
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+      ctx.textAlign = 'right';
       ctx.textBaseline = 'bottom';
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+      ctx.shadowBlur = 4;
+      ctx.shadowOffsetX = 2;
+      ctx.shadowOffsetY = 2;
       ctx.fillText(watermarkText, x, y);
+
+      // Add a subtle border to the entire image
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(0, 0, canvas.width, canvas.height);
       
       // Convert to JPEG and download
       canvas.toBlob((blob) => {
@@ -116,7 +124,7 @@ export const ImagePanel: React.FC = () => {
           document.body.removeChild(link);
           URL.revokeObjectURL(url);
         }
-      }, 'image/jpeg');
+      }, 'image/jpeg', 0.95); // Increased quality for better output
     };
     img.src = imageUrl;
   };
