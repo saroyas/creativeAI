@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import TextareaAutosize from "react-textarea-autosize";
 import { Button } from "./ui/button";
-import { ArrowUp, Image as ImageIcon } from "lucide-react";
+import { ArrowUp, Camera, Brush } from "lucide-react";
 import axios from 'axios';
 import { env } from "../env.mjs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -14,11 +14,11 @@ type ImageModel = 'anime' | 'photo';
 const modelMap: Record<ImageModel, { name: string; icon: React.ReactNode }> = {
   anime: {
     name: "Anime",
-    icon: <ImageIcon className="w-4 h-4 text-pink-500" />,
+    icon: <Brush className="w-4 h-4 text-pink-500" />,
   },
   photo: {
     name: "Photo",
-    icon: <ImageIcon className="w-4 h-4 text-blue-500" />,
+    icon: <Camera className="w-4 h-4 text-blue-500" />,
   },
 };
 
