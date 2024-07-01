@@ -41,13 +41,13 @@ export const ImagePanel = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: { key?: string; shiftKey?: any; preventDefault: any; }) => {
     e.preventDefault();
     if (prompt.trim().length < 2) return;
     generateImage(prompt);
   };
 
-  const handleKeyDown = (e) => {
+  const handleKeyDown = (e: { key: string; shiftKey: any; preventDefault: () => void; }) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSubmit(e);
@@ -55,7 +55,7 @@ export const ImagePanel = () => {
   };
 
   useEffect(() => {
-    let interval;
+    let interval: string | number | NodeJS.Timeout | undefined;
     if (isLoading) {
       interval = setInterval(() => {
         setProgress((prev) => (prev < 90 ? prev + 10 : 90));
