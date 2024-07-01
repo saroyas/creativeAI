@@ -115,7 +115,7 @@ export const ImagePanel: React.FC = () => {
       canvas.width = img.width;
       canvas.height = img.height;
       ctx.drawImage(img, 0, 0);
-      
+
       const watermarkText = 'AI Uncensored';
       const fontSize = Math.max(16, canvas.width / 40);
       ctx.font = `bold ${fontSize}px 'Arial', sans-serif`;
@@ -135,7 +135,7 @@ export const ImagePanel: React.FC = () => {
       ctx.fillStyle = 'rgba(255, 255, 255, 1)';
       ctx.textAlign = 'right';
       ctx.textBaseline = 'bottom';
-      
+
       ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
       ctx.shadowBlur = 8;
       ctx.shadowOffsetX = 2;
@@ -176,7 +176,43 @@ export const ImagePanel: React.FC = () => {
 
           <div className="relative w-full pb-[100%]">
             <div className="absolute inset-0 overflow-hidden bg-opacity-50 bg-gray-800 backdrop-blur-sm rounded-lg">
-              {/* ... (image rendering logic remains unchanged) */}
+              {isLoading && (
+                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                  <img
+                    src="https://i.ibb.co/5Kf5nwH/0622.gif"
+                    alt="Loading"
+                    className="w-full h-full object-cover rounded-lg"
+                  />
+                  <div className="absolute top-2 left-2 right-2 z-10">
+                    <div className="w-full h-1 bg-gray-200 bg-opacity-30 rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-blue-500 transition-all duration-1000 ease-out"
+                        style={{ width: `${progress}%` }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {imageUrl && !isLoading && (
+                <div
+                  className="w-full h-full cursor-pointer"
+                  onClick={addWatermarkAndDownload}
+                >
+                  <img
+                    src={imageUrl}
+                    alt="Generated image"
+                    className="w-full h-full object-cover transition-transform duration-300 hover:scale-105 rounded-lg"
+                  />
+                </div>
+              )}
+
+              {!imageUrl && !isLoading && (
+                <div className="w-full h-full flex flex-col items-center justify-center text-center text-gray-300 p-2">
+                  <ImageIcon size={36} className="mb-2" />
+                  <p className="text-sm">Enter a prompt below to generate an image</p>
+                </div>
+              )}
             </div>
           </div>
         </div>
