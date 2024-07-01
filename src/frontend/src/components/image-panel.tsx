@@ -41,7 +41,7 @@ export const ImagePanel = () => {
     }
   };
 
-  const handleSubmit = (e: { key?: string; shiftKey?: any; preventDefault: any; }) => {
+  const handleSubmit = (e: { preventDefault: () => void; }) => {
     e.preventDefault();
     if (prompt.trim().length < 2) return;
     generateImage(prompt);
@@ -55,7 +55,7 @@ export const ImagePanel = () => {
   };
 
   useEffect(() => {
-    let interval: string | number | NodeJS.Timeout | undefined;
+    let interval: NodeJS.Timeout | undefined;
     if (isLoading) {
       interval = setInterval(() => {
         setProgress((prev) => (prev < 90 ? prev + 10 : 90));
@@ -74,9 +74,9 @@ export const ImagePanel = () => {
   };
 
   return (
-    <div className="w-full h-screen flex flex-col pt-16">
-      <div className="flex-grow overflow-auto p-8 pt-20">
-        <div className="max-w-2xl mx-auto h-full flex flex-col justify-center">
+    <div className="w-full h-screen flex flex-col">
+      <div className="flex-grow overflow-auto pt-16 pb-24"> {/* Added pb-24 for bottom padding */}
+        <div className="max-w-2xl mx-auto h-full flex flex-col justify-center p-4">
           {error && (
             <div className="text-red-400 mb-4 mt-2">{error}</div>
           )}
@@ -125,7 +125,7 @@ export const ImagePanel = () => {
         </div>
       </div>
 
-      <div className="p-4">
+      <div className="fixed bottom-0 left-0 right-0 p-4 bg-black bg-opacity-50 backdrop-blur-sm">
         <form className="max-w-2xl mx-auto" onSubmit={handleSubmit}>
           <div className="w-full flex items-center rounded-full focus:outline-none max-h-[30vh] px-2 py-1 bg-opacity-50 bg-gray-800 backdrop-blur-sm">
             <TextareaAutosize
