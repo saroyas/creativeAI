@@ -232,7 +232,7 @@ def generate_image(prompt, imageURL):
 @app.post("/image")
 @limiter.limit("2/minute")
 @limiter.limit("10 per 30 minutes")
-@limiter.limit("10 per 24 hours")
+@limiter.limit("30 per 24 hours")
 async def generate_image_route(image_request: ImageRequest, request: Request):
     ip_address = get_ipaddr(request)
     if ip_address in PERMANENT_BLOCKLIST:
