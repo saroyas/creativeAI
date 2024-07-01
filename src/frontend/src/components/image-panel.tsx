@@ -79,18 +79,11 @@ export const ImagePanel: React.FC = () => {
       canvas.height = img.height;
       ctx.drawImage(img, 0, 0);
       
-      // Add large, diagonal watermark
-      const watermarkText = 'WATERMARK';
-      ctx.save();
-      ctx.globalAlpha = 0.3; // Make the watermark semi-transparent
-      ctx.font = `${canvas.width / 10}px Arial`; // Large font size based on image width
-      ctx.fillStyle = 'white';
+      // Add watermark
+      ctx.font = '20px Arial';
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
       ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.translate(canvas.width / 2, canvas.height / 2);
-      ctx.rotate(-Math.PI / 4); // Rotate 45 degrees
-      ctx.fillText(watermarkText, 0, 0);
-      ctx.restore();
+      ctx.fillText('Watermark', canvas.width / 2, canvas.height - 20);
       
       // Convert to JPEG and download
       canvas.toBlob((blob) => {
