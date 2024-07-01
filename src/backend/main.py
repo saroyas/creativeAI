@@ -238,8 +238,8 @@ async def generate_image_async(task_id: str, prompt: str, imageURL: str, model: 
 
 @app.post("/image")
 @limiter.limit("2/minute")
-@limiter.limit("10 per 30 minutes")
-@limiter.limit("15 per 24 hours")
+@limiter.limit("15 per 30 minutes")
+@limiter.limit("20 per 24 hours")
 async def generate_image_route(image_request: ImageRequest, request: Request, background_tasks: BackgroundTasks):
     ip_address = get_ipaddr(request)
     if ip_address in PERMANENT_BLOCKLIST:
