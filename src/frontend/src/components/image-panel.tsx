@@ -74,51 +74,53 @@ export const ImagePanel = () => {
   };
 
   return (
-    <div className="w-full h-screen flex flex-col">
-      <div className="flex-grow overflow-auto p-4">
-        <div className="max-w-2xl mx-auto">
+    <div className="w-full h-screen flex flex-col pt-16">
+      <div className="flex-grow overflow-auto p-8 pt-20">
+        <div className="max-w-2xl mx-auto h-full flex flex-col justify-center">
           {error && (
-            <div className="text-red-400 mt-2">{error}</div>
+            <div className="text-red-400 mb-4 mt-2">{error}</div>
           )}
 
-          <div className="relative w-full aspect-square rounded-lg overflow-hidden bg-opacity-50 bg-gray-800 backdrop-blur-sm">
-            {isLoading && (
-              <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <img 
-                  src="https://i.ibb.co/5Kf5nwH/0622.gif" 
-                  alt="Loading" 
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute top-4 left-4 right-4 z-10">
-                  <div className="w-full h-2 bg-gray-200 bg-opacity-30 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-blue-500 transition-all duration-1000 ease-out"
-                      style={{ width: `${progress}%` }}
-                    />
+          <div className="relative w-full pb-[100%]"> {/* Create a square container */}
+            <div className="absolute inset-0 rounded-lg overflow-hidden bg-opacity-50 bg-gray-800 backdrop-blur-sm">
+              {isLoading && (
+                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                  <img 
+                    src="https://i.ibb.co/5Kf5nwH/0622.gif" 
+                    alt="Loading" 
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute top-4 left-4 right-4 z-10">
+                    <div className="w-full h-2 bg-gray-200 bg-opacity-30 rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-blue-500 transition-all duration-1000 ease-out"
+                        style={{ width: `${progress}%` }}
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
-            )}
+              )}
 
-            {imageUrl && !isLoading && (
-              <div 
-                className="w-full h-full cursor-pointer"
-                onClick={handleImageDownload}
-              >
-                <img
-                  src={imageUrl}
-                  alt="Generated image"
-                  className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
-                />
-              </div>
-            )}
+              {imageUrl && !isLoading && (
+                <div 
+                  className="w-full h-full cursor-pointer"
+                  onClick={handleImageDownload}
+                >
+                  <img
+                    src={imageUrl}
+                    alt="Generated image"
+                    className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                  />
+                </div>
+              )}
 
-            {!imageUrl && !isLoading && (
-              <div className="w-full h-full flex flex-col items-center justify-center text-center text-gray-300">
-                <ImageIcon size={48} className="mb-4" />
-                <p>Enter a prompt below to generate an image</p>
-              </div>
-            )}
+              {!imageUrl && !isLoading && (
+                <div className="w-full h-full flex flex-col items-center justify-center text-center text-gray-300">
+                  <ImageIcon size={48} className="mb-4" />
+                  <p>Enter a prompt below to generate an image</p>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
