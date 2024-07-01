@@ -1,17 +1,29 @@
 "use client";
-
+import React, { useCallback } from "react";
 import Link from "next/link";
-import { ModeToggle } from "./mode-toggle";
+import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import { ImageIcon } from "lucide-react";
 
 export function Navbar() {
   const { theme } = useTheme();
+  const router = useRouter();
+
+  const handleLogoClick = useCallback((e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    router.push('/');
+    // Reload the page after navigation
+    setTimeout(() => {
+      location.reload()
+    }, 100);
+    // Use a short timeout to allow for navigation before reload
+  }, [router]);
+  
   return (
     <header className="w-full flex fixed p-1 z-50 px-2 bg-background justify-between items-center">
       <div>
-      <Link href="/" passHref>
+      <Link href="/" passHref onClick={handleLogoClick}>
           <img
             src={theme === "light" ? "/logo.png" : "/logo.png"}
             alt="Logo"
