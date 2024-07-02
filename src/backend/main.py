@@ -252,6 +252,7 @@ async def generate_image_route(image_request: ImageRequest, request: Request, ba
         if is_inappropriate:
             raise HTTPException(status_code=400, detail="The provided prompt contains inappropriate content and cannot be processed.")
         
+        print("Image request received:", image_request.prompt)
         # Generate a unique task ID
         task_id = f"task_{len(IMAGE_TASKS) + 1}"
         
