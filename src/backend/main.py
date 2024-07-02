@@ -253,6 +253,11 @@ async def generate_image_route(image_request: ImageRequest, request: Request, ba
             raise HTTPException(status_code=400, detail="The provided prompt contains inappropriate content and cannot be processed.")
         
         print("Image request received:", image_request.prompt)
+        # im image prompt has Hatsune miku - reject
+        if "hatsune" in image_request.prompt.lower():
+            print("Rejecting image request due to Hatsune Miku")
+            raise HTTPException(status_code=400, detail="The provided prompt contains inappropriate content and cannot be processed.")
+        
         # Generate a unique task ID
         task_id = f"task_{len(IMAGE_TASKS) + 1}"
         
