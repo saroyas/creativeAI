@@ -265,12 +265,12 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
   return (
     <div className="w-full h-screen flex flex-col">
       <div className="flex-grow overflow-auto p-4 flex items-center justify-center">
-        <div className="w-full max-w-md">
+        <div className="w-full max-w-md flex flex-col items-center justify-center">
           {error && (
             <div className="text-red-400 mb-2 text-sm px-2">{error}</div>
           )}
 
-          <div className={`relative overflow-hidden rounded-lg bg-opacity-50 bg-gray-800 backdrop-blur-sm ${getAspectRatioClass()}`}>
+          <div className={`relative overflow-hidden rounded-lg bg-opacity-50 bg-gray-800 backdrop-blur-sm ${getAspectRatioClass()} max-h-[70vh] w-full`}>
             {isLoading && (
               <div className="absolute inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75">
                 <img
