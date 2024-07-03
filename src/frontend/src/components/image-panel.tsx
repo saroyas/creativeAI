@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useState, useEffect, useRef } from 'react';
 import TextareaAutosize from "react-textarea-autosize";
 import { Button } from "./ui/button";
@@ -167,58 +168,56 @@ export const ImagePanel: React.FC = () => {
   };
 
   return (
-    <div className="w-full min-h-screen flex flex-col">
-      <div className="flex-grow overflow-auto p-0 sm:p-1 md:p-2">
-        <div className="w-full max-w-md mx-auto h-full flex flex-col justify-center">
+    <div className="w-full h-screen flex flex-col">
+      <div className="flex-grow overflow-auto p-4 flex items-center justify-center">
+        <div className="w-full max-w-md">
           {error && (
-            <div className="text-red-400 mb-2 mt-1 text-sm px-2">{error}</div>
+            <div className="text-red-400 mb-2 text-sm px-2">{error}</div>
           )}
 
-          <div className="relative w-full pb-[100%]">
-            <div className="absolute inset-0 overflow-hidden bg-opacity-50 bg-gray-800 backdrop-blur-sm rounded-lg">
-              {isLoading && (
-                <div className="absolute inset-0 flex flex-col items-center justify-center">
-                  <img
-                    src="https://i.ibb.co/5Kf5nwH/0622.gif"
-                    alt="Loading"
-                    className="w-full h-full object-cover rounded-lg"
-                  />
-                  <div className="absolute top-2 left-2 right-2 z-10">
-                    <div className="w-full h-1 bg-gray-200 bg-opacity-30 rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-blue-500 transition-all duration-1000 ease-out"
-                        style={{ width: `${progress}%` }}
-                      />
-                    </div>
+          <div className="aspect-square w-full relative overflow-hidden bg-opacity-50 bg-gray-800 backdrop-blur-sm rounded-lg">
+            {isLoading && (
+              <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <img
+                  src="https://i.ibb.co/5Kf5nwH/0622.gif"
+                  alt="Loading"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute top-2 left-2 right-2 z-10">
+                  <div className="w-full h-1 bg-gray-200 bg-opacity-30 rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-blue-500 transition-all duration-1000 ease-out"
+                      style={{ width: `${progress}%` }}
+                    />
                   </div>
                 </div>
-              )}
+              </div>
+            )}
 
-              {imageUrl && !isLoading && (
-                <div
-                  className="w-full h-full cursor-pointer"
-                  onClick={addWatermarkAndDownload}
-                >
-                  <img
-                    src={imageUrl}
-                    alt="Generated image"
-                    className="w-full h-full object-cover transition-transform duration-300 hover:scale-105 rounded-lg"
-                  />
-                </div>
-              )}
+            {imageUrl && !isLoading && (
+              <div
+                className="w-full h-full cursor-pointer"
+                onClick={addWatermarkAndDownload}
+              >
+                <img
+                  src={imageUrl}
+                  alt="Generated image"
+                  className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                />
+              </div>
+            )}
 
-              {!imageUrl && !isLoading && (
-                <div className="w-full h-full flex flex-col items-center justify-center text-center text-gray-300 p-2">
-                  <ImageIcon size={36} className="mb-2" />
-                  <p className="text-sm">Enter a prompt below to generate an image</p>
-                </div>
-              )}
-            </div>
+            {!imageUrl && !isLoading && (
+              <div className="w-full h-full flex flex-col items-center justify-center text-center text-gray-300 p-2">
+                <ImageIcon size={36} className="mb-2" />
+                <p className="text-sm">Enter a prompt below to generate an image</p>
+              </div>
+            )}
           </div>
         </div>
       </div>
 
-      <div className="fixed bottom-0 left-0 right-0 p-2 sm:p-4">
+      <div className="p-4">
         <form className="max-w-2xl mx-auto" onSubmit={handleSubmit}>
           <div className="flex justify-center mb-2">
             <Select
