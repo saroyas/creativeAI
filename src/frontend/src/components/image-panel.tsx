@@ -73,8 +73,8 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
     setImageUrl("");
     setTaskId(null);
     event('generate_image', {
-      category: 'Image',
-      label: promptText,
+      category: 'Generating_Image',
+      label: "Generating Image",
     });
     try {
       const response = await axios.post(`${BASE_URL}/image`, {
@@ -201,7 +201,7 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
           URL.revokeObjectURL(url);
 
           event('download_image', {
-            category: 'Share',
+            category: 'Downloaded',
             label: "Downloaded",
           });
         }
@@ -249,7 +249,7 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
     window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
 
     event('share', {
-      category: 'Share',
+      category: 'Twitter_Share',
       label: 'Twitter',
     });
   };
@@ -259,7 +259,7 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
     window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank');
 
     event('share', {
-      category: 'Share',
+      category: 'Facebook_Share',
       label: 'Facebook',
     });
   };
@@ -274,7 +274,7 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
     try {
       window.open(redditUrl, '_blank');
       event('share', {
-        category: 'Share',
+        category: 'Reddit_Share',
         label: 'Reddit',
       });
     } catch (error) {
@@ -289,7 +289,7 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
     window.open(`https://wa.me/?text=${text}%20${url}`, '_blank');
 
     event('share', {
-      category: 'Share',
+      category: 'WhatsApp_Share',
       label: 'WhatsApp',
     });
   };
@@ -303,7 +303,7 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
       });
 
       event('copy_link', {
-        category: 'Share',
+        category: 'Link_Copied_Share',
         label: "Link Copied",
       });
     }).catch(err => {
