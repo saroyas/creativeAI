@@ -9,6 +9,7 @@ import axios from 'axios';
 import { env } from "../env.mjs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/components/ui/use-toast"; // Import the useToast hook
+import { event } from 'nextjs-google-analytics'; // Import the event function from Google Analytics
 
 const BASE_URL = env.NEXT_PUBLIC_API_URL;
 
@@ -71,6 +72,10 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
     setProgress(0);
     setImageUrl("");
     setTaskId(null);
+    event('generate_image', {
+      category: 'Image',
+      label: promptText,
+    });
     try {
       const response = await axios.post(`${BASE_URL}/image`, {
         prompt: promptText,
@@ -194,6 +199,11 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
           link.click();
           document.body.removeChild(link);
           URL.revokeObjectURL(url);
+
+          event('download_image', {
+            category: 'Share',
+            label: "Downloaded",
+          });
         }
       }, 'image/jpeg', 0.95);
     };
@@ -237,22 +247,36 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
     const text = encodeURIComponent("Check out this AI image I made! #UncensoredAI #GenerativeAI");
     const url = encodeURIComponent(getShareUrl());
     window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
+
+    event('share', {
+      category: 'Share',
+      label: 'Twitter',
+    });
   };
 
   const shareOnFacebook = () => {
     const url = encodeURIComponent(getShareUrl());
     window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank');
+
+    event('share', {
+      category: 'Share',
+      label: 'Facebook',
+    });
   };
 
   const shareOnReddit = () => {
     const title = encodeURIComponent("Check out this AI-generated image!");
     const url = encodeURIComponent(getShareUrl());
     const text = encodeURIComponent(`I created this AI-generated image using the prompt: "${prompt}"\n\nCheck it out here: ${getShareUrl()}`);
-    
+
     const redditUrl = `https://www.reddit.com/submit?url=${url}&title=${title}&text=${text}`;
-    
+
     try {
       window.open(redditUrl, '_blank');
+      event('share', {
+        category: 'Share',
+        label: 'Reddit',
+      });
     } catch (error) {
       console.error('Failed to open Reddit sharing window:', error);
       // Optionally, show a user-friendly error message
@@ -263,6 +287,11 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
     const text = encodeURIComponent("Check out this AI-generated image I made!");
     const url = encodeURIComponent(getShareUrl());
     window.open(`https://wa.me/?text=${text}%20${url}`, '_blank');
+
+    event('share', {
+      category: 'Share',
+      label: 'WhatsApp',
+    });
   };
 
   const copyLinkToClipboard = () => {
@@ -271,6 +300,11 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
       toast({
         title: 'Link Copied',
         description: 'The link has been copied to your clipboard.'
+      });
+
+      event('copy_link', {
+        category: 'Share',
+        label: "Link Copied",
       });
     }).catch(err => {
       console.error('Failed to copy link: ', err);
