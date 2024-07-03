@@ -333,9 +333,9 @@ async def generate_image_route(image_request: ImageRequest, request: Request, ba
             print("Moderation Block Enforced.")
             raise HTTPException(status_code=400, detail="The provided prompt contains inappropriate content and cannot be processed.")
         
-        print("Original Prompt:", prompt)
+        original_prompt = prompt
         prompt = await improve_prompt(prompt)
-        print("Improved prompt:", prompt)
+        print(f"Original Prompt: {original_prompt} \n New Prompt: {prompt}")
         
         if sexual_content_flag:
             # in the prompt, replace girl with woman
