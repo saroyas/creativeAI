@@ -79,7 +79,7 @@ def configure_rate_limiting(app: FastAPI, rate_limit_enabled: bool):
 def configure_middleware(app: FastAPI):
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=["*"],
+        allow_origins=["https://www.aiuncensored.info"],
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
