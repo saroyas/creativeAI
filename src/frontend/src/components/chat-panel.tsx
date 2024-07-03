@@ -54,6 +54,7 @@ const useAutoFocus = (ref: React.RefObject<HTMLTextAreaElement>) => {
 export const ChatPanel = ({ chatCode }: { chatCode?: string }) => {
   const { handleSend, streamingMessage } = useChat();
   const { messages } = useMessageStore();
+  const chatCodeSentRef = useRef(false);
 
   const [width, setWidth] = useState(0);
   const messagesRef = useRef<HTMLDivElement | null>(null);
@@ -65,10 +66,11 @@ export const ChatPanel = ({ chatCode }: { chatCode?: string }) => {
   useAutoFocus(inputRef);
 
   useEffect(() => {
-    if (chatCode && messages.length === 0) {
+    if (chatCode && messages.length === 0 && !chatCodeSentRef.current) {
       handleSend(chatCode);
+      chatCodeSentRef.current = true;
     }
-  }, []); // Empty dependency array ensures this effect runs only once
+  }, [chatCode, messages.length, handleSend]);
 
   if (messages.length > 0) {
     return (
