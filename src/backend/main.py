@@ -207,7 +207,7 @@ async def improve_prompt(prompt: str) -> str:
             response = await client.post(
                 OPENROUTER_API_URL,
                 headers={
-                    "Authorization": f"Bearer {API_KEY}",
+                    "Authorization": f"Bearer {OPENROUTER_API_KEY}",
                     "Content-Type": "application/json"
                 },
                 json={
