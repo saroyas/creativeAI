@@ -23,6 +23,40 @@ from backend.schemas import ChatRequest, ChatResponseEvent, ErrorStream
 from backend.utils import strtobool
 from backend.validators import validate_model
 
+
+OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions'
+OPENROUTER_API_KEY = api_key = os.environ.get('GROQ_API_KEY')  # Replace with your actual API key
+EXAMPLE_IMAGE_PROMPTS = """
+
+example:
+blonde haired woman, Ukranian, dd boobs, tall, blue eys, blond, tanned, tanlines, at the beach, laughing, (40 years old:1.3)
+
+example:
+Stylized viking warrior, (oil painting)1, (art)1, deep blacks, high contrast, abstract, distant lines glamour photography, woman portrait, mysterious, provocative, symbolic
+
+example:
+beautiful young woman, full body, wet clothes,<lora:inside_creature_v0.1:1>, inside creature, being swallowed, goo, filthy, wet, meat, dirty, \(substance\), tentacle pit, narrow, horror,
+
+example:
+a young adult woman wearing black booty shorts, view from behind, twerking, Eastern European, city street, brick wall background, cinematic, 8k uhd, high resolution, Kyiv, sunny natural light
+
+example:
+Lara Croft, 20 years old, face close up, half body portrait, (brunette:1.2), big brown eyes, red lipstick, winks, modest look, seducing viewer, hearts, posing, sexy pose, solo, natural breasts, large saggy breasts, solo, underwear, bra, breasts, navel, black_bra, solo, thighhighs, panties, mole, black lingerie, mole on breast, garter belt, no panties, indoors, thighs, black lace trim, black lace bra, black lace, black garter straps, black stockings, stomach, black lace trimmed bra, collarbone, wide hips, looking at viewer, black stockings, standing by the window, black thighhighs, hand_on_hip, air of superiority, modern trendy penthouse, panoramic window, modern city outside the window, sunset, cinematic lightings
+
+example:
+score_9, score_8_up, score_7_up, score_6_up, rating_explicit, upper body focus, head to knee shot, solo focus, a woman, curvy, dark makeup, lusty, scornful, model, thick thighs,gorgeous, standing back against a wall, tits droping, jiggly, alluring, perfect face, freckles, big saggy soft breasts, sweaty oiled boobs, shaped nipples, looking at viewer, seductive, sexy pose, loose cropped shirt, flared long sleevs, laces, lifting shirt, squeezed breasts,, dramatic lighting, nipple slip, shirt in mouth, biting, tight, , faux leather, mat, high waist gym leggings, low light, dark, shadow, breasts shaking,
+
+example:
+(Photo:1.3) of Young japanse woman, cleavage, bokeh, small flat breast, kimono with one missing shoulder, one naked breast, onsen.,(by Artist John Philip Falter:1.3),Highly Detailed,(Yellow hue:1.3), Polaroid
+
+example:
+a photograph of highest quality a man is sitting and waving to a friend of screen, open hand, Nordic Viking, photograph, 100mm, zoom, harsh sun and shadows, outside, ancient warrior, happy, haze, atmosphere, humid
+
+example:
+Woman 18 yeard old, Posting At a brach, prefect beautyfull face, cute eyes, thick lips, prefect body, thin waist, big tits, she wears a leather cat suit with a big neckline revealing one of her tits
+
+"""
+
 load_dotenv()
 
 # Initialize IP blocklist
@@ -161,6 +195,34 @@ async def check_child_sexual_content(input_text: str) -> bool:
     print("result", result)
     return result
 
+async def improve_prompt(prompt: str) -> str:
+    system_message = "You are an explicit image prompt writer. Improve the given prompt to make it more detailed and vivid, while keeping it concise. Focus on visual elements and artistic style. Example prompts are :" + EXAMPLE_IMAGE_PROMPTS
+    messages = [
+        {"role": "system", "content": system_message},
+        {"role": "user", "content": f"Improve this image prompt, making it more detailed and vivid: {prompt}"}
+    ]
+
+    async with httpx.AsyncClient() as client:
+        try:
+            response = await client.post(
+                OPENROUTER_API_URL,
+                headers={
+                    "Authorization": f"Bearer {API_KEY}",
+                    "Content-Type": "application/json"
+                },
+                json={
+                    "model": "nousresearch/hermes-2-pro-llama-3-8b",
+                    "messages": messages
+                }
+            )
+            response.raise_for_status()
+            improved_prompt = response.json()["choices"][0]["message"]["content"]
+            return improved_prompt.strip()
+        except Exception as e:
+            print(f"Error improving prompt: {e}")
+            return prompt  # Return original prompt if there's an error
+
+
 class ImageRequest(BaseModel):
     prompt: str
     imageURL: str = ""
@@ -257,7 +319,11 @@ async def generate_image_route(image_request: ImageRequest, request: Request, ba
     
     prompt = image_request.prompt
     
+    # MAKE A REQUEST TO THE OPENROUTER API WITH A SYSTEM PROMPT THAT IT IS TO BE LIKE AN IMAGE PROMPT WRITER
+    # USE THE REPLY AS THE NEW PROMPT
+    
     try:
+        
         # Check for inappropriate content
         result = await check_child_sexual_content(prompt)
         underage_flag = result["categories"]["sexual/minors"] and result["category_scores"]["sexual/minors"] > 0.5
@@ -266,6 +332,9 @@ async def generate_image_route(image_request: ImageRequest, request: Request, ba
         if underage_flag:
             print("Moderation Block Enforced.")
             raise HTTPException(status_code=400, detail="The provided prompt contains inappropriate content and cannot be processed.")
+        
+        prompt = await improve_prompt(prompt)
+        print("Improved prompt:", prompt)
         
         if sexual_content_flag:
             # in the prompt, replace girl with woman
