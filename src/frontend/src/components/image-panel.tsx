@@ -195,6 +195,16 @@ export const ImagePanel: React.FC = () => {
     };
     img.src = imageUrl;
   };
+  const getLoadingGifClass = () => {
+    switch (selectedAspect) {
+      case 'landscape':
+        return 'w-full h-auto';
+      case 'portrait':
+        return 'h-full w-auto';
+      default:
+        return 'w-full h-full';
+    }
+  };
 
   return (
     <div className="w-full h-screen flex flex-col">
@@ -207,19 +217,17 @@ export const ImagePanel: React.FC = () => {
           <div className={`relative overflow-hidden rounded-lg bg-opacity-50 bg-gray-800 backdrop-blur-sm ${getAspectRatioClass()}`}>
             {isLoading && (
               <div className="absolute inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75">
-                <div className="relative w-full h-full">
-                  <img
-                    src="https://i.ibb.co/5Kf5nwH/0622.gif"
-                    alt="Loading"
-                    className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 max-w-full max-h-full object-contain"
-                  />
-                  <div className="absolute bottom-2 left-2 right-2 z-10">
-                    <div className="w-full h-1 bg-gray-200 bg-opacity-30 rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-blue-500 transition-all duration-1000 ease-out"
-                        style={{ width: `${progress}%` }}
-                      />
-                    </div>
+                <img
+                  src="https://i.ibb.co/5Kf5nwH/0622.gif"
+                  alt="Loading"
+                  className={`object-cover ${getLoadingGifClass()}`}
+                />
+                <div className="absolute bottom-2 left-2 right-2 z-10">
+                  <div className="w-full h-1 bg-gray-200 bg-opacity-30 rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-blue-500 transition-all duration-1000 ease-out"
+                      style={{ width: `${progress}%` }}
+                    />
                   </div>
                 </div>
               </div>
@@ -227,7 +235,7 @@ export const ImagePanel: React.FC = () => {
 
             {imageUrl && !isLoading && (
               <div
-                className="w-full h-full cursor-pointer"
+                className="w-full h-full cursor-pointer overflow-hidden rounded-lg"
                 onClick={addWatermarkAndDownload}
               >
                 <img
