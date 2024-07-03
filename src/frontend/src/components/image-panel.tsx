@@ -50,6 +50,17 @@ export const ImagePanel: React.FC = () => {
   const [selectedAspect, setSelectedAspect] = useState<ImageAspect>('square');
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
+  const getAspectRatioClass = () => {
+    switch (selectedAspect) {
+      case 'landscape':
+        return 'aspect-[16/9]';
+      case 'portrait':
+        return 'aspect-[9/16]';
+      default:
+        return 'aspect-square';
+    }
+  };
+
   const generateImage = async (promptText: string) => {
     setIsLoading(true);
     setError("");
@@ -193,9 +204,9 @@ export const ImagePanel: React.FC = () => {
             <div className="text-red-400 mb-2 text-sm px-2">{error}</div>
           )}
 
-          <div className={`relative overflow-hidden rounded-lg ${selectedAspect === 'landscape' ? 'aspect-w-16 aspect-h-9' : selectedAspect === 'portrait' ? 'aspect-w-9 aspect-h-16' : 'aspect-w-1 aspect-h-1'}`}>
+          <div className={`relative overflow-hidden rounded-lg bg-opacity-50 bg-gray-800 backdrop-blur-sm ${getAspectRatioClass()}`}>
             {isLoading && (
-              <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-800">
+              <div className="absolute inset-0 flex flex-col items-center justify-center">
                 <img
                   src="https://i.ibb.co/5Kf5nwH/0622.gif"
                   alt="Loading"
