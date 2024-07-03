@@ -234,7 +234,7 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
   };
 
   const shareOnTwitter = () => {
-    const text = encodeURIComponent("Check out this AI Uncensored image! #Uncensored-AI #GenerativeAI");
+    const text = encodeURIComponent("Check out this AI image I made! #Uncensored-AI #GenerativeAI");
     const url = encodeURIComponent(getShareUrl());
     window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
   };
