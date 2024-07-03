@@ -159,7 +159,7 @@ async def check_child_sexual_content(input_text: str) -> bool:
 
     result = moderation_result["results"][0]
     print("result", result)
-    return result["categories"]["sexual/minors"] and result["category_scores"]["sexual/minors"] > 0.5
+    return result
 
 class ImageRequest(BaseModel):
     prompt: str
@@ -246,19 +246,28 @@ async def generate_image_route(image_request: ImageRequest, request: Request, ba
     if ip_address in PERMANENT_BLOCKLIST:
         return {"error": "Rate limit exceeded, please try again after a short break."}
     
+    prompt = image_request.prompt
+    
     try:
         # Check for inappropriate content
-        is_inappropriate = await check_child_sexual_content(image_request.prompt)
-        if is_inappropriate:
+        result = await check_child_sexual_content(prompt)
+        underage_flag = result["categories"]["sexual/minors"] and result["category_scores"]["sexual/minors"] > 0.5
+        sexual_content_flag = result["categories"]["sexual"] and result["category_scores"]["sexual"] > 0.5
+
+        if underage_flag:
             raise HTTPException(status_code=400, detail="The provided prompt contains inappropriate content and cannot be processed.")
         
+        if sexual_content_flag:
+            # in the prompt, replace girl with woman
+            prompt = prompt.replace("girl", "woman")
+            # in the prompt, replace boy with man
+            prompt = prompt.replace("boy", "man")
+            # at the end of the prompt, add "all individuals are adults"
+            prompt += ". All individuals are adults."
         
-        print("Image request received:", image_request.prompt)
-        # im image prompt has Hatsune miku - reject
-        if "hatsune" in image_request.prompt.lower():
-            print("Rejecting image request due to Hatsune Miku")
-            raise HTTPException(status_code=400, detail="The provided prompt contains inappropriate content and cannot be processed.")
         
+        print("Image request processing:", prompt)
+
         # Generate a unique task ID
         task_id = f"task_{len(IMAGE_TASKS) + 1}"
         
@@ -266,7 +275,7 @@ async def generate_image_route(image_request: ImageRequest, request: Request, ba
         IMAGE_TASKS[task_id] = {"status": "processing"}
         
         # Add the image generation task to background tasks
-        background_tasks.add_task(generate_image_async, task_id, image_request.prompt, image_request.imageURL, image_request.model)
+        background_tasks.add_task(generate_image_async, task_id, prompt, image_request.imageURL, image_request.model)
         
         return {"task_id": task_id, "message": "Image generation started in the background"}
     except Exception as e:
