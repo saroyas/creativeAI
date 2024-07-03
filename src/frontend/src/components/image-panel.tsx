@@ -217,7 +217,7 @@ export const ImagePanel: React.FC = () => {
         </div>
       </div>
 
-      <div className="p-4">
+      <div className="p-4 sticky bottom-0 left-0 right-0 bg-black bg-opacity-50 backdrop-blur-md">
         <form className="max-w-2xl mx-auto" onSubmit={handleSubmit}>
           <div className="flex justify-center mb-2">
             <Select
