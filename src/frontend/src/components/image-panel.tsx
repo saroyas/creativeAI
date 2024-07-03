@@ -307,42 +307,42 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
           </div>
 
           {imageUrl && !isLoading && (
-            <div className="mt-4 flex justify-center space-x-4">
-              <button
+            <div className="mt-4 flex justify-center space-x-2">
+              <Button
                 onClick={addWatermarkAndDownload}
-                className="bg-green-500 p-2 rounded-full hover:bg-green-600 transition-colors duration-200"
+                className="bg-transparent border border-gray-700 p-2 rounded-full hover:bg-gray-800 transition-colors duration-200"
                 aria-label="Download image"
               >
-                <Download size={20} color="white" />
-              </button>
-              <button
+                <Download size={18} className="text-green-500" />
+              </Button>
+              <Button
                 onClick={copyLinkToClipboard}
-                className="bg-gray-500 p-2 rounded-full hover:bg-gray-600 transition-colors duration-200"
+                className="bg-transparent border border-gray-700 p-2 rounded-full hover:bg-gray-800 transition-colors duration-200"
                 aria-label="Copy link to clipboard"
               >
-                <Clipboard size={20} color="white" />
-              </button>
-              <button
+                <Clipboard size={18} className="text-gray-400" />
+              </Button>
+              <Button
                 onClick={shareOnTwitter}
-                className="bg-blue-400 p-2 rounded-full hover:bg-blue-500 transition-colors duration-200"
+                className="bg-transparent border border-gray-700 p-2 rounded-full hover:bg-gray-800 transition-colors duration-200"
                 aria-label="Share on Twitter"
               >
-                <Twitter size={20} color="white" />
-              </button>
-              <button
+                <Twitter size={18} className="text-blue-400" />
+              </Button>
+              <Button
                 onClick={shareOnReddit}
-                className="bg-orange-500 p-2 rounded-full hover:bg-orange-600 transition-colors duration-200"
+                className="bg-transparent border border-gray-700 p-2 rounded-full hover:bg-gray-800 transition-colors duration-200"
                 aria-label="Share on Reddit"
               >
-                <Share2 size={20} color="white" />
-              </button>
-              <button
+                <Share2 size={18} className="text-orange-500" />
+              </Button>
+              <Button
                 onClick={shareOnFacebook}
-                className="bg-blue-600 p-2 rounded-full hover:bg-blue-700 transition-colors duration-200"
+                className="bg-transparent border border-gray-700 p-2 rounded-full hover:bg-gray-800 transition-colors duration-200"
                 aria-label="Share on Facebook"
               >
-                <Facebook size={20} color="white" />
-              </button>
+                <Facebook size={18} className="text-blue-600" />
+              </Button>
             </div>
           )}
         </div>
