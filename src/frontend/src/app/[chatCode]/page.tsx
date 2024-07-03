@@ -1,3 +1,4 @@
+"use client";
 import { ChatPanel } from "@/components/chat-panel";
 import { useParams } from 'next/navigation';
 
