@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import TextareaAutosize from "react-textarea-autosize";
 import { Button } from "./ui/button";
-import { ArrowUp, Camera, Brush, Image as ImageIcon, Square, RectangleHorizontal, RectangleVertical, Twitter, Facebook, Download, Link as LinkIcon, Clipboard, Share2 } from "lucide-react";
+import { ArrowUp, Camera, Brush, Image as ImageIcon, Square, RectangleHorizontal, RectangleVertical, Twitter, Download, Link as LinkIcon, Clipboard, Share2, MessageCircle } from "lucide-react";
 import axios from 'axios';
 import { env } from "../env.mjs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -244,9 +244,10 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
     window.open(`https://www.reddit.com/submit?title=${title}&url=${url}`, '_blank');
   };
 
-  const shareOnFacebook = () => {
+  const shareOnWhatsApp = () => {
+    const text = encodeURIComponent("Check out this AI-generated image!");
     const url = encodeURIComponent(getShareUrl());
-    window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank');
+    window.open(`https://wa.me/?text=${text}%20${url}`, '_blank');
   };
 
   const copyLinkToClipboard = () => {
@@ -337,11 +338,11 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
                 <Share2 size={18} className="text-orange-500" />
               </Button>
               <Button
-                onClick={shareOnFacebook}
+                onClick={shareOnWhatsApp}
                 className="bg-transparent border border-gray-700 p-2 rounded-full hover:bg-gray-800 transition-colors duration-200"
-                aria-label="Share on Facebook"
+                aria-label="Share on WhatsApp"
               >
-                <Facebook size={18} className="text-blue-600" />
+                <MessageCircle size={18} className="text-green-500" />
               </Button>
             </div>
           )}
