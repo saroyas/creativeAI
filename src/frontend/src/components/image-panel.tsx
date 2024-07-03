@@ -193,7 +193,7 @@ export const ImagePanel: React.FC = () => {
             <div className="text-red-400 mb-2 text-sm px-2">{error}</div>
           )}
 
-          <div className="aspect-square w-full relative overflow-hidden bg-opacity-50 bg-gray-800 backdrop-blur-sm rounded-lg">
+          <div className={`relative overflow-hidden rounded-lg ${selectedAspect === 'landscape' ? 'aspect-w-16 aspect-h-9' : selectedAspect === 'portrait' ? 'aspect-w-9 aspect-h-16' : 'aspect-w-1 aspect-h-1'}`}>
             {isLoading && (
               <div className="absolute inset-0 flex flex-col items-center justify-center">
                 <img
