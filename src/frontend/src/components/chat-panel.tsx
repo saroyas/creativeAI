@@ -65,10 +65,10 @@ export const ChatPanel = ({ chatCode }: { chatCode?: string }) => {
   useAutoFocus(inputRef);
 
   useEffect(() => {
-    if (chatCode) {
+    if (chatCode && messages.length === 0) {
       handleSend(chatCode);
     }
-  }, [chatCode, handleSend]);
+  }, []); // Empty dependency array ensures this effect runs only once
 
   if (messages.length > 0) {
     return (
