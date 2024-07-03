@@ -58,7 +58,7 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
 
   useEffect(() => {
     if (initialImageCode) {
-      const fullImageUrl = `https://images.prodia.xyz/${initialImageCode}`;
+      const fullImageUrl = `https://images.prodia.xyz/${initialImageCode}.png`;
       setImageUrl(fullImageUrl);
     }
   }, [initialImageCode]);
@@ -222,7 +222,8 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
 
   const getImageCode = (url: string) => {
     const parts = url.split('/');
-    return parts[parts.length - 1];
+    const fileName = parts[parts.length - 1];
+    return fileName.split('.')[0]; // Remove the file extension
   };
 
   const getShareUrl = () => {
