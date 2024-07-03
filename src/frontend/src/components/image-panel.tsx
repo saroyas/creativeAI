@@ -234,7 +234,7 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
   };
 
   const shareOnTwitter = () => {
-    const text = encodeURIComponent("Check out this AI-generated image!");
+    const text = encodeURIComponent("Check out this AI Uncensored image! #Uncensored-AI #GenerativeAI");
     const url = encodeURIComponent(getShareUrl());
     window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
   };
@@ -245,13 +245,22 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
   };
 
   const shareOnReddit = () => {
-    const title = encodeURIComponent("AI-Generated Image");
+    const title = encodeURIComponent("Check out this AI-generated image!");
     const url = encodeURIComponent(getShareUrl());
-    window.open(`https://www.reddit.com/submit?title=${title}&url=${url}`, '_blank');
+    const text = encodeURIComponent(`I created this AI-generated image using the prompt: "${prompt}"\n\nCheck it out here: ${getShareUrl()}`);
+    
+    const redditUrl = `https://www.reddit.com/submit?url=${url}&title=${title}&text=${text}`;
+    
+    try {
+      window.open(redditUrl, '_blank');
+    } catch (error) {
+      console.error('Failed to open Reddit sharing window:', error);
+      // Optionally, show a user-friendly error message
+    }
   };
 
   const shareOnWhatsApp = () => {
-    const text = encodeURIComponent("Check out this AI-generated image!");
+    const text = encodeURIComponent("Check out this AI-generated image I made!");
     const url = encodeURIComponent(getShareUrl());
     window.open(`https://wa.me/?text=${text}%20${url}`, '_blank');
   };
