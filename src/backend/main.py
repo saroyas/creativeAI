@@ -222,7 +222,7 @@ async def generate_image_async(task_id: str, prompt: str, imageURL: str, model: 
                             job_status = job_response.json()
                             status = job_status.get('status')
                             if status == 'succeeded':
-                                print("Job succeeded")
+                                print("Job succeeded : ", job_status.get('imageUrl'))
                                 IMAGE_TASKS[task_id] = {"status": "completed", "image_url": job_status.get('imageUrl')}
                                 return
                             elif status == 'failed':
@@ -248,8 +248,8 @@ async def generate_image_async(task_id: str, prompt: str, imageURL: str, model: 
 
 @app.post("/image")
 @limiter.limit("3/minute")
-@limiter.limit("20 per 30 minutes")
-@limiter.limit("20 per 24 hours")
+@limiter.limit("10 per 30 minutes")
+@limiter.limit("15 per 24 hours")
 async def generate_image_route(image_request: ImageRequest, request: Request, background_tasks: BackgroundTasks):
     ip_address = get_ipaddr(request)
     if ip_address in PERMANENT_BLOCKLIST:
@@ -264,6 +264,7 @@ async def generate_image_route(image_request: ImageRequest, request: Request, ba
         sexual_content_flag = result["categories"]["sexual"] and result["category_scores"]["sexual"] > 0.5
 
         if underage_flag:
+            print("Moderation Block Enforced.")
             raise HTTPException(status_code=400, detail="The provided prompt contains inappropriate content and cannot be processed.")
         
         if sexual_content_flag:
@@ -275,6 +276,8 @@ async def generate_image_route(image_request: ImageRequest, request: Request, ba
             prompt = prompt.replace("Boy", "man")
             # at the end of the prompt, add "all individuals are adults"
             prompt += ". All individuals are adults."
+        
+        print("Generating for :", prompt)
         
         # Generate a unique task ID
         task_id = f"task_{len(IMAGE_TASKS) + 1}"

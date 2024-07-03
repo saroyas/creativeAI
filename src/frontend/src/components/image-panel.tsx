@@ -95,7 +95,7 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
         setIsLoading(false);
       }
     } catch (err) {
-      setError("Too many requests for today. Try again tomorrow.");
+      setError("Too many requests. Try again after a short break.");
       console.error("Error initiating image generation:", err);
       setIsLoading(false);
     }
