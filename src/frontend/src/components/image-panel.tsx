@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import TextareaAutosize from "react-textarea-autosize";
 import { Button } from "./ui/button";
-import { ArrowUp, Camera, Brush, ImageIcon } from "lucide-react";
+import { ArrowUp, Camera, Brush, ImageIcon, Square, RectangleHorizontal, RectangleVertical } from "lucide-react";
 import axios from 'axios';
 import { env } from "../env.mjs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 const BASE_URL = env.NEXT_PUBLIC_API_URL;
 
 type ImageModel = 'anime' | 'photo';
+type ImageAspect = 'square' | 'landscape' | 'portrait';
 
 const modelMap: Record<ImageModel, { name: string; icon: React.ReactNode }> = {
   anime: {
@@ -23,6 +24,21 @@ const modelMap: Record<ImageModel, { name: string; icon: React.ReactNode }> = {
   },
 };
 
+const aspectMap: Record<ImageAspect, { name: string; icon: React.ReactNode }> = {
+  square: {
+    name: "Square",
+    icon: <Square className="w-4 h-4 text-green-500" />,
+  },
+  landscape: {
+    name: "Landscape",
+    icon: <RectangleHorizontal className="w-4 h-4 text-green-500" />,
+  },
+  portrait: {
+    name: "Portrait",
+    icon: <RectangleVertical className="w-4 h-4 text-green-500" />,
+  },
+};
+
 export const ImagePanel: React.FC = () => {
   const [prompt, setPrompt] = useState<string>("");
   const [imageUrl, setImageUrl] = useState<string>("");
@@ -31,6 +47,7 @@ export const ImagePanel: React.FC = () => {
   const [progress, setProgress] = useState<number>(0);
   const [taskId, setTaskId] = useState<string | null>(null);
   const [selectedModel, setSelectedModel] = useState<ImageModel>('anime');
+  const [selectedAspect, setSelectedAspect] = useState<ImageAspect>('square');
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   const generateImage = async (promptText: string) => {
@@ -42,7 +59,8 @@ export const ImagePanel: React.FC = () => {
     try {
       const response = await axios.post(`${BASE_URL}/image`, {
         prompt: promptText,
-        model: selectedModel
+        model: selectedModel,
+        aspect: selectedAspect,
       }, {
         withCredentials: true,
         headers: {
@@ -234,6 +252,29 @@ export const ImagePanel: React.FC = () => {
               </SelectTrigger>
               <SelectContent className="w-[120px] z-50">
                 {Object.entries(modelMap).map(([value, { name, icon }]) => (
+                  <SelectItem key={value} value={value} className="flex flex-col items-start p-2">
+                    <div className="flex items-center space-x-2">
+                      {icon}
+                      <span className="font-bold">{name}</span>
+                    </div>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Select
+              value={selectedAspect}
+              onValueChange={(value) => setSelectedAspect(value as ImageAspect)}
+            >
+              <SelectTrigger className="w-fit space-x-2 bg-transparent outline-none border border-gray-700 select-none focus:ring-0 shadow-none transition-all duration-200 ease-in-out hover:scale-[1.05] text-sm ml-4">
+                <SelectValue>
+                  <div className="flex items-center space-x-2">
+                    {aspectMap[selectedAspect].icon}
+                    <span className="font-semibold">{aspectMap[selectedAspect].name}</span>
+                  </div>
+                </SelectValue>
+              </SelectTrigger>
+              <SelectContent className="w-[120px] z-50">
+                {Object.entries(aspectMap).map(([value, { name, icon }]) => (
                   <SelectItem key={value} value={value} className="flex flex-col items-start p-2">
                     <div className="flex items-center space-x-2">
                       {icon}

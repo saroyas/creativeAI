@@ -165,8 +165,9 @@ class ImageRequest(BaseModel):
     prompt: str
     imageURL: str = ""
     model: str = "photo"
+    aspect: str = "square"  # Add aspect ratio to the request model
 
-async def generate_image_async(task_id: str, prompt: str, imageURL: str, model: str):
+async def generate_image_async(task_id: str, prompt: str, imageURL: str, model: str, aspect: str):
     url = "https://api.prodia.com/v1/sdxl/generate"
     headers = {
         'X-Prodia-Key': PRODIA_API_KEY,
@@ -182,6 +183,14 @@ async def generate_image_async(task_id: str, prompt: str, imageURL: str, model: 
     else:  # Default to photo model
         model_id = "juggernautXL_v45.safetensors [e75f5471]"
 
+    # Adjust dimensions based on the selected aspect ratio
+    if aspect == "landscape":
+        width, height = 1024, 768
+    elif aspect == "portrait":
+        width, height = 768, 1024
+    else:
+        width, height = 1024, 1024
+
     payload = {
         "model": model_id,
         "prompt": prompt,
@@ -190,8 +199,8 @@ async def generate_image_async(task_id: str, prompt: str, imageURL: str, model: 
         "cfg_scale": 7,
         "seed": -1,
         "sampler": "DPM++ 2M Karras",
-        "width": 1024,
-        "height": 1024
+        "width": width,
+        "height": height
     }
     if imageURL and imageURL != "":
         print("Using image URL", imageURL)
@@ -214,7 +223,6 @@ async def generate_image_async(task_id: str, prompt: str, imageURL: str, model: 
                             status = job_status.get('status')
                             if status == 'succeeded':
                                 print("Job succeeded")
-                                # print(f"Job succeeded - returning image URL: {job_status.get('imageUrl')}")
                                 IMAGE_TASKS[task_id] = {"status": "completed", "image_url": job_status.get('imageUrl')}
                                 return
                             elif status == 'failed':
@@ -268,9 +276,6 @@ async def generate_image_route(image_request: ImageRequest, request: Request, ba
             # at the end of the prompt, add "all individuals are adults"
             prompt += ". All individuals are adults."
         
-        
-        # print("Image request processing:", prompt)
-
         # Generate a unique task ID
         task_id = f"task_{len(IMAGE_TASKS) + 1}"
         
@@ -278,7 +283,7 @@ async def generate_image_route(image_request: ImageRequest, request: Request, ba
         IMAGE_TASKS[task_id] = {"status": "processing"}
         
         # Add the image generation task to background tasks
-        background_tasks.add_task(generate_image_async, task_id, prompt, image_request.imageURL, image_request.model)
+        background_tasks.add_task(generate_image_async, task_id, prompt, image_request.imageURL, image_request.model, image_request.aspect)
         
         return {"task_id": task_id, "message": "Image generation started in the background"}
     except Exception as e:
