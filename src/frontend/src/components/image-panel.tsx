@@ -72,7 +72,7 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
     setProgress(0);
     setImageUrl("");
     setTaskId(null);
-    event('generate_image', {
+    event('Generating_Image', {
       category: 'Generating_Image',
       label: "Generating Image",
     });
@@ -200,9 +200,9 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
           document.body.removeChild(link);
           URL.revokeObjectURL(url);
 
-          event('download_image', {
-            category: 'Downloaded',
-            label: "Downloaded",
+          event('Downloaded_Image', {
+            category: 'Downloaded_Image',
+            label: "Downloaded Image",
           });
         }
       }, 'image/jpeg', 0.95);
@@ -248,7 +248,7 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
     const url = encodeURIComponent(getShareUrl());
     window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
 
-    event('share', {
+    event('Twitter_Share', {
       category: 'Twitter_Share',
       label: 'Twitter',
     });
@@ -258,7 +258,7 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
     const url = encodeURIComponent(getShareUrl());
     window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank');
 
-    event('share', {
+    event('Facebook_Share', {
       category: 'Facebook_Share',
       label: 'Facebook',
     });
@@ -273,7 +273,7 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
 
     try {
       window.open(redditUrl, '_blank');
-      event('share', {
+      event('Reddit_Share', {
         category: 'Reddit_Share',
         label: 'Reddit',
       });
@@ -288,7 +288,7 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
     const url = encodeURIComponent(getShareUrl());
     window.open(`https://wa.me/?text=${text}%20${url}`, '_blank');
 
-    event('share', {
+    event('WhatsApp_Share', {
       category: 'WhatsApp_Share',
       label: 'WhatsApp',
     });
@@ -302,7 +302,7 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
         description: 'The link has been copied to your clipboard.'
       });
 
-      event('copy_link', {
+      event('Link_Copied_Share', {
         category: 'Link_Copied_Share',
         label: "Link Copied",
       });
