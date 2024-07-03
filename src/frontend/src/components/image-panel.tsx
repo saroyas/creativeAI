@@ -276,25 +276,33 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
             )}
 
             {imageUrl && !isLoading && (
-              <div
-                className="w-full h-full cursor-pointer overflow-hidden rounded-lg"
-                onClick={addWatermarkAndDownload}
-              >
+              <div className="w-full h-full overflow-hidden rounded-lg">
                 <img
                   src={imageUrl}
                   alt="Generated image"
-                  className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                  className="w-full h-full object-cover"
                 />
                 <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-4">
                   <button
-                    onClick={(e) => { e.stopPropagation(); shareOnTwitter(); }}
+                    onClick={addWatermarkAndDownload}
+                    className="bg-green-500 p-2 rounded-full hover:bg-green-600 transition-colors duration-200"
+                    aria-label="Download image"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                      <polyline points="7 10 12 15 17 10"></polyline>
+                      <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                  </button>
+                  <button
+                    onClick={shareOnTwitter}
                     className="bg-blue-400 p-2 rounded-full hover:bg-blue-500 transition-colors duration-200"
                     aria-label="Share on Twitter"
                   >
                     <Twitter size={20} color="white" />
                   </button>
                   <button
-                    onClick={(e) => { e.stopPropagation(); shareOnReddit(); }}
+                    onClick={shareOnReddit}
                     className="bg-orange-500 p-2 rounded-full hover:bg-orange-600 transition-colors duration-200"
                     aria-label="Share on Reddit"
                   >
@@ -303,7 +311,7 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
                     </svg>
                   </button>
                   <button
-                    onClick={(e) => { e.stopPropagation(); shareOnFacebook(); }}
+                    onClick={shareOnFacebook}
                     className="bg-blue-600 p-2 rounded-full hover:bg-blue-700 transition-colors duration-200"
                     aria-label="Share on Facebook"
                   >
