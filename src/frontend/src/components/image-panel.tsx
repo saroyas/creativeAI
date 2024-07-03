@@ -195,13 +195,13 @@ export const ImagePanel: React.FC = () => {
 
           <div className={`relative overflow-hidden rounded-lg ${selectedAspect === 'landscape' ? 'aspect-w-16 aspect-h-9' : selectedAspect === 'portrait' ? 'aspect-w-9 aspect-h-16' : 'aspect-w-1 aspect-h-1'}`}>
             {isLoading && (
-              <div className="absolute inset-0 flex flex-col items-center justify-center">
+              <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-800">
                 <img
                   src="https://i.ibb.co/5Kf5nwH/0622.gif"
                   alt="Loading"
-                  className="w-full h-full object-cover"
+                  className="w-16 h-16"
                 />
-                <div className="absolute top-2 left-2 right-2 z-10">
+                <div className="absolute bottom-2 left-2 right-2 z-10">
                   <div className="w-full h-1 bg-gray-200 bg-opacity-30 rounded-full overflow-hidden">
                     <div
                       className="h-full bg-blue-500 transition-all duration-1000 ease-out"
