@@ -213,7 +213,8 @@ async def generate_image_async(task_id: str, prompt: str, imageURL: str, model: 
                             job_status = job_response.json()
                             status = job_status.get('status')
                             if status == 'succeeded':
-                                print(f"Job succeeded - returning image URL: {job_status.get('imageUrl')}")
+                                print("Job succeeded")
+                                # print(f"Job succeeded - returning image URL: {job_status.get('imageUrl')}")
                                 IMAGE_TASKS[task_id] = {"status": "completed", "image_url": job_status.get('imageUrl')}
                                 return
                             elif status == 'failed':
@@ -266,7 +267,7 @@ async def generate_image_route(image_request: ImageRequest, request: Request, ba
             prompt += ". All individuals are adults."
         
         
-        print("Image request processing:", prompt)
+        # print("Image request processing:", prompt)
 
         # Generate a unique task ID
         task_id = f"task_{len(IMAGE_TASKS) + 1}"
