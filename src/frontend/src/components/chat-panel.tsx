@@ -51,7 +51,7 @@ const useAutoFocus = (ref: React.RefObject<HTMLTextAreaElement>) => {
   }, [ref]);
 };
 
-export const ChatPanel = () => {
+export const ChatPanel = ({ chatCode }: { chatCode?: string }) => {
   const { handleSend, streamingMessage } = useChat();
   const { messages } = useMessageStore();
 
@@ -63,6 +63,12 @@ export const ChatPanel = () => {
   useAutoScroll(messageBottomRef);
   useAutoResizeInput(messagesRef, setWidth);
   useAutoFocus(inputRef);
+
+  useEffect(() => {
+    if (chatCode) {
+      handleSend(chatCode);
+    }
+  }, [chatCode, handleSend]);
 
   if (messages.length > 0) {
     return (
