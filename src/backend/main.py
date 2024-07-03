@@ -333,6 +333,7 @@ async def generate_image_route(image_request: ImageRequest, request: Request, ba
             print("Moderation Block Enforced.")
             raise HTTPException(status_code=400, detail="The provided prompt contains inappropriate content and cannot be processed.")
         
+        print("Original Prompt:", prompt)
         prompt = await improve_prompt(prompt)
         print("Improved prompt:", prompt)
         
@@ -346,7 +347,6 @@ async def generate_image_route(image_request: ImageRequest, request: Request, ba
             # at the end of the prompt, add "all individuals are adults"
             prompt += ". All individuals are adults."
         
-        print("Generating for :", prompt)
         
         # Generate a unique task ID
         task_id = f"task_{len(IMAGE_TASKS) + 1}"
