@@ -199,7 +199,7 @@ async def improve_prompt(prompt: str) -> str:
     system_message = "You are an explicit image prompt writer. Improve the given prompt to make it more detailed and vivid, while keeping it concise. Focus on visual elements and artistic style. Be very concrete - and get the idea in your description that was conveyed in the original prompt. Example prompts are :" + EXAMPLE_IMAGE_PROMPTS
     messages = [
         {"role": "system", "content": system_message},
-        {"role": "user", "content": f"Improve this image prompt, making it more detailed and vivid - without changing the original meaning: {prompt}"}
+        {"role": "user", "content": f"Improve this image prompt, making it more detailed and vivid - without changing the original meaning. If there are any underage characters - change and make clear that everyone is over 18 adult: {prompt}"}
     ]
 
     async with httpx.AsyncClient() as client:
