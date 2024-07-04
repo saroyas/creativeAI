@@ -173,7 +173,7 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
             # Moderation happens first
             try:
                 moderation_result = await check_moderation(history_str)
-                if "sexual/minors" in moderation_result["categories"] and moderation_result["category_scores"]["sexual/minors"] > 0.8:
+                if "sexual/minors" in moderation_result["categories"] and moderation_result["category_scores"]["sexual/minors"] > 0.6:
                     # replace the current system prompt (at the start of message_history)
                     message_history[0] = {"role": "system", "content": "There are some things even you cannot do. You are not trained to do anything related to child pornography. Inform the user of this restriction."}
                     # remove the last message in message_history (which was the user query)
