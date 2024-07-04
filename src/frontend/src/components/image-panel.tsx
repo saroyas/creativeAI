@@ -61,6 +61,7 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
   const [sourceImageUrl, setSourceImageUrl] = useState<string>("");
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const overlayRef = useRef<HTMLDivElement | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast(); // Use the useToast hook
 
   useEffect(() => {
@@ -353,6 +354,10 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
     }
   }, []);
 
+  const triggerFileInput = () => {
+    fileInputRef.current?.click();
+  };
+
   const handleFaceSwap = async () => {
     if (!sourceImageUrl || !imageUrl) {
       toast({
@@ -489,16 +494,17 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
                 accept="image/*"
                 onChange={handleFileUpload}
                 style={{ display: 'none' }}
-                id="fileInput"
+                ref={fileInputRef}
               />
-              <label htmlFor="fileInput">
-                <Button
-                  className="bg-transparent border border-gray-700 p-2 rounded-full hover:bg-gray-800 transition-colors duration-200"
-                  aria-label="Upload source image"
-                >
-                  <ImageIcon size={18} className="text-blue-500" />
-                </Button>
-              </label>
+              <Button
+                onClick={triggerFileInput}
+                className={`bg-transparent border border-gray-700 p-2 rounded-full hover:bg-gray-800 transition-colors duration-200 ${
+                  sourceImageUrl ? 'ring-2 ring-blue-500' : ''
+                }`}
+                aria-label="Upload source image"
+              >
+                <ImageIcon size={18} className={sourceImageUrl ? 'text-blue-500' : 'text-gray-500'} />
+              </Button>
               <Button
                 onClick={handleFaceSwap}
                 disabled={!sourceImageUrl || !imageUrl}
