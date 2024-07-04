@@ -333,11 +333,11 @@ async def generate_image_route(image_request: ImageRequest, request: Request, ba
             print("Moderation Block Enforced.")
             raise HTTPException(status_code=400, detail="The provided prompt contains inappropriate content and cannot be processed.")
         
-        original_prompt = prompt
-        prompt = original_prompt + ". " + (await improve_prompt(prompt))
-        print(f"Prompt: {prompt}")
         
         if sexual_content_flag:
+            original_prompt = prompt
+            prompt = original_prompt + ". " + (await improve_prompt(prompt + ". \n In your reply, focus on the sexually explicit details."))
+            print(f"Prompt: {prompt}")
             # in the prompt, replace girl with woman
             prompt = prompt.replace("girl", "woman")
             prompt = prompt.replace("Girl", "woman")
@@ -346,6 +346,10 @@ async def generate_image_route(image_request: ImageRequest, request: Request, ba
             prompt = prompt.replace("Boy", "man")
             # at the end of the prompt, add "all individuals are adults"
             prompt += ". All individuals are adults."
+        else:
+            original_prompt = prompt
+            prompt = original_prompt + ". " + (await improve_prompt(prompt))
+            print(f"Prompt: {prompt}")
         
         
         # Generate a unique task ID
