@@ -7,10 +7,9 @@ import { event } from 'nextjs-google-analytics';
 
 interface ShareButtonsProps {
   code: string;
-  prompt: string;
 }
 
-export const ShareButtons: React.FC<ShareButtonsProps> = ({ code, prompt }) => {
+export const ShareButtons: React.FC<ShareButtonsProps> = ({ code }) => {
   const { toast } = useToast();
 
   const getShareUrl = () => `https://www.aiuncensored.info/image/${code}`;
@@ -31,7 +30,7 @@ export const ShareButtons: React.FC<ShareButtonsProps> = ({ code, prompt }) => {
   const shareOnReddit = () => {
     const title = encodeURIComponent("Check out this Image I generated using AI!");
     const url = encodeURIComponent(getShareUrl());
-    const text = encodeURIComponent(`I created this AI-generated image using the prompt: "${prompt}"\n\nCheck it out here: ${getShareUrl()}`);
+    const text = encodeURIComponent(`I created this AI-generated image.\nCheck it out here: ${getShareUrl()}`);
     window.open(`https://www.reddit.com/submit?url=${url}&title=${title}&text=${text}`, '_blank');
     event('Reddit_Share', { category: 'Reddit_Share', label: 'Reddit' });
   };
