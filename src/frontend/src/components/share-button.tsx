@@ -17,7 +17,7 @@ export const ShareButtons: React.FC<ShareButtonsProps> = ({ code }) => {
   const getShareUrl = () => `https://www.aiuncensored.info/image/${code}`;
 
   const shareOnTwitter = () => {
-    const text = encodeURIComponent("Check out this AI image I made! #UncensoredAI #GenerativeAI");
+    const text = encodeURIComponent(code + " - Uncensored AI #UncensoredAI #GenerativeAI");
     const url = encodeURIComponent(getShareUrl());
     window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
     event('Chat_Twitter_Share', { category: 'Twitter_Share', label: 'Twitter' });
@@ -30,15 +30,15 @@ export const ShareButtons: React.FC<ShareButtonsProps> = ({ code }) => {
   };
 
   const shareOnReddit = () => {
-    const title = encodeURIComponent("Check out this Image I generated using AI!");
+    const title = encodeURIComponent(code + " - Uncensored AI");
     const url = encodeURIComponent(getShareUrl());
-    const text = encodeURIComponent(`I created this AI-generated image.\nCheck it out here: ${getShareUrl()}`);
+    const text = encodeURIComponent(`${code} - Uncensored AI: ${getShareUrl()}`);
     window.open(`https://www.reddit.com/submit?url=${url}&title=${title}&text=${text}`, '_blank');
     event('Chat_Reddit_Share', { category: 'Reddit_Share', label: 'Reddit' });
   };
 
   const shareOnWhatsApp = () => {
-    const text = encodeURIComponent("Check out this AI-generated image I made!");
+    const text = encodeURIComponent(code + " - Uncensored AI");
     const url = encodeURIComponent(getShareUrl());
     window.open(`https://wa.me/?text=${text}%20${url}`, '_blank');
     event('Chat_WhatsApp_Share', { category: 'WhatsApp_Share', label: 'WhatsApp' });
