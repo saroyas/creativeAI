@@ -335,6 +335,7 @@ async def generate_image_route(image_request: ImageRequest, request: Request, ba
         
         
         if sexual_content_flag:
+            prompt += ". Fully developed. Mature. All individuals are adults."
             original_prompt = prompt
             prompt = original_prompt + ". " + (await improve_prompt(prompt + ". \n In your reply, focus on the sexually explicit details."))
             # print(f"Prompt: {prompt}")
@@ -345,7 +346,6 @@ async def generate_image_route(image_request: ImageRequest, request: Request, ba
             prompt = prompt.replace("boy", "man")
             prompt = prompt.replace("Boy", "man")
             # at the end of the prompt, add "all individuals are adults"
-            prompt += ". All individuals are adults."
         else:
             original_prompt = prompt
             prompt = original_prompt + ". " + (await improve_prompt(prompt))
