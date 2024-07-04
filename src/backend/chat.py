@@ -30,8 +30,11 @@ from backend.utils import is_local_model
 # Define the "About Us" message
 WHO_ARE_WE_MESSAGE = """
 We are hackers and artists.
-We believe in access to unrestricted information.
+We believe in access to free information.
 No matter who you are. No matter where.
+
+A lot of our traffic is from Iran, Russia and China.
+Where censorship is rife, and dissent silenced.
 
 We do not store anything. We ask no details.
 We recommend you generally use a VPN.
