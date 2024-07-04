@@ -79,11 +79,6 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
           const ctx = canvas.getContext('2d');
           if (ctx) {
             ctx.drawImage(img, 0, 0);
-            
-            // Add watermark
-            ctx.font = '20px Arial';
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
-            ctx.fillText('AI Uncensored', 10, 30);
           }
         }
       };
