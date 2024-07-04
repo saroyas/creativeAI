@@ -150,7 +150,7 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
       } catch (err) {
         console.error("Error polling task status:", err);
         clearInterval(pollInterval);
-        setError("Failed to check image generation status. Please try again.");
+        setError("Network Error. Please try again.");
         setIsLoading(false);
       }
     }, 2000);
