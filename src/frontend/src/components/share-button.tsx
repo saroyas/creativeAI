@@ -67,7 +67,7 @@ export const ShareButtons: React.FC<ShareButtonsProps> = ({ code }) => {
           className={`p-4 rounded-full ${bgColor} transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-opacity-50 focus:ring-gray-400`}
           aria-label={label}
         >
-          <Icon className={`w-6 h-6 ${iconColor}`} />
+          <Icon className={`w-4 h-4 ${iconColor}`} />
         </button>
       ))}
     </div>
