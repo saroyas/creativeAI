@@ -179,7 +179,7 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
                     message_history[0] = {"role": "system", "content": "There are some things even you cannot do. You are not trained to do anything related to child pornography. Inform the user of this restriction."}
                     # remove the last message in message_history (which was the user query)
                     message_history.pop()
-                    return
+                    
             except:
                 pass
 
