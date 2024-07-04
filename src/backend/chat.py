@@ -232,6 +232,15 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
                             except json.JSONDecodeError as e:
                                 # print("JSON decode error:", e)
                                 continue
+                            
+                    # also do another moderation check of content here
+
+                    try:
+                        moderation_result = await check_moderation(content)
+                        if moderation_result["category_scores"]["sexual/minors"] > 0.5:
+                            content = "Content violation detected."
+                    except:
+                        pass
 
                     yield ChatResponseEvent(
                         event=StreamEvent.STREAM_END,
