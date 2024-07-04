@@ -15,7 +15,6 @@ export const ShareButtons: React.FC<ShareButtonsProps> = ({ code }) => {
   const getShareUrl = () => `https://www.aiuncensored.info/${encodeURIComponent(code)}`;
 
   const event = (action: string, params: { category: string; label: string }) => {
-    // Implement your event tracking logic here
     console.log('Event:', action, params);
   };
 
@@ -55,35 +54,22 @@ export const ShareButtons: React.FC<ShareButtonsProps> = ({ code }) => {
   };
 
   return (
-    <div className="flex justify-center items-center space-x-4">
-      <button 
-        onClick={copyLinkToClipboard}
-        className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors duration-200"
-        aria-label="Copy link"
-      >
-        <FiLink className={`w-5 h-5 ${copied ? 'text-green-500' : 'text-gray-600'}`} />
-      </button>
-      <button 
-        onClick={shareOnTwitter}
-        className="p-2 rounded-full bg-blue-100 hover:bg-blue-200 transition-colors duration-200"
-        aria-label="Share on Twitter"
-      >
-        <FiTwitter className="w-5 h-5 text-blue-500" />
-      </button>
-      <button 
-        onClick={shareOnFacebook}
-        className="p-2 rounded-full bg-indigo-100 hover:bg-indigo-200 transition-colors duration-200"
-        aria-label="Share on Facebook"
-      >
-        <FiFacebook className="w-5 h-5 text-indigo-500" />
-      </button>
-      <button 
-        onClick={shareOnWhatsApp}
-        className="p-2 rounded-full bg-green-100 hover:bg-green-200 transition-colors duration-200"
-        aria-label="Share on WhatsApp"
-      >
-        <FaWhatsapp className="w-5 h-5 text-green-500" />
-      </button>
+    <div className="flex justify-center items-center space-x-6 my-8">
+      {[
+        { icon: FiLink, onClick: copyLinkToClipboard, label: "Copy link", bgColor: copied ? "bg-green-700" : "bg-gray-800", iconColor: "text-gray-200" },
+        { icon: FiTwitter, onClick: shareOnTwitter, label: "Share on Twitter", bgColor: "bg-blue-900", iconColor: "text-blue-200" },
+        { icon: FiFacebook, onClick: shareOnFacebook, label: "Share on Facebook", bgColor: "bg-indigo-900", iconColor: "text-indigo-200" },
+        { icon: FaWhatsapp, onClick: shareOnWhatsApp, label: "Share on WhatsApp", bgColor: "bg-green-900", iconColor: "text-green-200" },
+      ].map(({ icon: Icon, onClick, label, bgColor, iconColor }, index) => (
+        <button 
+          key={index}
+          onClick={onClick}
+          className={`p-4 rounded-full ${bgColor} transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-opacity-50 focus:ring-gray-400`}
+          aria-label={label}
+        >
+          <Icon className={`w-6 h-6 ${iconColor}`} />
+        </button>
+      ))}
     </div>
   );
 };
