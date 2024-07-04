@@ -143,6 +143,8 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
             ),
         )
         
+        print("request query:", request.query)
+        
         if request.query == "About Us":
             async for char in stream_text_chunks(WHO_ARE_WE_MESSAGE):
                 yield ChatResponseEvent(
