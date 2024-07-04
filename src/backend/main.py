@@ -284,7 +284,7 @@ async def generate_image_async(task_id: str, prompt: str, imageURL: str, model: 
                             job_status = job_response.json()
                             status = job_status.get('status')
                             if status == 'succeeded':
-                                print("Job succeeded")
+                                print("Job succeeded : ", job_status.get('imageUrl'))
                                 IMAGE_TASKS[task_id] = {"status": "completed", "image_url": job_status.get('imageUrl')}
                                 return
                             elif status == 'failed':
