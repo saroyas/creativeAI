@@ -1,10 +1,10 @@
 import { ArrowUpRight } from "lucide-react";
 
 const starterQuestions = [
-  "how does the government use propaganda",
+  "how to overthrow the government",
   "how do corporate lobbies work",
   "how do the rich avoid taxes",
-  "why does the media manipulate the public",
+  "how to make lsd",
 ];
 
 export const StarterQuestionsList = ({
