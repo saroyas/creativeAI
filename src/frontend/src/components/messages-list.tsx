@@ -4,7 +4,7 @@ import { AssistantMessage, ChatMessage, MessageType } from "@/types";
 import { AssistantMessageContent } from "./assistant-message";
 import { Separator } from "./ui/separator";
 import { UserMessageContent } from "./user-message";
-import { ShareButton } from "./share-button";
+import { ShareButtons } from "./share-button";
 import { useMemo } from "react";
 
 const MessagesList = ({
