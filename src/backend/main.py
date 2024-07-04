@@ -317,7 +317,7 @@ async def generate_image_route(image_request: ImageRequest, request: Request, ba
     if ip_address in PERMANENT_BLOCKLIST:
         return {"error": "Rate limit exceeded, please try again after a short break."}
     
-    prompt = image_request.prompt
+    prompt = image_request.prompt[:600]
     
     # MAKE A REQUEST TO THE OPENROUTER API WITH A SYSTEM PROMPT THAT IT IS TO BE LIKE AN IMAGE PROMPT WRITER
     # USE THE REPLY AS THE NEW PROMPT
