@@ -98,7 +98,7 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
     setProgress(0);
     setImageUrl("");
     setTaskId(null);
-    event('Generating_Image', {
+    event('Generating_Image_Started', {
       category: 'Generating_Image',
       label: "Generating Image",
     });
@@ -140,6 +140,10 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
           setIsLoading(false);
           setProgress(100);
           setImageCode(getImageCode(response.data.image_url));
+          event('Generating_Image_Completed', {
+            category: 'Generating_Image',
+            label: "Generating Image",
+          });
         } else if (status === "failed") {
           clearInterval(pollInterval);
           setError(response.data.error || "Image generation failed. Please try again.");
