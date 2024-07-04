@@ -67,7 +67,8 @@ export const ChatPanel = ({ chatCode }: { chatCode?: string }) => {
 
   useEffect(() => {
     if (chatCode && messages.length === 0 && !chatCodeSentRef.current) {
-      handleSend(chatCode);
+      const decodedChatCode = decodeURIComponent(chatCode);
+      handleSend(decodedChatCode);
       chatCodeSentRef.current = true;
     }
   }, [chatCode, messages.length, handleSend]);
