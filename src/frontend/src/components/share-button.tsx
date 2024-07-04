@@ -14,7 +14,7 @@ export const ShareButtons: React.FC<ShareButtonsProps> = ({ code }) => {
   const { toast } = useToast();
   const [copied, setCopied] = useState(false);
 
-  const getShareUrl = () => `https://www.aiuncensored.info/image/${code}`;
+  const getShareUrl = () => `https://www.aiuncensored.info/${encodeURIComponent(code)}`;
 
   const shareOnTwitter = () => {
     const text = encodeURIComponent(code + " - Uncensored AI #UncensoredAI #GenerativeAI");
