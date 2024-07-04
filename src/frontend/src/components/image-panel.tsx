@@ -54,7 +54,7 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
   const [error, setError] = useState<string>("");
   const [progress, setProgress] = useState<number>(0);
   const [taskId, setTaskId] = useState<string | null>(null);
-  const [selectedModel, setSelectedModel] = useState<ImageModel>('anime');
+  const [selectedModel, setSelectedModel] = useState<ImageModel>('photo');
   const [selectedAspect, setSelectedAspect] = useState<ImageAspect>('square');
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const overlayRef = useRef<HTMLDivElement | null>(null);
