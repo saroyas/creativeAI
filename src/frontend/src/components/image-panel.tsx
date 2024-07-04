@@ -10,6 +10,8 @@ import { env } from "../env.mjs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/components/ui/use-toast"; // Import the useToast hook
 import { event } from 'nextjs-google-analytics'; // Import the event function from Google Analytics
+import { FiLink, FiTwitter, FiFacebook, FiDownload } from 'react-icons/fi';
+import { FaRedditAlien, FaWhatsapp } from 'react-icons/fa';
 
 const BASE_URL = env.NEXT_PUBLIC_API_URL;
 
@@ -386,51 +388,24 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
           </div>
 
           {imageUrl && !isLoading && (
-            <div className="mt-4 flex justify-center space-x-2">
-              <Button
-                onClick={addWatermarkAndDownload}
-                className="bg-transparent border border-gray-700 p-2 rounded-full hover:bg-gray-800 transition-colors duration-200"
-                aria-label="Download image"
-              >
-                <Download size={18} className="text-green-500" />
-              </Button>
-              <Button
-                onClick={copyLinkToClipboard}
-                className="bg-transparent border border-gray-700 p-2 rounded-full hover:bg-gray-800 transition-colors duration-200"
-                aria-label="Copy link to clipboard"
-              >
-                <LinkIcon size={18} className="text-gray-400" />
-              </Button>
-              <Button
-                onClick={shareOnTwitter}
-                className="bg-transparent border border-gray-700 p-2 rounded-full hover:bg-gray-800 transition-colors duration-200"
-                aria-label="Share on X (Twitter)"
-              >
-                <XLogo size={18} className="text-white" />
-              </Button>
-              <Button
-                onClick={shareOnFacebook}
-                className="bg-transparent border border-gray-700 p-2 rounded-full hover:bg-gray-800 transition-colors duration-200"
-                aria-label="Share on Facebook"
-              >
-                <Facebook size={18} className="text-blue-600" />
-              </Button>
-              <Button
-                onClick={shareOnReddit}
-                className="bg-transparent border border-gray-700 p-2 rounded-full hover:bg-gray-800 transition-colors duration-200"
-                aria-label="Share on Reddit"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-orange-500">
-                  <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10zm0-18c4.411 0 8 3.589 8 8s-3.589 8-8 8-8-3.589-8-8 3.589-8 8-8zm6 9c0-.793-.652-1.436-1.45-1.436-.389 0-.742.15-1.004.398-1.016-.71-2.413-1.168-3.96-1.223l.714-3.356 2.34.498c.03.617.537 1.109 1.16 1.109.642 0 1.16-.518 1.16-1.16 0-.641-.518-1.16-1.16-1.16-.453 0-.845.26-1.037.636l-2.61-.555c-.122-.026-.247.04-.285.16l-.793 3.727c-1.583.028-3.013.486-4.045 1.205-.258-.237-.603-.38-.984-.38C5.652 10.564 5 11.207 5 12c0 .504.27.944.67 1.19-.056.238-.086.484-.086.735 0 2.546 2.982 4.617 6.66 4.617 3.678 0 6.66-2.07 6.66-4.617 0-.239-.027-.473-.078-.7.418-.24.7-.69.7-1.205zm-11.07 1.01c0-.642.518-1.16 1.16-1.16.641 0 1.16.518 1.16 1.16 0 .641-.519 1.16-1.16 1.16-.642 0-1.16-.519-1.16-1.16zm6.415 4.188c-.823.823-2.159.992-2.59.992-.431 0-1.767-.17-2.59-.992-.12-.12-.12-.314 0-.434.12-.12.314-.12.434 0 .583.583 1.545.756 2.156.756.611 0 1.573-.173 2.156-.756.12-.12.314-.12.434 0 .12.12.12.314 0 .434zm-.177-3.03c-.642 0-1.16-.518-1.16-1.16 0-.641.518-1.159 1.16-1.159s1.16.518 1.16 1.16c0 .641-.518 1.16-1.16 1.16z"/>
-                </svg>
-              </Button>
-              <Button
-                onClick={shareOnWhatsApp}
-                className="bg-transparent border border-gray-700 p-2 rounded-full hover:bg-gray-800 transition-colors duration-200"
-                aria-label="Share on WhatsApp"
-              >
-                <MessageCircle size={18} className="text-green-500" />
-              </Button>
+            <div className="mt-4 flex justify-center space-x-6">
+              {[
+                { icon: FiDownload, onClick: addWatermarkAndDownload, label: "Download image", bgColor: "bg-green-900", iconColor: "text-green-200" },
+                { icon: FiLink, onClick: copyLinkToClipboard, label: "Copy link", bgColor: "bg-gray-800", iconColor: "text-gray-200" },
+                { icon: FiTwitter, onClick: shareOnTwitter, label: "Share on X (Twitter)", bgColor: "bg-blue-900", iconColor: "text-blue-200" },
+                { icon: FiFacebook, onClick: shareOnFacebook, label: "Share on Facebook", bgColor: "bg-indigo-900", iconColor: "text-indigo-200" },
+                { icon: FaRedditAlien, onClick: shareOnReddit, label: "Share on Reddit", bgColor: "bg-orange-900", iconColor: "text-orange-200" },
+                { icon: FaWhatsapp, onClick: shareOnWhatsApp, label: "Share on WhatsApp", bgColor: "bg-green-900", iconColor: "text-green-200" },
+              ].map(({ icon: Icon, onClick, label, bgColor, iconColor }, index) => (
+                <button
+                  key={index}
+                  onClick={onClick}
+                  className={`p-4 rounded-full ${bgColor} transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-opacity-50 focus:ring-gray-400`}
+                  aria-label={label}
+                >
+                  <Icon className={`w-4 h-4 ${iconColor}`} />
+                </button>
+              ))}
             </div>
           )}
         </div>
