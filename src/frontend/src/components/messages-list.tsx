@@ -55,11 +55,11 @@ const MessagesList = ({
             isStreaming={true}
             onRelatedQuestionSelect={onRelatedQuestionSelect}
           />
-          {lastAssistantMessageIndex === -1 && (
+          {/* {lastAssistantMessageIndex === -1 && (
             <div className="flex justify-end mt-2 mb-4">
               <ShareButton code={firstUserMessage} />
             </div>
-          )}
+          )} */}
         </>
       )}
     </div>
