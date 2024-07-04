@@ -388,24 +388,49 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
           </div>
 
           {imageUrl && !isLoading && (
-            <div className="mt-2 flex justify-center space-x-3">
-              {[
-                { icon: FiDownload, onClick: addWatermarkAndDownload, label: "Download image", bgColor: "bg-green-900", iconColor: "text-green-200" },
-                { icon: FiLink, onClick: copyLinkToClipboard, label: "Copy link", bgColor: "bg-gray-800", iconColor: "text-gray-200" },
-                { icon: FiTwitter, onClick: shareOnTwitter, label: "Share on X (Twitter)", bgColor: "bg-blue-900", iconColor: "text-blue-200" },
-                { icon: FiFacebook, onClick: shareOnFacebook, label: "Share on Facebook", bgColor: "bg-indigo-900", iconColor: "text-indigo-200" },
-                { icon: FaRedditAlien, onClick: shareOnReddit, label: "Share on Reddit", bgColor: "bg-orange-900", iconColor: "text-orange-200" },
-                { icon: FaWhatsapp, onClick: shareOnWhatsApp, label: "Share on WhatsApp", bgColor: "bg-green-900", iconColor: "text-green-200" },
-              ].map(({ icon: Icon, onClick, label, bgColor, iconColor }, index) => (
-                <button
-                  key={index}
-                  onClick={onClick}
-                  className={`p-4 rounded-full ${bgColor} transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-opacity-50 focus:ring-gray-400`}
-                  aria-label={label}
-                >
-                  <Icon className={`w-3 h-3 ${iconColor}`} />
-                </button>
-              ))}
+            <div className="mt-4 flex justify-center space-x-2">
+              <Button
+                onClick={addWatermarkAndDownload}
+                className="bg-transparent border border-gray-700 p-2 rounded-full hover:bg-gray-800 transition-colors duration-200"
+                aria-label="Download image"
+              >
+                <FiDownload size={18} className="text-green-500" />
+              </Button>
+              <Button
+                onClick={copyLinkToClipboard}
+                className="bg-transparent border border-gray-700 p-2 rounded-full hover:bg-gray-800 transition-colors duration-200"
+                aria-label="Copy link to clipboard"
+              >
+                <FiLink size={18} className="text-gray-400" />
+              </Button>
+              <Button
+                onClick={shareOnTwitter}
+                className="bg-transparent border border-gray-700 p-2 rounded-full hover:bg-gray-800 transition-colors duration-200"
+                aria-label="Share on X (Twitter)"
+              >
+                <FiTwitter size={18} className="text-blue-400" />
+              </Button>
+              <Button
+                onClick={shareOnFacebook}
+                className="bg-transparent border border-gray-700 p-2 rounded-full hover:bg-gray-800 transition-colors duration-200"
+                aria-label="Share on Facebook"
+              >
+                <FiFacebook size={18} className="text-blue-600" />
+              </Button>
+              <Button
+                onClick={shareOnReddit}
+                className="bg-transparent border border-gray-700 p-2 rounded-full hover:bg-gray-800 transition-colors duration-200"
+                aria-label="Share on Reddit"
+              >
+                <FaRedditAlien size={18} className="text-orange-500" />
+              </Button>
+              <Button
+                onClick={shareOnWhatsApp}
+                className="bg-transparent border border-gray-700 p-2 rounded-full hover:bg-gray-800 transition-colors duration-200"
+                aria-label="Share on WhatsApp"
+              >
+                <FaWhatsapp size={18} className="text-green-500" />
+              </Button>
             </div>
           )}
         </div>
