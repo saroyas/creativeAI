@@ -53,7 +53,7 @@ export const ShareButtons: React.FC<ShareButtonsProps> = ({ code }) => {
         title: 'Link Copied',
         description: 'The link has been copied to your clipboard.'
       });
-      event('Link_Copied_Share', { category: 'Link_Copied_Share', label: "Link Copied" });
+      event('Chat_Link_Copied_Share', { category: 'Link_Copied_Share', label: "Link Copied" });
     }).catch(err => {
       console.error('Failed to copy link: ', err);
     });
