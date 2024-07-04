@@ -54,7 +54,7 @@ export const ShareButtons: React.FC<ShareButtonsProps> = ({ code }) => {
   };
 
   return (
-    <div className="flex justify-center items-center space-x-6 my-8">
+    <div className="flex justify-center items-center space-x-6 my-4">
       {[
         { icon: FiLink, onClick: copyLinkToClipboard, label: "Copy link", bgColor: copied ? "bg-green-700" : "bg-gray-800", iconColor: "text-gray-200" },
         { icon: FiTwitter, onClick: shareOnTwitter, label: "Share on Twitter", bgColor: "bg-blue-900", iconColor: "text-blue-200" },
