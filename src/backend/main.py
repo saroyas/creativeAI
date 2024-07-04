@@ -385,6 +385,8 @@ async def face_swap_route(request: Request):
     if not source_url or not target_url:
         raise HTTPException(status_code=400, detail="Both sourceUrl and targetUrl are required")
 
+    print("Face Swap: source_url:", source_url, "target_url:", target_url)
+    
     url = "https://api.prodia.com/v1/faceswap"
     headers = {
         'X-Prodia-Key': PRODIA_API_KEY,
@@ -399,6 +401,7 @@ async def face_swap_route(request: Request):
     async with httpx.AsyncClient() as client:
         try:
             response = await client.post(url, json=payload, headers=headers)
+            print(f"Face Swap Response: {response.status_code} {response.text}")
             if response.status_code == 200:
                 job_data = response.json()
                 job_id = job_data.get('job')
