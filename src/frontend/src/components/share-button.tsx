@@ -18,13 +18,13 @@ export const ShareButtons: React.FC<ShareButtonsProps> = ({ code }) => {
     const text = encodeURIComponent("Check out this AI image I made! #UncensoredAI #GenerativeAI");
     const url = encodeURIComponent(getShareUrl());
     window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
-    event('Twitter_Share', { category: 'Twitter_Share', label: 'Twitter' });
+    event('Chat_Twitter_Share', { category: 'Twitter_Share', label: 'Twitter' });
   };
 
   const shareOnFacebook = () => {
     const url = encodeURIComponent(getShareUrl());
     window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank');
-    event('Facebook_Share', { category: 'Facebook_Share', label: 'Facebook' });
+    event('Chat_Facebook_Share', { category: 'Facebook_Share', label: 'Facebook' });
   };
 
   const shareOnReddit = () => {
@@ -32,14 +32,14 @@ export const ShareButtons: React.FC<ShareButtonsProps> = ({ code }) => {
     const url = encodeURIComponent(getShareUrl());
     const text = encodeURIComponent(`I created this AI-generated image.\nCheck it out here: ${getShareUrl()}`);
     window.open(`https://www.reddit.com/submit?url=${url}&title=${title}&text=${text}`, '_blank');
-    event('Reddit_Share', { category: 'Reddit_Share', label: 'Reddit' });
+    event('Chat_Reddit_Share', { category: 'Reddit_Share', label: 'Reddit' });
   };
 
   const shareOnWhatsApp = () => {
     const text = encodeURIComponent("Check out this AI-generated image I made!");
     const url = encodeURIComponent(getShareUrl());
     window.open(`https://wa.me/?text=${text}%20${url}`, '_blank');
-    event('WhatsApp_Share', { category: 'WhatsApp_Share', label: 'WhatsApp' });
+    event('Chat_WhatsApp_Share', { category: 'WhatsApp_Share', label: 'WhatsApp' });
   };
 
   const copyLinkToClipboard = () => {
@@ -49,7 +49,7 @@ export const ShareButtons: React.FC<ShareButtonsProps> = ({ code }) => {
         title: 'Link Copied',
         description: 'The link has been copied to your clipboard.'
       });
-      event('Link_Copied_Share', { category: 'Link_Copied_Share', label: "Link Copied" });
+      event('Chat_Link_Copied_Share', { category: 'Link_Copied_Share', label: "Link Copied" });
     }).catch(err => {
       console.error('Failed to copy link: ', err);
     });
