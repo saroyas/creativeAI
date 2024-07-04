@@ -388,7 +388,7 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
           </div>
 
           {imageUrl && !isLoading && (
-            <div className="mt-4 flex justify-center space-x-6">
+            <div className="mt-2 flex justify-center space-x-3">
               {[
                 { icon: FiDownload, onClick: addWatermarkAndDownload, label: "Download image", bgColor: "bg-green-900", iconColor: "text-green-200" },
                 { icon: FiLink, onClick: copyLinkToClipboard, label: "Copy link", bgColor: "bg-gray-800", iconColor: "text-gray-200" },
@@ -403,7 +403,7 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
                   className={`p-4 rounded-full ${bgColor} transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-opacity-50 focus:ring-gray-400`}
                   aria-label={label}
                 >
-                  <Icon className={`w-4 h-4 ${iconColor}`} />
+                  <Icon className={`w-3 h-3 ${iconColor}`} />
                 </button>
               ))}
             </div>
