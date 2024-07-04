@@ -173,7 +173,7 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
             # Moderation happens first
             try:
                 # print(history_str)
-                moderation_result = await check_moderation(history_str)
+                moderation_result = await check_moderation(history_str[-2000:])
                 print("moderation result", moderation_result)
                 if "sexual/minors" in moderation_result["categories"] and moderation_result["category_scores"]["sexual/minors"] > 0.6:
                     # replace the current system prompt (at the start of message_history)
