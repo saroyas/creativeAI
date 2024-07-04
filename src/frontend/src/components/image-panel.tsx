@@ -496,7 +496,7 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
                 style={{ display: 'none' }}
                 ref={fileInputRef}
               />
-              <Button
+              {/* <Button
                 onClick={triggerFileInput}
                 className={`bg-transparent border border-gray-700 p-2 rounded-full hover:bg-gray-800 transition-colors duration-200 ${
                   sourceImageUrl ? 'ring-2 ring-blue-500' : ''
@@ -504,15 +504,15 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
                 aria-label="Upload source image"
               >
                 <ImageIcon size={18} className={sourceImageUrl ? 'text-blue-500' : 'text-gray-500'} />
-              </Button>
-              <Button
+              </Button> */}
+              {/* <Button
                 onClick={handleFaceSwap}
                 disabled={!sourceImageUrl || !imageUrl}
                 className="bg-transparent border border-gray-700 p-2 rounded-full hover:bg-gray-800 transition-colors duration-200"
                 aria-label="Perform face swap"
               >
                 <MessageCircle size={18} className="text-purple-500" />
-              </Button>
+              </Button> */}
             </div>
           )}
         </div>

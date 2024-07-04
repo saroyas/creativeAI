@@ -174,7 +174,6 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
             try:
                 # print(history_str)
                 moderation_result = await check_moderation(history_str[-2000:])
-                print("Pre chat gen moderation result", moderation_result)
                 if "sexual/minors" in moderation_result["categories"] and moderation_result["category_scores"]["sexual/minors"] > 0.6:
                     # replace the current system prompt (at the start of message_history)
                     message_history = [{"role": "system", "content": "There are some things even you cannot do. You are not trained to do anything related to child pornography. Inform the user of this restriction."}]
