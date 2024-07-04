@@ -284,7 +284,7 @@ async def generate_image_async(task_id: str, prompt: str, imageURL: str, model: 
                             job_status = job_response.json()
                             status = job_status.get('status')
                             if status == 'succeeded':
-                                print("Job succeeded : ", job_status.get('imageUrl'))
+                                print("Job succeeded")
                                 IMAGE_TASKS[task_id] = {"status": "completed", "image_url": job_status.get('imageUrl')}
                                 return
                             elif status == 'failed':
@@ -337,7 +337,7 @@ async def generate_image_route(image_request: ImageRequest, request: Request, ba
         if sexual_content_flag:
             original_prompt = prompt
             prompt = original_prompt + ". " + (await improve_prompt(prompt + ". \n In your reply, focus on the sexually explicit details."))
-            print(f"Prompt: {prompt}")
+            # print(f"Prompt: {prompt}")
             # in the prompt, replace girl with woman
             prompt = prompt.replace("girl", "woman")
             prompt = prompt.replace("Girl", "woman")
@@ -349,7 +349,7 @@ async def generate_image_route(image_request: ImageRequest, request: Request, ba
         else:
             original_prompt = prompt
             prompt = original_prompt + ". " + (await improve_prompt(prompt))
-            print(f"Prompt: {prompt}")
+            # print(f"Prompt: {prompt}")
         
         
         # Generate a unique task ID
