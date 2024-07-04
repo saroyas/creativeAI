@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import TextareaAutosize from "react-textarea-autosize";
 import { Button } from "./ui/button";
 import { ArrowUp, Camera, Brush, Image as ImageIcon, Square, RectangleHorizontal, RectangleVertical, Download, Link as LinkIcon, Facebook, MessageCircle } from "lucide-react";
@@ -58,6 +58,7 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
   const [taskId, setTaskId] = useState<string | null>(null);
   const [selectedModel, setSelectedModel] = useState<ImageModel>('photo');
   const [selectedAspect, setSelectedAspect] = useState<ImageAspect>('square');
+  const [sourceImageUrl, setSourceImageUrl] = useState<string>("");
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const overlayRef = useRef<HTMLDivElement | null>(null);
   const { toast } = useToast(); // Use the useToast hook
@@ -341,6 +342,54 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
     });
   };
 
+  const handleFileUpload = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setSourceImageUrl(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  }, []);
+
+  const handleFaceSwap = async () => {
+    if (!sourceImageUrl || !imageUrl) {
+      toast({
+        title: 'Error',
+        description: 'Both source and target images are required for face swap.'
+      });
+      return;
+    }
+
+    setIsLoading(true);
+    setError("");
+
+    try {
+      const response = await axios.post(`${BASE_URL}/faceswap`, {
+        sourceUrl: sourceImageUrl,
+        targetUrl: imageUrl
+      }, {
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.data.task_id) {
+        setTaskId(response.data.task_id);
+        pollTaskStatus(response.data.task_id);
+      } else if (response.data.error) {
+        setError(response.data.error);
+      }
+    } catch (err) {
+      setError("Face swap request failed. Try again after a short break.");
+      console.error("Error initiating face swap:", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="w-full h-screen flex flex-col">
       <div className="flex-grow overflow-auto p-4 flex items-center justify-center">
@@ -434,6 +483,29 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
                 aria-label="Share on WhatsApp"
               >
                 <FaWhatsapp size={18} className="text-green-500" />
+              </Button>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleFileUpload}
+                style={{ display: 'none' }}
+                id="fileInput"
+              />
+              <label htmlFor="fileInput">
+                <Button
+                  className="bg-transparent border border-gray-700 p-2 rounded-full hover:bg-gray-800 transition-colors duration-200"
+                  aria-label="Upload source image"
+                >
+                  <ImageIcon size={18} className="text-blue-500" />
+                </Button>
+              </label>
+              <Button
+                onClick={handleFaceSwap}
+                disabled={!sourceImageUrl || !imageUrl}
+                className="bg-transparent border border-gray-700 p-2 rounded-full hover:bg-gray-800 transition-colors duration-200"
+                aria-label="Perform face swap"
+              >
+                <MessageCircle size={18} className="text-purple-500" />
               </Button>
             </div>
           )}

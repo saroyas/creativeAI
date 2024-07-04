@@ -373,6 +373,43 @@ async def check_image_status(task_id: str):
     task_status = IMAGE_TASKS[task_id]
     return task_status
 
+@app.post("/faceswap")
+@limiter.limit("3/minute")
+@limiter.limit("10 per 30 minutes")
+@limiter.limit("15 per 24 hours")
+async def face_swap_route(request: Request):
+    data = await request.json()
+    source_url = data.get('sourceUrl')
+    target_url = data.get('targetUrl')
+
+    if not source_url or not target_url:
+        raise HTTPException(status_code=400, detail="Both sourceUrl and targetUrl are required")
+
+    url = "https://api.prodia.com/v1/faceswap"
+    headers = {
+        'X-Prodia-Key': PRODIA_API_KEY,
+        'accept': 'application/json',
+        'content-type': 'application/json'
+    }
+    payload = {
+        "sourceUrl": source_url,
+        "targetUrl": target_url
+    }
+
+    async with httpx.AsyncClient() as client:
+        try:
+            response = await client.post(url, json=payload, headers=headers)
+            if response.status_code == 200:
+                job_data = response.json()
+                job_id = job_data.get('job')
+                if job_id:
+                    # Use the existing polling mechanism
+                    return {"task_id": job_id, "message": "Face swap started in the background"}
+            else:
+                raise HTTPException(status_code=response.status_code, detail=f"Failed to initiate face swap. Response: {response.text}")
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Failed to initiate face swap: {str(e)}")
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
