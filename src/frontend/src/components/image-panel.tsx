@@ -57,6 +57,7 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
   const [selectedModel, setSelectedModel] = useState<ImageModel>('anime');
   const [selectedAspect, setSelectedAspect] = useState<ImageAspect>('square');
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const overlayRef = useRef<HTMLDivElement | null>(null);
   const { toast } = useToast(); // Use the useToast hook
 
   useEffect(() => {
@@ -65,6 +66,34 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
       setImageUrl(fullImageUrl);
     }
   }, [initialImageCode]);
+
+  useEffect(() => {
+    if (imageUrl) {
+      const img = new Image();
+      img.crossOrigin = "Anonymous";
+      img.onload = () => {
+        const canvas = canvasRef.current;
+        if (canvas) {
+          canvas.width = img.width;
+          canvas.height = img.height;
+          const ctx = canvas.getContext('2d');
+          if (ctx) {
+            ctx.drawImage(img, 0, 0);
+            
+            // Add watermark
+            ctx.font = '20px Arial';
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+            ctx.fillText('AI Uncensored', 10, 30);
+          }
+        }
+      };
+      img.src = imageUrl;
+    }
+  }, [imageUrl]);
+
+  const preventRightClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+  };
 
   const generateImage = async (promptText: string) => {
     setIsLoading(true);
@@ -339,11 +368,16 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
             )}
 
             {imageUrl && !isLoading && (
-              <div className="w-full h-full overflow-hidden rounded-lg">
-                <img
-                  src={imageUrl}
-                  alt="Generated image"
+              <div className="w-full h-full overflow-hidden rounded-lg relative">
+                <canvas
+                  ref={canvasRef}
                   className="w-full h-full object-cover"
+                  onContextMenu={preventRightClick}
+                />
+                <div
+                  ref={overlayRef}
+                  className="absolute inset-0 bg-transparent"
+                  onContextMenu={preventRightClick}
                 />
               </div>
             )}
