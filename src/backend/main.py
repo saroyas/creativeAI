@@ -192,7 +192,7 @@ async def check_child_sexual_content(input_text: str) -> bool:
         moderation_result = response.json()
 
     result = moderation_result["results"][0]
-    print("result", result)
+    print("Image prompt moderation result: ", result)
     return result
 
 async def improve_prompt(prompt: str) -> str:
