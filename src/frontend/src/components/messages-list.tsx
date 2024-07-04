@@ -40,7 +40,7 @@ const MessagesList = ({
               />
               {index === lastAssistantMessageIndex && (
                 <div className="flex justify-end mt-2 mb-4">
-                  <ShareButton code={firstUserMessage} />
+                  <ShareButtons code={firstUserMessage} />
                 </div>
               )}
             </>
