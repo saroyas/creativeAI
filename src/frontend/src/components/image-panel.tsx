@@ -449,7 +449,7 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
             <div className="mt-4 flex justify-center space-x-2">
               <Button
                 onClick={addWatermarkAndDownload}
-                className="bg-transparent border border-gray-700 p-2 rounded-full hover:bg-gray-800 transition-colors duration-200"
+                className="bg-transparent border border-gray-700 p-2 rounded-full hover:bg-gray-800 transition-colors duration-200 ring-2 ring-green-500"
                 aria-label="Download image"
               >
                 <FiDownload size={18} className="text-green-500" />
