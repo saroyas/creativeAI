@@ -1,6 +1,7 @@
 "use client";
 
-import { FiLink, FiTwitter, FiFacebook, FiDownload } from 'react-icons/fi';
+import { useState } from 'react';
+import { FiLink, FiTwitter, FiFacebook } from 'react-icons/fi';
 import { FaRedditAlien, FaWhatsapp } from 'react-icons/fa';
 import { useToast } from "@/components/ui/use-toast";
 import { event } from 'nextjs-google-analytics';
@@ -11,6 +12,7 @@ interface ShareButtonsProps {
 
 export const ShareButtons: React.FC<ShareButtonsProps> = ({ code }) => {
   const { toast } = useToast();
+  const [copied, setCopied] = useState(false);
 
   const getShareUrl = () => `https://www.aiuncensored.info/image/${code}`;
 
@@ -45,33 +47,36 @@ export const ShareButtons: React.FC<ShareButtonsProps> = ({ code }) => {
   const copyLinkToClipboard = () => {
     const shareUrl = getShareUrl();
     navigator.clipboard.writeText(shareUrl).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
       toast({
         title: 'Link Copied',
         description: 'The link has been copied to your clipboard.'
       });
-      event('Chat_Link_Copied_Share', { category: 'Link_Copied_Share', label: "Link Copied" });
+      event('Link_Copied_Share', { category: 'Link_Copied_Share', label: "Link Copied" });
     }).catch(err => {
       console.error('Failed to copy link: ', err);
     });
   };
 
   return (
-    <div className="flex justify-center space-x-2 mt-4">
-      <button onClick={copyLinkToClipboard} className="bg-transparent border border-gray-700 p-2 rounded-full hover:bg-gray-800 transition-colors duration-200" aria-label="Copy link to clipboard">
-        <FiLink size={18} className="text-gray-400" />
-      </button>
-      <button onClick={shareOnTwitter} className="bg-transparent border border-gray-700 p-2 rounded-full hover:bg-gray-800 transition-colors duration-200" aria-label="Share on X (Twitter)">
-        <FiTwitter size={18} className="text-blue-400" />
-      </button>
-      <button onClick={shareOnFacebook} className="bg-transparent border border-gray-700 p-2 rounded-full hover:bg-gray-800 transition-colors duration-200" aria-label="Share on Facebook">
-        <FiFacebook size={18} className="text-blue-600" />
-      </button>
-      <button onClick={shareOnReddit} className="bg-transparent border border-gray-700 p-2 rounded-full hover:bg-gray-800 transition-colors duration-200" aria-label="Share on Reddit">
-        <FaRedditAlien size={18} className="text-orange-500" />
-      </button>
-      <button onClick={shareOnWhatsApp} className="bg-transparent border border-gray-700 p-2 rounded-full hover:bg-gray-800 transition-colors duration-200" aria-label="Share on WhatsApp">
-        <FaWhatsapp size={18} className="text-green-500" />
-      </button>
+    <div className="flex justify-center items-center space-x-6 my-4">
+      {[
+        { icon: FiLink, onClick: copyLinkToClipboard, label: "Copy link", bgColor: copied ? "bg-green-700" : "bg-gray-800", iconColor: "text-gray-200" },
+        { icon: FiTwitter, onClick: shareOnTwitter, label: "Share on Twitter", bgColor: "bg-blue-900", iconColor: "text-blue-200" },
+        { icon: FiFacebook, onClick: shareOnFacebook, label: "Share on Facebook", bgColor: "bg-indigo-900", iconColor: "text-indigo-200" },
+        { icon: FaRedditAlien, onClick: shareOnReddit, label: "Share on Reddit", bgColor: "bg-orange-900", iconColor: "text-orange-200" },
+        { icon: FaWhatsapp, onClick: shareOnWhatsApp, label: "Share on WhatsApp", bgColor: "bg-green-900", iconColor: "text-green-200" },
+      ].map(({ icon: Icon, onClick, label, bgColor, iconColor }, index) => (
+        <button 
+          key={index}
+          onClick={onClick}
+          className={`p-4 rounded-full ${bgColor} transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-opacity-50 focus:ring-gray-400`}
+          aria-label={label}
+        >
+          <Icon className={`w-4 h-4 ${iconColor}`} />
+        </button>
+      ))}
     </div>
   );
 };
