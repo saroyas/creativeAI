@@ -237,7 +237,7 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
                     # also do another moderation check of content here
 
                     try:
-                        moderation_result = await check_moderation(content)
+                        moderation_result = await check_moderation(content[:2000])
                         print("Moderation result of content generated:", moderation_result)
                         if moderation_result["category_scores"]["sexual/minors"] > 0.5:
                             content = "Content violation detected."
