@@ -38,11 +38,11 @@ const MessagesList = ({
                 message={message}
                 onRelatedQuestionSelect={onRelatedQuestionSelect}
               />
-              {index === lastAssistantMessageIndex && (
+              (
                 <div className="flex justify-end mt-2 mb-4">
                   <ShareButtons code={firstUserMessage} />
                 </div>
-              )}
+              )
             </>
           )}
           {index !== messages.length - 1 && <Separator />}
