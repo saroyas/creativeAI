@@ -101,7 +101,6 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
     setIsLoading(true);
     setError("");
     setProgress(0);
-    setImageUrl("");
     setTaskId(null);
     event('Generating_Image_Started', {
       category: 'Generating_Image',
@@ -430,7 +429,6 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
     setIsLoading(true);
     setError("");
     setProgress(0);
-    setImageUrl("");
     setTaskId(null);
     event('Faceswap_Image_Started', {
       category: 'Faceswap_Image_Started',
