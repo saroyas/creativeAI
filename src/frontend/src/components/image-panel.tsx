@@ -398,10 +398,6 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
       try {
         const uploadedUrl = await uploadImageToFreeImageHost(file);
         setSourceImageUrl(uploadedUrl);
-        toast({
-          title: 'Face Image Uploaded',
-          description: 'The face image has been successfully uploaded.',
-        });
       } catch (error) {
         console.error('Failed to upload image:', error);
         toast({
@@ -463,39 +459,6 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
   };
 
 
-  const FaceButton = () => {
-    const handleClick = (e: { preventDefault: () => void; stopPropagation: () => void; }) => {
-      e.preventDefault();  // Prevent default form submission
-      e.stopPropagation(); // Stop event from bubbling up
-      triggerFileInput();
-    };
-    return (
-      <Button
-        onClick={handleClick}
-        className={`w-fit space-x-2 bg-transparent outline-none border border-gray-700 select-none focus:ring-0 shadow-none transition-all duration-200 ease-in-out hover:scale-[1.05] text-sm ml-4 relative overflow-hidden ${sourceImageUrl
-          ? 'bg-purple-600 bg-opacity-20 border-purple-500 hover:bg-purple-600 hover:bg-opacity-30'
-          : 'hover:bg-gray-700'
-          }`}
-        style={{
-          backgroundImage: sourceImageUrl ? `url(${sourceImageUrl})` : 'none',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-        }}
-      >
-        <div className="absolute inset-0 bg-black opacity-50"></div>
-        <div className="flex items-center space-x-2 relative z-10">
-          {sourceImageUrl ? (
-            <UserCheck size={16} className="text-purple-400" />
-          ) : (
-            <UserPlus size={16} className="text-gray-400" />
-          )}
-          <span className="font-semibold text-white">
-            {sourceImageUrl ? 'Edit face' : 'Add face'}
-          </span>
-        </div>
-      </Button>
-    );
-  };
 
   const FaceSwapButton = () => {
     const isDisabled = !sourceImageUrl || !imageUrl;
