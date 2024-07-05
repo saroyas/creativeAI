@@ -14,6 +14,7 @@ import { FiLink, FiTwitter, FiFacebook, FiDownload } from 'react-icons/fi';
 import { FaRedditAlien, FaWhatsapp } from 'react-icons/fa';
 
 const BASE_URL = env.NEXT_PUBLIC_API_URL;
+const FREEIMAGE_HOST_API_KEY = env.FREEIMAGE_HOST_API_KEY;
 
 type ImageModel = 'anime' | 'photo';
 type ImageAspect = 'square' | 'landscape' | 'portrait';
@@ -343,14 +344,52 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
     });
   };
 
-  const handleFileUpload = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+  const uploadImageToFreeImageHost = async (file: File): Promise<string> => {
+    const formData = new FormData();
+    formData.append('key', FREEIMAGE_HOST_API_KEY); // Replace with your actual API key
+    formData.append('action', 'upload');
+    formData.append('source', file);
+    formData.append('format', 'json');
+  
+    try {
+      const response = await axios.post('https://freeimage.host/api/1/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+  
+      if (response.data.status_code === 200 && response.data.success) {
+        return response.data.image.url;
+      } else {
+        throw new Error('Image upload failed');
+      }
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      throw error;
+    }
+  };
+
+  const handleFileUpload = useCallback(async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setSourceImageUrl(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+      try {
+        setIsLoading(true);
+        const uploadedUrl = await uploadImageToFreeImageHost(file);
+        setSourceImageUrl(uploadedUrl);
+        toast({
+          title: 'Image Uploaded',
+          description: 'Your image has been successfully uploaded.',
+        });
+      } catch (error) {
+        console.error('Failed to upload image:', error);
+        toast({
+          title: 'Upload Failed',
+          description: 'Failed to upload the image. Please try again.',
+          variant: 'destructive',
+        });
+      } finally {
+        setIsLoading(false);
+      }
     }
   }, []);
 
@@ -496,7 +535,7 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
                 style={{ display: 'none' }}
                 ref={fileInputRef}
               />
-              {/* <Button
+              <Button
                 onClick={triggerFileInput}
                 className={`bg-transparent border border-gray-700 p-2 rounded-full hover:bg-gray-800 transition-colors duration-200 ${
                   sourceImageUrl ? 'ring-2 ring-blue-500' : ''
@@ -504,15 +543,15 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
                 aria-label="Upload source image"
               >
                 <ImageIcon size={18} className={sourceImageUrl ? 'text-blue-500' : 'text-gray-500'} />
-              </Button> */}
-              {/* <Button
+              </Button>
+              <Button
                 onClick={handleFaceSwap}
                 disabled={!sourceImageUrl || !imageUrl}
                 className="bg-transparent border border-gray-700 p-2 rounded-full hover:bg-gray-800 transition-colors duration-200"
                 aria-label="Perform face swap"
               >
                 <MessageCircle size={18} className="text-purple-500" />
-              </Button> */}
+              </Button>
             </div>
           )}
         </div>
