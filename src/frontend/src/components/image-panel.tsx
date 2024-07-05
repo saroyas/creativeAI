@@ -516,9 +516,6 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
                       alt="Loading"
                       className={`object-cover ${getLoadingGifClass()}`}
                     />
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-                    </div>
                   </div>
                 </div>
                 <div className="absolute bottom-2 left-2 right-2 z-10">
