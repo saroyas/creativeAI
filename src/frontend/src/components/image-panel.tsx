@@ -14,7 +14,7 @@ import { FiLink, FiTwitter, FiFacebook, FiDownload } from 'react-icons/fi';
 import { FaRedditAlien, FaWhatsapp } from 'react-icons/fa';
 
 const BASE_URL = env.NEXT_PUBLIC_API_URL;
-const FREEIMAGE_HOST_API_KEY = env.FREEIMAGE_HOST_API_KEY;
+const FREEIMAGE_HOST_API_KEY = env.NEXT_PUBLIC_FREEIMAGE_HOST_API_KEY;
 
 type ImageModel = 'anime' | 'photo';
 type ImageAspect = 'square' | 'landscape' | 'portrait';
