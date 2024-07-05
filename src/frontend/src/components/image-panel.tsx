@@ -130,7 +130,7 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
     }
   };
 
-  const pollTaskStatus = async (id: string) => {
+  const pollTaskStatus = async (id: string, time: number = 2000) => {
     const pollInterval = setInterval(async () => {
       try {
         const response = await axios.get(`${BASE_URL}/image/status/${id}`, {
@@ -160,7 +160,7 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
         setError("Network Error. Please try again.");
         setIsLoading(false);
       }
-    }, 2000);
+    }, time);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -422,7 +422,7 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
 
       if (response.data.task_id) {
         setTaskId(response.data.task_id);
-        pollTaskStatus(response.data.task_id);
+        pollTaskStatus(response.data.task_id, 10000);
       } else if (response.data.error) {
         setError(response.data.error);
       }
