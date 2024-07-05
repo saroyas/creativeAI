@@ -461,34 +461,22 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
 
 
   const FaceButton = () => {
-    const [isUploading, setIsUploading] = useState(false);
-  
-    const handleClick = () => {
-      if (!isUploading) {
-        triggerFileInput();
-      }
-    };
-  
     return (
       <Button
-        onClick={handleClick}
-        className={`w-fit space-x-2 bg-transparent outline-none border border-gray-700 select-none focus:ring-0 shadow-none transition-all duration-200 ease-in-out hover:scale-[1.05] text-sm ml-4 ${
-          sourceImageUrl 
-            ? 'bg-purple-600 bg-opacity-20 border-purple-500 hover:bg-purple-600 hover:bg-opacity-30' 
+        onClick={triggerFileInput}
+        className={`w-fit space-x-2 bg-transparent outline-none border border-gray-700 select-none focus:ring-0 shadow-none transition-all duration-200 ease-in-out hover:scale-[1.05] text-sm ml-4 ${sourceImageUrl
+            ? 'bg-purple-600 bg-opacity-20 border-purple-500 hover:bg-purple-600 hover:bg-opacity-30'
             : 'hover:bg-gray-700'
-        }`}
-        disabled={isUploading}
+          }`}
       >
         <div className="flex items-center space-x-2">
-          {isUploading ? (
-            <Loader2 size={16} className="text-white animate-spin" />
-          ) : sourceImageUrl ? (
+          {sourceImageUrl ? (
             <UserCheck size={16} className="text-purple-400" />
           ) : (
             <UserPlus size={16} className="text-gray-400" />
           )}
           <span className="font-semibold text-white">
-            {isUploading ? 'Uploading...' : sourceImageUrl ? 'Edit face' : 'Add face'}
+            {sourceImageUrl ? 'Edit face' : 'Add face'}
           </span>
         </div>
       </Button>
