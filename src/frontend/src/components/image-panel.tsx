@@ -156,6 +156,7 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
         } else {
           setProgress((prev) => (prev < 90 ? prev + 10 : 90));
         }
+        console.log("Task Status:", status);
       } catch (err) {
         console.error("Error polling task status:", err);
         clearInterval(pollInterval);
@@ -437,7 +438,6 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
     });
     console.log("Triggering face swap sourceImageUrl: ", sourceImageUrl, " image Url: ", imageUrl);
 
-    setError("");
 
     try {
       const response = await axios.post(`${BASE_URL}/faceswap`, {
