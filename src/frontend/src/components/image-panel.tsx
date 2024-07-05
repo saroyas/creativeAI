@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import TextareaAutosize from "react-textarea-autosize";
 import { Button } from "./ui/button";
-import { ArrowUp, ScanFace, Camera, Brush, Image as ImageIcon, Square, RectangleHorizontal, RectangleVertical, Download, Link as LinkIcon, Facebook, MessageCircle } from "lucide-react";
+import { ArrowUp, ScanFace, Camera, Brush, Image as ImageIcon, Square, RectangleHorizontal, RectangleVertical, Download, Link as LinkIcon, Facebook, MessageCircle, Share2 } from "lucide-react";
 import { Twitter as XLogo } from "lucide-react"; // Import the X logo
 import axios from 'axios';
 import { env } from "../env.mjs";
@@ -12,6 +12,8 @@ import { event } from 'nextjs-google-analytics'; // Import the event function fr
 import { FiLink, FiTwitter, FiFacebook, FiDownload } from 'react-icons/fi';
 import { FaRedditAlien, FaWhatsapp } from 'react-icons/fa';
 import { UserPlus, UserCheck, Loader2 } from 'lucide-react';
+
+
 
 const BASE_URL = env.NEXT_PUBLIC_API_URL;
 const FREEIMAGE_HOST_API_KEY = "2c8b0486abf7f088f0c8a4fc68853f8e";
@@ -369,29 +371,6 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
     }
   };
 
-  const shareMap: Record<string, { name: string; icon: React.ReactNode; action: () => void }> = {
-    twitter: {
-      name: "Twitter",
-      icon: <FiTwitter size={18} className="text-blue-400" />,
-      action: shareOnTwitter,
-    },
-    facebook: {
-      name: "Facebook",
-      icon: <FiFacebook size={18} className="text-blue-600" />,
-      action: shareOnFacebook,
-    },
-    reddit: {
-      name: "Reddit",
-      icon: <FaRedditAlien size={18} className="text-orange-500" />,
-      action: shareOnReddit,
-    },
-    whatsapp: {
-      name: "WhatsApp",
-      icon: <FaWhatsapp size={18} className="text-green-500" />,
-      action: shareOnWhatsApp,
-    },
-  };
-
   const handleFileUpload = useCallback(async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
@@ -458,8 +437,6 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
     }
   };
 
-
-
   const FaceSwapButton = () => {
     const isDisabled = !sourceImageUrl || !imageUrl;
 
@@ -479,9 +456,9 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
       <Button
         onClick={handleFaceSwapClick}
         className={`bg-transparent border border-gray-700 px-3 py-2 rounded-full transition-colors duration-200 flex items-center space-x-2 ${isDisabled
-            ? 'opacity-50 cursor-not-allowed'
-            : 'hover:bg-gray-800 cursor-pointer'
-          }`}
+          ? 'opacity-50 cursor-not-allowed'
+          : 'hover:bg-gray-800 cursor-pointer'
+        }`}
         aria-label="Perform face swap"
       >
         <ScanFace className={`${isDisabled ? 'text-gray-500' : 'text-purple-500'}`} size={20} />
@@ -489,6 +466,101 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
           Face Swap
         </span>
       </Button>
+    );
+  };
+
+  const shareMap: Record<string, { name: string; icon: React.ReactNode; action: () => void }> = {
+    copy: {
+      name: "Copy Link",
+      icon: <FiLink size={18} className="text-gray-400" />,
+      action: copyLinkToClipboard,
+    },
+    twitter: {
+      name: "Twitter",
+      icon: <FiTwitter size={18} className="text-blue-400" />,
+      action: shareOnTwitter,
+    },
+    facebook: {
+      name: "Facebook",
+      icon: <FiFacebook size={18} className="text-blue-600" />,
+      action: shareOnFacebook,
+    },
+    reddit: {
+      name: "Reddit",
+      icon: <FaRedditAlien size={18} className="text-orange-500" />,
+      action: shareOnReddit,
+    },
+    whatsapp: {
+      name: "WhatsApp",
+      icon: <FaWhatsapp size={18} className="text-green-500" />,
+      action: shareOnWhatsApp,
+    },
+  };
+  
+  
+  const ShareButton = () => {
+    const [isOpen, setIsOpen] = useState(false);
+  
+    const handleToggle = () => {
+      if (!isOpen) {
+        copyLinkToClipboard();
+      }
+      event('SHARE_BUTTON_CLICKED', {
+        category: 'image_link_copied',
+        label: "image_link_copied",
+      });
+
+      setIsOpen(!isOpen);
+    };
+  
+    const handleShare = (action: () => void) => {
+      action();
+      setIsOpen(false);
+    };
+  
+    useEffect(() => {
+      const handleClickOutside = (event: MouseEvent) => {
+        if (isOpen && !(event.target as Element).closest('.share-button-container')) {
+          setIsOpen(false);
+        }
+      };
+  
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+      };
+    }, [isOpen]);
+  
+    return (
+      <div className="relative share-button-container">
+        <Button
+          onClick={handleToggle}
+          className={`bg-transparent border border-gray-700 p-2 rounded-full transition-colors duration-200 ${
+            isOpen ? 'bg-gray-700' : 'hover:bg-gray-800'
+          }`}
+          aria-label="Share"
+          aria-expanded={isOpen}
+        >
+          <Share2 size={18} className={isOpen ? 'text-white' : 'text-gray-400'} />
+        </Button>
+        {isOpen && (
+          <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-gray-800 ring-1 ring-black ring-opacity-5 z-50">
+            <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+              {Object.entries(shareMap).map(([key, { name, icon, action }]) => (
+                <button
+                  key={key}
+                  onClick={() => handleShare(action)}
+                  className="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 w-full text-left"
+                  role="menuitem"
+                >
+                  {icon}
+                  <span className="ml-2">{name}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
     );
   };
 
@@ -562,41 +634,8 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
               >
                 <FiDownload size={18} className="text-green-500" />
               </Button>
-              <Button
-                onClick={copyLinkToClipboard}
-                className="bg-transparent border border-gray-700 p-2 rounded-full hover:bg-gray-800 transition-colors duration-200"
-                aria-label="Copy link to clipboard"
-              >
-                <FiLink size={18} className="text-gray-400" />
-              </Button>
-              <Select
-                value={selectedShare}
-                onValueChange={(value) => {
-                  setSelectedShare(value);
-                  shareMap[value].action();
-                }}
-              >
-                <SelectTrigger className="bg-transparent border border-gray-700 p-2 rounded-full hover:bg-gray-800 transition-colors duration-200">
-                  <SelectValue>
-                    <div className="flex items-center space-x-2">
-                      {shareMap[selectedShare].icon}
-                      <span className="sr-only">{shareMap[selectedShare].name}</span>
-                    </div>
-                  </SelectValue>
-                </SelectTrigger>
-                <SelectContent className="w-[120px] z-50">
-                  {Object.entries(shareMap).map(([value, { name, icon }]) => (
-                    <SelectItem key={value} value={value} className="flex flex-col items-start p-2">
-                      <div className="flex items-center space-x-2">
-                        {icon}
-                        <span className="font-bold">{name}</span>
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <ShareButton />
               <FaceSwapButton />
-
             </div>
           )}
         </div>
