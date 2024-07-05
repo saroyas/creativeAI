@@ -427,6 +427,14 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
     }
 
     setIsLoading(true);
+    setError("");
+    setProgress(0);
+    setImageUrl("");
+    setTaskId(null);
+    event('Faceswap_Image_Started', {
+      category: 'Faceswap_Image_Started',
+      label: "Faceswap_Image_Started",
+    });
     console.log("Triggering face swap sourceImageUrl: ", sourceImageUrl, " image Url: ", imageUrl);
 
     setError("");
