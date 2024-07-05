@@ -467,8 +467,8 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
       <Button
         onClick={handleClick}
         className={`w-fit space-x-2 bg-transparent outline-none border border-gray-700 select-none focus:ring-0 shadow-none transition-all duration-200 ease-in-out hover:scale-[1.05] text-sm ml-4 relative overflow-hidden ${sourceImageUrl
-            ? 'bg-purple-600 bg-opacity-20 border-purple-500 hover:bg-purple-600 hover:bg-opacity-30'
-            : 'hover:bg-gray-700'
+          ? 'bg-purple-600 bg-opacity-20 border-purple-500 hover:bg-purple-600 hover:bg-opacity-30'
+          : 'hover:bg-gray-700'
           }`}
         style={{
           backgroundImage: sourceImageUrl ? `url(${sourceImageUrl})` : 'none',
@@ -508,15 +508,15 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
                     alt="Background"
                     className="absolute inset-0 w-full h-full object-cover opacity-30"
                   />
-                ) : null}
+                ) :
+                  <img
+                    src="https://i.ibb.co/5Kf5nwH/0622.gif"
+                    alt="Loading"
+                    className={`object-cover ${getLoadingGifClass()}`}
+                  />
+                }
                 <div className="absolute inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center">
-                  <div className="relative">
-                    <img
-                      src="https://i.ibb.co/5Kf5nwH/0622.gif"
-                      alt="Loading"
-                      className={`object-cover ${getLoadingGifClass()}`}
-                    />
-                  </div>
+
                 </div>
                 <div className="absolute bottom-2 left-2 right-2 z-10">
                   <div className="w-full h-1 bg-gray-200 bg-opacity-30 rounded-full overflow-hidden">
