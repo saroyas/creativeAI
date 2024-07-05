@@ -405,6 +405,8 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
     }
 
     setIsLoading(true);
+    console.log("Triggering face swap sourceImageUrl: ", sourceImageUrl, " image Url: ",imageUrl);
+
     setError("");
 
     try {
