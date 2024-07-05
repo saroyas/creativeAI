@@ -45,6 +45,8 @@ const aspectMap: Record<ImageAspect, { name: string; icon: React.ReactNode }> = 
   },
 };
 
+
+
 interface ImagePanelProps {
   initialImageCode?: string;
 }
@@ -59,11 +61,13 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
   const [taskId, setTaskId] = useState<string | null>(null);
   const [selectedModel, setSelectedModel] = useState<ImageModel>('photo');
   const [selectedAspect, setSelectedAspect] = useState<ImageAspect>('square');
+  const [selectedShare, setSelectedShare] = useState<string>('link');
   const [sourceImageUrl, setSourceImageUrl] = useState<string>("");
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const overlayRef = useRef<HTMLDivElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast(); // Use the useToast hook
+
 
   useEffect(() => {
     if (initialImageCode) {
@@ -345,33 +349,55 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
   };
 
   const uploadImageToFreeImageHost = async (file: File): Promise<string> => {
-      const formData = new FormData();
-      formData.append('key', FREEIMAGE_HOST_API_KEY);
-      formData.append('image', file);
-    
-      try {
-        const response = await axios.post('https://api.imgbb.com/1/upload', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        });
-    
-        if (response.data.success) {
-          return response.data.data.url;
-        } else {
-          throw new Error('Image upload failed');
-        }
-      } catch (error) {
-        console.error('Error uploading image:', error);
-        throw error;
+    const formData = new FormData();
+    formData.append('key', FREEIMAGE_HOST_API_KEY);
+    formData.append('image', file);
+
+    try {
+      const response = await axios.post('https://api.imgbb.com/1/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      if (response.data.success) {
+        return response.data.data.url;
+      } else {
+        throw new Error('Image upload failed');
       }
-    };
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      throw error;
+    }
+  };
+
+  const shareMap: Record<string, { name: string; icon: React.ReactNode; action: () => void }> = {
+    twitter: {
+      name: "Twitter",
+      icon: <FiTwitter size={18} className="text-blue-400" />,
+      action: shareOnTwitter,
+    },
+    facebook: {
+      name: "Facebook",
+      icon: <FiFacebook size={18} className="text-blue-600" />,
+      action: shareOnFacebook,
+    },
+    reddit: {
+      name: "Reddit",
+      icon: <FaRedditAlien size={18} className="text-orange-500" />,
+      action: shareOnReddit,
+    },
+    whatsapp: {
+      name: "WhatsApp",
+      icon: <FaWhatsapp size={18} className="text-green-500" />,
+      action: shareOnWhatsApp,
+    },
+  };
 
   const handleFileUpload = useCallback(async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       try {
-        // setIsLoading(true);
         const uploadedUrl = await uploadImageToFreeImageHost(file);
         setSourceImageUrl(uploadedUrl);
         toast({
@@ -385,8 +411,6 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
           description: 'Failed to upload the image. Please try again.',
           variant: 'destructive',
         });
-      } finally {
-        // setIsLoading(false);
       }
     }
   }, []);
@@ -405,7 +429,7 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
     }
 
     setIsLoading(true);
-    console.log("Triggering face swap sourceImageUrl: ", sourceImageUrl, " image Url: ",imageUrl);
+    console.log("Triggering face swap sourceImageUrl: ", sourceImageUrl, " image Url: ", imageUrl);
 
     setError("");
 
@@ -503,34 +527,32 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
               >
                 <FiLink size={18} className="text-gray-400" />
               </Button>
-              <Button
-                onClick={shareOnTwitter}
-                className="bg-transparent border border-gray-700 p-2 rounded-full hover:bg-gray-800 transition-colors duration-200"
-                aria-label="Share on X (Twitter)"
+              <Select
+                value={selectedShare}
+                onValueChange={(value) => {
+                  setSelectedShare(value);
+                  shareMap[value].action();
+                }}
               >
-                <FiTwitter size={18} className="text-blue-400" />
-              </Button>
-              <Button
-                onClick={shareOnFacebook}
-                className="bg-transparent border border-gray-700 p-2 rounded-full hover:bg-gray-800 transition-colors duration-200"
-                aria-label="Share on Facebook"
-              >
-                <FiFacebook size={18} className="text-blue-600" />
-              </Button>
-              <Button
-                onClick={shareOnReddit}
-                className="bg-transparent border border-gray-700 p-2 rounded-full hover:bg-gray-800 transition-colors duration-200"
-                aria-label="Share on Reddit"
-              >
-                <FaRedditAlien size={18} className="text-orange-500" />
-              </Button>
-              <Button
-                onClick={shareOnWhatsApp}
-                className="bg-transparent border border-gray-700 p-2 rounded-full hover:bg-gray-800 transition-colors duration-200"
-                aria-label="Share on WhatsApp"
-              >
-                <FaWhatsapp size={18} className="text-green-500" />
-              </Button>
+                <SelectTrigger className="bg-transparent border border-gray-700 p-2 rounded-full hover:bg-gray-800 transition-colors duration-200">
+                  <SelectValue>
+                    <div className="flex items-center space-x-2">
+                      {shareMap[selectedShare].icon}
+                      <span className="sr-only">{shareMap[selectedShare].name}</span>
+                    </div>
+                  </SelectValue>
+                </SelectTrigger>
+                <SelectContent className="w-[120px] z-50">
+                  {Object.entries(shareMap).map(([value, { name, icon }]) => (
+                    <SelectItem key={value} value={value} className="flex flex-col items-start p-2">
+                      <div className="flex items-center space-x-2">
+                        {icon}
+                        <span className="font-bold">{name}</span>
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               <input
                 type="file"
                 accept="image/*"
