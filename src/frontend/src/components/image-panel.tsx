@@ -371,12 +371,12 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
     const file = event.target.files?.[0];
     if (file) {
       try {
-        setIsLoading(true);
+        // setIsLoading(true);
         const uploadedUrl = await uploadImageToFreeImageHost(file);
         setSourceImageUrl(uploadedUrl);
         toast({
           title: 'Image Uploaded',
-          description: 'Your image has been successfully uploaded.',
+          description: uploadedUrl,
         });
       } catch (error) {
         console.error('Failed to upload image:', error);
@@ -386,7 +386,7 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
           variant: 'destructive',
         });
       } finally {
-        setIsLoading(false);
+        // setIsLoading(false);
       }
     }
   }, []);
