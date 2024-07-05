@@ -13,8 +13,6 @@ import { FiLink, FiTwitter, FiFacebook, FiDownload } from 'react-icons/fi';
 import { FaRedditAlien, FaWhatsapp } from 'react-icons/fa';
 import { UserPlus, UserCheck, Loader2 } from 'lucide-react';
 
-
-
 const BASE_URL = env.NEXT_PUBLIC_API_URL;
 const FREEIMAGE_HOST_API_KEY = "2c8b0486abf7f088f0c8a4fc68853f8e";
 
@@ -374,26 +372,31 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
   const handleFileUpload = useCallback(async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
+      setIsUploading(true);
       try {
         const uploadedUrl = await uploadImageToFreeImageHost(file);
         setSourceImageUrl(uploadedUrl);
+        // Automatically trigger face swap after uploading
+        await handleFaceSwap(uploadedUrl);
       } catch (error) {
-        console.error('Failed to upload image:', error);
+        console.error('Failed to upload image or perform face swap:', error);
         toast({
-          title: 'Upload Failed',
-          description: 'Failed to upload the face image. Please try again.',
+          title: 'Operation Failed',
+          description: 'Failed to upload the image or perform face swap. Please try again.',
           variant: 'destructive',
         });
+      } finally {
+        setIsUploading(false);
       }
     }
-  }, []);
+  }, [imageUrl]);
 
   const triggerFileInput = () => {
     fileInputRef.current?.click();
   };
 
-  const handleFaceSwap = async () => {
-    if (!sourceImageUrl || !imageUrl) {
+  const handleFaceSwap = async (sourceUrl: string) => {
+    if (!sourceUrl || !imageUrl) {
       toast({
         title: 'Error',
         description: 'Both source and target images are required for face swap.'
@@ -409,12 +412,11 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
       category: 'Faceswap_Image_Started',
       label: "Faceswap_Image_Started",
     });
-    console.log("Triggering face swap sourceImageUrl: ", sourceImageUrl, " image Url: ", imageUrl);
-
+    console.log("Triggering face swap sourceImageUrl: ", sourceUrl, " image Url: ", imageUrl);
 
     try {
       const response = await axios.post(`${BASE_URL}/faceswap`, {
-        sourceUrl: sourceImageUrl,
+        sourceUrl: sourceUrl,
         targetUrl: imageUrl
       }, {
         withCredentials: true,
@@ -438,33 +440,27 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
   };
 
   const FaceSwapButton = () => {
-    const isDisabled = !sourceImageUrl || !imageUrl;
-
     const handleFaceSwapClick = () => {
-      if (isDisabled) {
+      if (!imageUrl) {
         toast({
-          title: 'Add face first',
-          description: 'Add an image of the face you want to use.',
+          title: 'Generate an image first',
+          description: 'You need to generate an image before performing a face swap.',
           duration: 3000,
         });
       } else {
-        handleFaceSwap();
+        triggerFileInput();
       }
     };
 
     return (
       <Button
         onClick={handleFaceSwapClick}
-        className={`bg-transparent border border-gray-700 px-3 py-2 rounded-full transition-colors duration-200 flex items-center space-x-2 ${isDisabled
-          ? 'opacity-50 cursor-not-allowed'
-          : 'hover:bg-gray-800 cursor-pointer'
-        }`}
-        aria-label="Perform face swap"
+        className="flex-grow basis-0 min-w-0 bg-transparent border border-gray-700 focus:ring-0 shadow-none transition-all duration-200 ease-in-out hover:scale-[1.05] text-xs sm:text-sm px-2 py-1.5 relative overflow-hidden"
       >
-        <ScanFace className={`${isDisabled ? 'text-gray-500' : 'text-purple-500'}`} size={20} />
-        <span className={`text-sm font-semibold ${isDisabled ? 'text-gray-500' : 'text-purple-500'}`}>
-          Face Swap
-        </span>
+        <div className="flex items-center space-x-1 relative z-10 truncate">
+          <ScanFace size={16} className="text-purple-400 flex-shrink-0" />
+          <span className="font-semibold text-white truncate">Face swap</span>
+        </div>
       </Button>
     );
   };
@@ -496,7 +492,6 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
       action: shareOnWhatsApp,
     },
   };
-  
   
   const ShareButton = () => {
     const [isOpen, setIsOpen] = useState(false);
