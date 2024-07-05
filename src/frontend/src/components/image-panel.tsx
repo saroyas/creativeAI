@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import TextareaAutosize from "react-textarea-autosize";
 import { Button } from "./ui/button";
@@ -45,8 +44,6 @@ const aspectMap: Record<ImageAspect, { name: string; icon: React.ReactNode }> = 
   },
 };
 
-
-
 interface ImagePanelProps {
   initialImageCode?: string;
 }
@@ -61,13 +58,12 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
   const [taskId, setTaskId] = useState<string | null>(null);
   const [selectedModel, setSelectedModel] = useState<ImageModel>('photo');
   const [selectedAspect, setSelectedAspect] = useState<ImageAspect>('square');
-  const [selectedShare, setSelectedShare] = useState<string>('link');
+  const [selectedShare, setSelectedShare] = useState<string>('twitter');
   const [sourceImageUrl, setSourceImageUrl] = useState<string>("");
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const overlayRef = useRef<HTMLDivElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast(); // Use the useToast hook
-
 
   useEffect(() => {
     if (initialImageCode) {
@@ -401,14 +397,14 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
         const uploadedUrl = await uploadImageToFreeImageHost(file);
         setSourceImageUrl(uploadedUrl);
         toast({
-          title: 'Image Uploaded',
-          description: uploadedUrl,
+          title: 'Face Image Uploaded',
+          description: 'The face image has been successfully uploaded.',
         });
       } catch (error) {
         console.error('Failed to upload image:', error);
         toast({
           title: 'Upload Failed',
-          description: 'Failed to upload the image. Please try again.',
+          description: 'Failed to upload the face image. Please try again.',
           variant: 'destructive',
         });
       }
@@ -459,6 +455,22 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const FaceButton = () => {
+    return (
+      <Button
+        onClick={triggerFileInput}
+        className={`w-fit space-x-2 bg-transparent outline-none border border-gray-700 select-none focus:ring-0 shadow-none transition-all duration-200 ease-in-out hover:scale-[1.05] text-sm ml-4 ${
+          sourceImageUrl ? 'ring-2 ring-blue-500' : ''
+        }`}
+      >
+        <div className="flex items-center space-x-2">
+          <ImageIcon size={16} className={sourceImageUrl ? 'text-blue-500' : 'text-gray-500'} />
+          <span className="font-semibold">{sourceImageUrl ? 'Edit face' : 'Add face'}</span>
+        </div>
+      </Button>
+    );
   };
 
   return (
@@ -553,22 +565,6 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
                   ))}
                 </SelectContent>
               </Select>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleFileUpload}
-                style={{ display: 'none' }}
-                ref={fileInputRef}
-              />
-              <Button
-                onClick={triggerFileInput}
-                className={`bg-transparent border border-gray-700 p-2 rounded-full hover:bg-gray-800 transition-colors duration-200 ${
-                  sourceImageUrl ? 'ring-2 ring-blue-500' : ''
-                }`}
-                aria-label="Upload source image"
-              >
-                <ImageIcon size={18} className={sourceImageUrl ? 'text-blue-500' : 'text-gray-500'} />
-              </Button>
               <Button
                 onClick={handleFaceSwap}
                 disabled={!sourceImageUrl || !imageUrl}
@@ -631,6 +627,7 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
                 ))}
               </SelectContent>
             </Select>
+            <FaceButton />
           </div>
           <div className="w-full flex items-center rounded-full focus:outline-none max-h-[30vh] px-3 py-2 bg-opacity-50 bg-gray-800 backdrop-blur-md shadow-lg">
             <TextareaAutosize
@@ -654,6 +651,13 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
       </div>
 
       <canvas ref={canvasRef} style={{ display: 'none' }} />
+      <input
+        type="file"
+        accept="image/*"
+        onChange={handleFileUpload}
+        style={{ display: 'none' }}
+        ref={fileInputRef}
+      />
     </div>
   );
 };
