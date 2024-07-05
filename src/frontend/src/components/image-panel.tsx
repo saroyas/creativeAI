@@ -345,29 +345,27 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
   };
 
   const uploadImageToFreeImageHost = async (file: File): Promise<string> => {
-    const formData = new FormData();
-    formData.append('key', FREEIMAGE_HOST_API_KEY); // Replace with your actual API key
-    formData.append('action', 'upload');
-    formData.append('source', file);
-    formData.append('format', 'json');
-  
-    try {
-      const response = await axios.post('https://freeimage.host/api/1/upload', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-  
-      if (response.data.status_code === 200 && response.data.success) {
-        return response.data.image.url;
-      } else {
-        throw new Error('Image upload failed');
+      const formData = new FormData();
+      formData.append('key', FREEIMAGE_HOST_API_KEY);
+      formData.append('image', file);
+    
+      try {
+        const response = await axios.post('https://api.imgbb.com/1/upload', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+    
+        if (response.data.success) {
+          return response.data.data.url;
+        } else {
+          throw new Error('Image upload failed');
+        }
+      } catch (error) {
+        console.error('Error uploading image:', error);
+        throw error;
       }
-    } catch (error) {
-      console.error('Error uploading image:', error);
-      throw error;
-    }
-  };
+    };
 
   const handleFileUpload = useCallback(async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
