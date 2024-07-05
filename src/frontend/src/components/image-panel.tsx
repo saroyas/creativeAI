@@ -497,17 +497,38 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
     );
   };
 
-  const FaceSwapButton = () => (
-    <Button
-      onClick={handleFaceSwap}
-      disabled={!sourceImageUrl || !imageUrl}
-      className="bg-transparent border border-gray-700 px-3 py-2 rounded-full hover:bg-gray-800 transition-colors duration-200 flex items-center space-x-2"
-      aria-label="Perform face swap"
-    >
-      <ScanFace className="text-purple-500" size={20} />
-      <span className="text-sm font-semibold text-purple-500">Face Swap</span>
-    </Button>
-  );
+  const FaceSwapButton = () => {
+    const isDisabled = !sourceImageUrl || !imageUrl;
+  
+    const handleFaceSwapClick = () => {
+      if (isDisabled) {
+        toast({
+          title: 'Add face first',
+          description: 'Add an image of the face you want to use.',
+          duration: 3000,
+        });
+      } else {
+        handleFaceSwap();
+      }
+    };
+  
+    return (
+      <Button
+        onClick={handleFaceSwapClick}
+        className={`bg-transparent border border-gray-700 px-3 py-2 rounded-full transition-colors duration-200 flex items-center space-x-2 ${
+          isDisabled 
+            ? 'opacity-50 cursor-not-allowed' 
+            : 'hover:bg-gray-800 cursor-pointer'
+        }`}
+        aria-label="Perform face swap"
+      >
+        <ScanFace className={`${isDisabled ? 'text-gray-500' : 'text-purple-500'}`} size={20} />
+        <span className={`text-sm font-semibold ${isDisabled ? 'text-gray-500' : 'text-purple-500'}`}>
+          Face Swap
+        </span>
+      </Button>
+    );
+  };
 
   return (
     <div className="w-full h-screen flex flex-col">
