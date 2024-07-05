@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import TextareaAutosize from "react-textarea-autosize";
 import { Button } from "./ui/button";
-import { ArrowUp, Camera, Brush, Image as ImageIcon, Square, RectangleHorizontal, RectangleVertical, Download, Link as LinkIcon, Facebook, MessageCircle } from "lucide-react";
+import { ArrowUp, ScanFace, Camera, Brush, Image as ImageIcon, Square, RectangleHorizontal, RectangleVertical, Download, Link as LinkIcon, Facebook, MessageCircle } from "lucide-react";
 import { Twitter as XLogo } from "lucide-react"; // Import the X logo
 import axios from 'axios';
 import { env } from "../env.mjs";
@@ -497,6 +497,18 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
     );
   };
 
+  const FaceSwapButton = () => (
+    <Button
+      onClick={handleFaceSwap}
+      disabled={!sourceImageUrl || !imageUrl}
+      className="bg-transparent border border-gray-700 px-3 py-2 rounded-full hover:bg-gray-800 transition-colors duration-200 flex items-center space-x-2"
+      aria-label="Perform face swap"
+    >
+      <ScanFace className="text-purple-500" size={20} />
+      <span className="text-sm font-semibold text-purple-500">Face Swap</span>
+    </Button>
+  );
+
   return (
     <div className="w-full h-screen flex flex-col">
       <div className="flex-grow overflow-auto p-4 flex items-center justify-center">
@@ -600,14 +612,8 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
                   ))}
                 </SelectContent>
               </Select>
-              <Button
-                onClick={handleFaceSwap}
-                disabled={!sourceImageUrl || !imageUrl}
-                className="bg-transparent border border-gray-700 p-2 rounded-full hover:bg-gray-800 transition-colors duration-200"
-                aria-label="Perform face swap"
-              >
-                <MessageCircle size={18} className="text-purple-500" />
-              </Button>
+              <FaceSwapButton />
+
             </div>
           )}
         </div>
