@@ -460,7 +460,7 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
       setError("Face swap request failed. Try again after a short break.");
       console.error("Error initiating face swap:", err);
     } finally {
-      setIsLoading(false);
+      // setIsLoading(false);
     }
   };
 
