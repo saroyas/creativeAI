@@ -439,31 +439,31 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
     }
   };
 
-  const FaceSwapButton = () => {
-    const handleFaceSwapClick = () => {
-      if (!imageUrl) {
-        toast({
-          title: 'Generate an image first',
-          description: 'You need to generate an image before performing a face swap.',
-          duration: 3000,
-        });
-      } else {
-        triggerFileInput();
-      }
-    };
+  // const FaceSwapButton = () => {
+  //   const handleFaceSwapClick = () => {
+  //     if (!imageUrl) {
+  //       toast({
+  //         title: 'Generate an image first',
+  //         description: 'You need to generate an image before performing a face swap.',
+  //         duration: 3000,
+  //       });
+  //     } else {
+  //       triggerFileInput();
+  //     }
+  //   };
 
-    return (
-      <Button
-        onClick={handleFaceSwapClick}
-        className="flex-grow basis-0 min-w-0 bg-transparent border border-gray-700 focus:ring-0 shadow-none transition-all duration-200 ease-in-out hover:scale-[1.05] text-xs sm:text-sm px-2 py-1.5 relative overflow-hidden"
-      >
-        <div className="flex items-center space-x-1 relative z-10 truncate">
-          <ScanFace size={16} className="text-purple-400 flex-shrink-0" />
-          <span className="font-semibold text-white truncate">Face swap</span>
-        </div>
-      </Button>
-    );
-  };
+  //   return (
+  //     <Button
+  //       onClick={handleFaceSwapClick}
+  //       className="flex-grow basis-0 min-w-0 bg-transparent border border-gray-700 focus:ring-0 shadow-none transition-all duration-200 ease-in-out hover:scale-[1.05] text-xs sm:text-sm px-2 py-1.5 relative overflow-hidden"
+  //     >
+  //       <div className="flex items-center space-x-1 relative z-10 truncate">
+  //         <ScanFace size={16} className="text-purple-400 flex-shrink-0" />
+  //         <span className="font-semibold text-white truncate">Face swap</span>
+  //       </div>
+  //     </Button>
+  //   );
+  // };
 
   const shareMap: Record<string, { name: string; icon: React.ReactNode; action: () => void }> = {
     copy: {
@@ -630,7 +630,7 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
                 <FiDownload size={18} className="text-green-500" />
               </Button>
               <ShareButton />
-              <FaceSwapButton />
+              {/* <FaceSwapButton /> */}
             </div>
           )}
         </div>
@@ -708,7 +708,7 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
                     <UserPlus size={16} className="text-gray-400 flex-shrink-0" />
                   )}
                   <span className="font-semibold text-white truncate">
-                    {sourceImageUrl ? 'Edit face' : 'Add face'}
+                    {sourceImageUrl ? 'Add face' : 'Add face'}
                   </span>
                 </div>
               </Button>
