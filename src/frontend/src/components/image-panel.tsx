@@ -61,7 +61,7 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
   const [taskId, setTaskId] = useState<string | null>(null);
   const [selectedModel, setSelectedModel] = useState<ImageModel>('photo');
   const [selectedAspect, setSelectedAspect] = useState<ImageAspect>('square');
-  const [selectedShare, setSelectedShare] = useState<string>('link');
+  const [selectedShare, setSelectedShare] = useState<string>('twitter');
   const [sourceImageUrl, setSourceImageUrl] = useState<string>("");
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const overlayRef = useRef<HTMLDivElement | null>(null);
