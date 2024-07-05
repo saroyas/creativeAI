@@ -373,14 +373,21 @@ async def check_image_status(task_id: str):
     task_status = IMAGE_TASKS[task_id]
     return task_status
 
+class FaceSwapRequest(BaseModel):
+    sourceUrl: str
+    targetUrl: str
+    
 @app.post("/faceswap")
 @limiter.limit("3/minute")
 @limiter.limit("10 per 30 minutes")
 @limiter.limit("15 per 24 hours")
-async def face_swap_route(request: Request):
-    data = await request.json()
-    source_url = data.get('sourceUrl')
-    target_url = data.get('targetUrl')
+async def face_swap_route(face_swap_request: FaceSwapRequest, request: Request, background_tasks: BackgroundTasks):
+    ip_address = get_ipaddr(request)
+    if ip_address in PERMANENT_BLOCKLIST:
+        return {"error": "Rate limit exceeded, please try again after a short break."}
+    
+    source_url = face_swap_request.sourceUrl
+    target_url = face_swap_request.targetUrl
 
     if not source_url or not target_url:
         raise HTTPException(status_code=400, detail="Both sourceUrl and targetUrl are required")
@@ -407,7 +414,12 @@ async def face_swap_route(request: Request):
                 print("Face Swap Job Data:", job_data)
                 job_id = job_data.get('job')
                 if job_id:
-                    # Use the existing polling mechanism
+                    # Add the face swap task to IMAGE_TASKS
+                    IMAGE_TASKS[job_id] = {"status": "processing"}
+                    
+                    # Add a background task to update the status
+                    background_tasks.add_task(update_face_swap_status, job_id)
+                    
                     return {"task_id": job_id, "message": "Face swap started in the background"}
             else:
                 print(f"Face Swap Response: {response.status_code} {response.text}")
@@ -415,6 +427,41 @@ async def face_swap_route(request: Request):
         except Exception as e:
             print(f"Face Swap Error: {str(e)}")
             raise HTTPException(status_code=500, detail=f"Failed to initiate face swap: {str(e)}")
+
+async def update_face_swap_status(job_id: str):
+    url = f'https://api.prodia.com/v1/job/{job_id}'
+    headers = {
+        'X-Prodia-Key': PRODIA_API_KEY,
+        'accept': 'application/json'
+    }
+    
+    async with httpx.AsyncClient() as client:
+        attempts = 0
+        while attempts < 30:  # Limit to 30 attempts (2.5 minutes)
+            try:
+                response = await client.get(url, headers=headers)
+                if response.status_code == 200:
+                    job_status = response.json()
+                    status = job_status.get('status')
+                    if status == 'succeeded':
+                        IMAGE_TASKS[job_id] = {"status": "completed", "image_url": job_status.get('imageUrl')}
+                        return
+                    elif status == 'failed':
+                        IMAGE_TASKS[job_id] = {"status": "failed", "error": "Job failed"}
+                        return
+                else:
+                    IMAGE_TASKS[job_id] = {"status": "failed", "error": f"Failed to retrieve job status. Status code: {response.status_code}"}
+                    return
+            except Exception as e:
+                IMAGE_TASKS[job_id] = {"status": "failed", "error": f"Error updating face swap status: {str(e)}"}
+                return
+            await asyncio.sleep(5)
+            attempts += 1
+        
+        # If we've reached this point, the job has timed out
+        IMAGE_TASKS[job_id] = {"status": "failed", "error": "Job timed out after 2.5 minutes"}
+
+
 
 if __name__ == "__main__":
     import uvicorn
