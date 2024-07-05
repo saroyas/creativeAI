@@ -499,7 +499,7 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
 
   const FaceSwapButton = () => {
     const isDisabled = !sourceImageUrl || !imageUrl;
-  
+
     const handleFaceSwapClick = () => {
       if (isDisabled) {
         toast({
@@ -511,15 +511,14 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
         handleFaceSwap();
       }
     };
-  
+
     return (
       <Button
         onClick={handleFaceSwapClick}
-        className={`bg-transparent border border-gray-700 px-3 py-2 rounded-full transition-colors duration-200 flex items-center space-x-2 ${
-          isDisabled 
-            ? 'opacity-50 cursor-not-allowed' 
+        className={`bg-transparent border border-gray-700 px-3 py-2 rounded-full transition-colors duration-200 flex items-center space-x-2 ${isDisabled
+            ? 'opacity-50 cursor-not-allowed'
             : 'hover:bg-gray-800 cursor-pointer'
-        }`}
+          }`}
         aria-label="Perform face swap"
       >
         <ScanFace className={`${isDisabled ? 'text-gray-500' : 'text-purple-500'}`} size={20} />
@@ -641,97 +640,104 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
       </div>
 
       <div className="p-4 sticky bottom-0 left-0 right-0 backdrop-blur-md">
-        <form className="max-w-2xl mx-auto" onSubmit={handleSubmit}>
+        <div className="max-w-2xl mx-auto">
           <div className="flex justify-center mb-2 space-x-3">
-          <div className="flex space-x-3 max-w-[400px] w-full">
-            <Select
-              value={selectedModel}
-              onValueChange={(value) => setSelectedModel(value as ImageModel)}
-            >
-              <SelectTrigger className="flex-grow basis-0 min-w-0 bg-transparent border border-gray-700 focus:ring-0 shadow-none transition-all duration-200 ease-in-out hover:scale-[1.05] text-xs sm:text-sm px-2 py-1.5">
-                <SelectValue>
-                  <div className="flex items-center space-x-1 truncate">
-                    {modelMap[selectedModel].icon}
-                    <span className="font-semibold">{modelMap[selectedModel].name}</span>
-                  </div>
-                </SelectValue>
-              </SelectTrigger>
-              <SelectContent className="w-[120px] z-50">
-                {Object.entries(modelMap).map(([value, { name, icon }]) => (
-                  <SelectItem key={value} value={value} className="flex flex-col items-start p-2">
-                    <div className="flex items-center space-x-2">
-                      {icon}
-                      <span className="font-bold">{name}</span>
+            <div className="flex space-x-3 max-w-[400px] w-full">
+              <Select
+                value={selectedModel}
+                onValueChange={(value) => setSelectedModel(value as ImageModel)}
+              >
+                <SelectTrigger className="flex-grow basis-0 min-w-0 bg-transparent border border-gray-700 focus:ring-0 shadow-none transition-all duration-200 ease-in-out hover:scale-[1.05] text-xs sm:text-sm px-2 py-1.5">
+                  <SelectValue>
+                    <div className="flex items-center space-x-1 truncate">
+                      {modelMap[selectedModel].icon}
+                      <span className="font-semibold">{modelMap[selectedModel].name}</span>
                     </div>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Select
-              value={selectedAspect}
-              onValueChange={(value) => setSelectedAspect(value as ImageAspect)}
-            >
-              <SelectTrigger className="flex-grow basis-0 min-w-0 bg-transparent border border-gray-700 focus:ring-0 shadow-none transition-all duration-200 ease-in-out hover:scale-[1.05] text-xs sm:text-sm px-2 py-1.5">
-                <SelectValue>
-                  <div className="flex items-center space-x-1 truncate">
-                    {aspectMap[selectedAspect].icon}
-                    <span className="font-semibold">{aspectMap[selectedAspect].name}</span>
-                  </div>
-                </SelectValue>
-              </SelectTrigger>
-              <SelectContent className="w-[120px] z-50">
-                {Object.entries(aspectMap).map(([value, { name, icon }]) => (
-                  <SelectItem key={value} value={value} className="flex flex-col items-start p-2">
-                    <div className="flex items-center space-x-2">
-                      {icon}
-                      <span className="font-bold">{name}</span>
+                  </SelectValue>
+                </SelectTrigger>
+                <SelectContent className="w-[120px] z-50">
+                  {Object.entries(modelMap).map(([value, { name, icon }]) => (
+                    <SelectItem key={value} value={value} className="flex flex-col items-start p-2">
+                      <div className="flex items-center space-x-2">
+                        {icon}
+                        <span className="font-bold">{name}</span>
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Select
+                value={selectedAspect}
+                onValueChange={(value) => setSelectedAspect(value as ImageAspect)}
+              >
+                <SelectTrigger className="flex-grow basis-0 min-w-0 bg-transparent border border-gray-700 focus:ring-0 shadow-none transition-all duration-200 ease-in-out hover:scale-[1.05] text-xs sm:text-sm px-2 py-1.5">
+                  <SelectValue>
+                    <div className="flex items-center space-x-1 truncate">
+                      {aspectMap[selectedAspect].icon}
+                      <span className="font-semibold">{aspectMap[selectedAspect].name}</span>
                     </div>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Button
-              onClick={triggerFileInput}
-              className="flex-grow basis-0 min-w-0 bg-transparent border border-gray-700 focus:ring-0 shadow-none transition-all duration-200 ease-in-out hover:scale-[1.05] text-xs sm:text-sm px-2 py-1.5 relative overflow-hidden"
-              style={{
-                backgroundImage: sourceImageUrl ? `url(${sourceImageUrl})` : 'none',
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-              }}
-            >
-              <div className="absolute inset-0 bg-black opacity-50"></div>
-              <div className="flex items-center space-x-1 relative z-10 truncate">
-                {sourceImageUrl ? (
-                  <UserCheck size={16} className="text-purple-400 flex-shrink-0" />
-                ) : (
-                  <UserPlus size={16} className="text-gray-400 flex-shrink-0" />
-                )}
-                <span className="font-semibold text-white truncate">
-                  {sourceImageUrl ? 'Edit face' : 'Add face'}
-                </span>
-              </div>
-            </Button>
+                  </SelectValue>
+                </SelectTrigger>
+                <SelectContent className="w-[120px] z-50">
+                  {Object.entries(aspectMap).map(([value, { name, icon }]) => (
+                    <SelectItem key={value} value={value} className="flex flex-col items-start p-2">
+                      <div className="flex items-center space-x-2">
+                        {icon}
+                        <span className="font-bold">{name}</span>
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  triggerFileInput();
+                }}
+                type="button"
+                className="flex-grow basis-0 min-w-0 bg-transparent border border-gray-700 focus:ring-0 shadow-none transition-all duration-200 ease-in-out hover:scale-[1.05] text-xs sm:text-sm px-2 py-1.5 relative overflow-hidden"
+                style={{
+                  backgroundImage: sourceImageUrl ? `url(${sourceImageUrl})` : 'none',
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                }}
+              >
+                <div className="absolute inset-0 bg-black opacity-50"></div>
+                <div className="flex items-center space-x-1 relative z-10 truncate">
+                  {sourceImageUrl ? (
+                    <UserCheck size={16} className="text-purple-400 flex-shrink-0" />
+                  ) : (
+                    <UserPlus size={16} className="text-gray-400 flex-shrink-0" />
+                  )}
+                  <span className="font-semibold text-white truncate">
+                    {sourceImageUrl ? 'Edit face' : 'Add face'}
+                  </span>
+                </div>
+              </Button>
             </div>
           </div>
-          <div className="w-full flex items-center rounded-full focus:outline-none max-h-[30vh] px-3 py-2 bg-opacity-50 bg-gray-800 backdrop-blur-md shadow-lg">
-            <TextareaAutosize
-              className="w-full bg-transparent text-base sm:text-lg resize-none h-[36px] focus:outline-none text-white"
-              placeholder="Describe the image..."
-              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setPrompt(e.target.value)}
-              onKeyDown={handleKeyDown}
-              value={prompt}
-            />
-            <Button
-              type="submit"
-              variant="default"
-              size="icon"
-              className="rounded-full bg-tint aspect-square h-8 disabled:opacity-20 hover:bg-tint/80 ml-2"
-              disabled={prompt.trim().length < 2 || isLoading}
-            >
-              {isLoading ? <ImageIcon className="animate-pulse" size={18} /> : <ArrowUp size={18} />}
-            </Button>
-          </div>
-        </form>
+          <form onSubmit={handleSubmit}>
+            <div className="w-full flex items-center rounded-full focus:outline-none max-h-[30vh] px-3 py-2 bg-opacity-50 bg-gray-800 backdrop-blur-md shadow-lg">
+              <TextareaAutosize
+                className="w-full bg-transparent text-base sm:text-lg resize-none h-[36px] focus:outline-none text-white"
+                placeholder="Describe the image..."
+                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setPrompt(e.target.value)}
+                onKeyDown={handleKeyDown}
+                value={prompt}
+              />
+              <Button
+                type="submit"
+                variant="default"
+                size="icon"
+                className="rounded-full bg-tint aspect-square h-8 disabled:opacity-20 hover:bg-tint/80 ml-2"
+                disabled={prompt.trim().length < 2 || isLoading}
+              >
+                {isLoading ? <ImageIcon className="animate-pulse" size={18} /> : <ArrowUp size={18} />}
+              </Button>
+            </div>
+          </form>
+        </div>
       </div>
 
       <canvas ref={canvasRef} style={{ display: 'none' }} />
