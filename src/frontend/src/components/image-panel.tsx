@@ -621,14 +621,15 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
 
       <div className="p-4 sticky bottom-0 left-0 right-0 backdrop-blur-md">
         <form className="max-w-2xl mx-auto" onSubmit={handleSubmit}>
-          <div className="flex justify-center mb-2">
+          <div className="flex justify-center mb-2 space-x-3">
+          <div className="flex space-x-3 max-w-[400px] w-full">
             <Select
               value={selectedModel}
               onValueChange={(value) => setSelectedModel(value as ImageModel)}
             >
-              <SelectTrigger className="w-fit space-x-2 bg-transparent outline-none border border-gray-700 select-none focus:ring-0 shadow-none transition-all duration-200 ease-in-out hover:scale-[1.05] text-sm">
+              <SelectTrigger className="flex-grow basis-0 min-w-0 bg-transparent border border-gray-700 focus:ring-0 shadow-none transition-all duration-200 ease-in-out hover:scale-[1.05] text-xs sm:text-sm px-2 py-1.5">
                 <SelectValue>
-                  <div className="flex items-center space-x-2">
+                  <div className="flex items-center space-x-1 truncate">
                     {modelMap[selectedModel].icon}
                     <span className="font-semibold">{modelMap[selectedModel].name}</span>
                   </div>
@@ -649,9 +650,9 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
               value={selectedAspect}
               onValueChange={(value) => setSelectedAspect(value as ImageAspect)}
             >
-              <SelectTrigger className="w-fit space-x-2 bg-transparent outline-none border border-gray-700 select-none focus:ring-0 shadow-none transition-all duration-200 ease-in-out hover:scale-[1.05] text-sm ml-4">
+              <SelectTrigger className="flex-grow basis-0 min-w-0 bg-transparent border border-gray-700 focus:ring-0 shadow-none transition-all duration-200 ease-in-out hover:scale-[1.05] text-xs sm:text-sm px-2 py-1.5">
                 <SelectValue>
-                  <div className="flex items-center space-x-2">
+                  <div className="flex items-center space-x-1 truncate">
                     {aspectMap[selectedAspect].icon}
                     <span className="font-semibold">{aspectMap[selectedAspect].name}</span>
                   </div>
@@ -668,7 +669,28 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
                 ))}
               </SelectContent>
             </Select>
-            <FaceButton />
+            <Button
+              onClick={triggerFileInput}
+              className="flex-grow basis-0 min-w-0 bg-transparent border border-gray-700 focus:ring-0 shadow-none transition-all duration-200 ease-in-out hover:scale-[1.05] text-xs sm:text-sm px-2 py-1.5 relative overflow-hidden"
+              style={{
+                backgroundImage: sourceImageUrl ? `url(${sourceImageUrl})` : 'none',
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+              }}
+            >
+              <div className="absolute inset-0 bg-black opacity-50"></div>
+              <div className="flex items-center space-x-1 relative z-10 truncate">
+                {sourceImageUrl ? (
+                  <UserCheck size={16} className="text-purple-400 flex-shrink-0" />
+                ) : (
+                  <UserPlus size={16} className="text-gray-400 flex-shrink-0" />
+                )}
+                <span className="font-semibold text-white truncate">
+                  {sourceImageUrl ? 'Edit face' : 'Add face'}
+                </span>
+              </div>
+            </Button>
+            </div>
           </div>
           <div className="w-full flex items-center rounded-full focus:outline-none max-h-[30vh] px-3 py-2 bg-opacity-50 bg-gray-800 backdrop-blur-md shadow-lg">
             <TextareaAutosize
