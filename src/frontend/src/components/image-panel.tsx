@@ -11,6 +11,7 @@ import { useToast } from "@/components/ui/use-toast"; // Import the useToast hoo
 import { event } from 'nextjs-google-analytics'; // Import the event function from Google Analytics
 import { FiLink, FiTwitter, FiFacebook, FiDownload } from 'react-icons/fi';
 import { FaRedditAlien, FaWhatsapp } from 'react-icons/fa';
+import { UserPlus, UserCheck, Loader2 } from 'lucide-react';
 
 const BASE_URL = env.NEXT_PUBLIC_API_URL;
 const FREEIMAGE_HOST_API_KEY = "2c8b0486abf7f088f0c8a4fc68853f8e";
@@ -64,6 +65,7 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
   const overlayRef = useRef<HTMLDivElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast(); // Use the useToast hook
+  const [isUploading, setIsUploading] = useState(false);
 
   useEffect(() => {
     if (initialImageCode) {
@@ -457,17 +459,37 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
     }
   };
 
+
   const FaceButton = () => {
+    const [isUploading, setIsUploading] = useState(false);
+  
+    const handleClick = () => {
+      if (!isUploading) {
+        triggerFileInput();
+      }
+    };
+  
     return (
       <Button
-        onClick={triggerFileInput}
+        onClick={handleClick}
         className={`w-fit space-x-2 bg-transparent outline-none border border-gray-700 select-none focus:ring-0 shadow-none transition-all duration-200 ease-in-out hover:scale-[1.05] text-sm ml-4 ${
-          sourceImageUrl ? 'ring-2 ring-blue-500' : ''
+          sourceImageUrl 
+            ? 'bg-purple-600 bg-opacity-20 border-purple-500 hover:bg-purple-600 hover:bg-opacity-30' 
+            : 'hover:bg-gray-700'
         }`}
+        disabled={isUploading}
       >
         <div className="flex items-center space-x-2">
-          <ImageIcon size={16} className={sourceImageUrl ? 'text-blue-500' : 'text-gray-500'} />
-          <span className="font-semibold">{sourceImageUrl ? 'Edit face' : 'Add face'}</span>
+          {isUploading ? (
+            <Loader2 size={16} className="text-white animate-spin" />
+          ) : sourceImageUrl ? (
+            <UserCheck size={16} className="text-purple-400" />
+          ) : (
+            <UserPlus size={16} className="text-gray-400" />
+          )}
+          <span className="font-semibold text-white">
+            {isUploading ? 'Uploading...' : sourceImageUrl ? 'Edit face' : 'Add face'}
+          </span>
         </div>
       </Button>
     );
