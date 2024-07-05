@@ -461,9 +461,14 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
 
 
   const FaceButton = () => {
+    const handleClick = (e: { preventDefault: () => void; stopPropagation: () => void; }) => {
+      e.preventDefault();  // Prevent default form submission
+      e.stopPropagation(); // Stop event from bubbling up
+      triggerFileInput();
+    };
     return (
       <Button
-        onClick={triggerFileInput}
+        onClick={handleClick}
         className={`w-fit space-x-2 bg-transparent outline-none border border-gray-700 select-none focus:ring-0 shadow-none transition-all duration-200 ease-in-out hover:scale-[1.05] text-sm ml-4 relative overflow-hidden ${
           sourceImageUrl
             ? 'bg-purple-600 bg-opacity-20 border-purple-500 hover:bg-purple-600 hover:bg-opacity-30'
