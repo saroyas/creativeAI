@@ -404,13 +404,16 @@ async def face_swap_route(request: Request):
             print(f"Face Swap Response: {response.status_code} {response.text}")
             if response.status_code == 200:
                 job_data = response.json()
+                print("Face Swap Job Data:", job_data)
                 job_id = job_data.get('job')
                 if job_id:
                     # Use the existing polling mechanism
                     return {"task_id": job_id, "message": "Face swap started in the background"}
             else:
+                print(f"Face Swap Response: {response.status_code} {response.text}")
                 raise HTTPException(status_code=response.status_code, detail=f"Failed to initiate face swap. Response: {response.text}")
         except Exception as e:
+            print(f"Face Swap Error: {str(e)}")
             raise HTTPException(status_code=500, detail=f"Failed to initiate face swap: {str(e)}")
 
 if __name__ == "__main__":

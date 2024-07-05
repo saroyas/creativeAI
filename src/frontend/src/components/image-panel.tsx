@@ -422,7 +422,10 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
 
       if (response.data.task_id) {
         setTaskId(response.data.task_id);
-        pollTaskStatus(response.data.task_id, 10000);
+        // wait a while before starting pollTask
+        setTimeout(() => {
+          pollTaskStatus(response.data.task_id, 10000);
+        }, 10000);
       } else if (response.data.error) {
         setError(response.data.error);
       }
