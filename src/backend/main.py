@@ -162,6 +162,10 @@ async def chat(
             status_code=status.HTTP_429_TOO_MANY_REQUESTS,
         )
     
+    # Get and print IP location after processing the request
+    location_info = await get_ip_location(ip_address)
+    print(location_info)
+    
     async def generator():
         try:
             validate_model(chat_request.model)
@@ -190,9 +194,7 @@ async def block_ip_middleware(request: Request, call_next):
             status_code=status.HTTP_429_TOO_MANY_REQUESTS,
         )
     response = await call_next(request)
-    # Get and print IP location after processing the request
-    location_info = await get_ip_location(ip_address)
-    print(location_info)
+
     
     return response
 
@@ -335,6 +337,10 @@ async def generate_image_route(image_request: ImageRequest, request: Request, ba
     if ip_address in PERMANENT_BLOCKLIST:
         return {"error": "Rate limit exceeded, please try again after a short break."}
     
+        # Get and print IP location after processing the request
+    location_info = await get_ip_location(ip_address)
+    print(location_info)
+    
     prompt = image_request.prompt[:600]
     
     # MAKE A REQUEST TO THE OPENROUTER API WITH A SYSTEM PROMPT THAT IT IS TO BE LIKE AN IMAGE PROMPT WRITER
@@ -403,6 +409,10 @@ async def face_swap_route(face_swap_request: FaceSwapRequest, request: Request, 
     ip_address = get_ipaddr(request)
     if ip_address in PERMANENT_BLOCKLIST:
         return {"error": "Rate limit exceeded, please try again after a short break."}
+    
+    # Get and print IP location after processing the request
+    location_info = await get_ip_location(ip_address)
+    print(location_info)
     
     source_url = face_swap_request.sourceUrl
     target_url = face_swap_request.targetUrl
