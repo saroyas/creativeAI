@@ -12,7 +12,7 @@ interface PageProps {
 
 export default function Home({ params }: PageProps) {
   const { imageCode } = params;
-  const [stack, setStack] = useState(["96bd1f60-5be7-43ab-96f8-e34f63d4f9be", "d7b6ac82-530b-45ed-8f51-140fd9cf63f0", "f70723ab-a9e2-48d9-a138-f8b376d9f416", "8aeb9ec5-8e72-4081-a721-771b3ee7d019", "6514ec87-a417-40dd-8696-1b19064c449b"]);
+  const [stack, setStack] = useState(["7ae535a2-a505-4d20-8e0a-0ace9cabea8c", "d7b6ac82-530b-45ed-8f51-140fd9cf63f0", "f70723ab-a9e2-48d9-a138-f8b376d9f416", "1aa79fa8-afec-4700-a8bb-8e43940be63d", "6514ec87-a417-40dd-8696-1b19064c449b"]);
 
   useEffect(() => {
     event('Share_Image_Opened', {
