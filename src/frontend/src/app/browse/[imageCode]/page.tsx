@@ -130,13 +130,13 @@ export default function Home({ params }: PageProps) {
             <main className="flex-grow flex items-stretch justify-center">
                 <div className="relative w-full h-full">
                     <AnimatePresence initial={false}>
-                        {stack.slice(0, 3).map((code, index) => (
+                        {stack.slice(0, 4).map((code, index) => (
                             <Card
                                 key={code}
                                 imageCode={code}
                                 onSwipe={removeCard}
                                 index={index}
-                                total={3}
+                                total={4}
                             />
                         ))}
                     </AnimatePresence>
