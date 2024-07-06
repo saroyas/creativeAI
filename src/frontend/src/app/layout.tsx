@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 import { Navbar } from "@/components/nav";
 import { Footer } from "@/components/footer";
 import { GoogleAnalytics } from "@next/third-parties/google";
+import { usePathname } from 'next/navigation';
 
 const mono = Mono({
   subsets: ["latin"],
@@ -21,7 +22,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 const title = "AI Uncensored";
 const description = "Uncensored, Private, and Creative AI Assistant";
-const imageUrl = "/opengraph-image.png"; // Updated path to the image in the public folder
+const imageUrl = "/opengraph-image.png";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://aiuncensored.info/"),
@@ -56,27 +57,28 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const pathname = usePathname();
+  const isImagePage = pathname === '/image';
+
   return (
-    <>
-      <html lang="en" suppressHydrationWarning>
-        <body
-          className={cn("antialiased", GeistSans.className, mono.className)}
-        >
-          <Providers>
-            <ThemeProvider
-              attribute="class"
-              defaultTheme="dark"
-              enableSystem
-              disableTransitionOnChange
-            >
-              <Navbar />
-              {children}
-              <Toaster />
-              <GoogleAnalytics gaId="G-89BPLVVYGM" />
-            </ThemeProvider>
-          </Providers>
-        </body>
-      </html>
-    </>
+    <html lang="en" suppressHydrationWarning>
+      <body
+        className={cn("antialiased", GeistSans.className, mono.className)}
+      >
+        <Providers>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="dark"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {!isImagePage && <Navbar />}
+            {children}
+            <Toaster />
+            <GoogleAnalytics gaId="G-89BPLVVYGM" />
+          </ThemeProvider>
+        </Providers>
+      </body>
+    </html>
   );
 }
