@@ -492,30 +492,13 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
     return (
       <div className="relative share-button-container">
         <Button
-          onClick={() => setIsOpen(!isOpen)}
+          onClick={() => copyLinkToClipboard()}
           className="bg-transparent border border-gray-700 p-2 rounded-full hover:bg-gray-800 transition-colors duration-200 ring-1 ring-purple-500"
           aria-label="Share"
           aria-expanded={isOpen}
         >
           <Copy size={18} className="text-purple-500" />
         </Button>
-        {isOpen && (
-          <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-gray-800 ring-1 ring-black ring-opacity-5 z-50">
-            <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-              {Object.entries(shareMap).map(([key, { name, icon, action }]) => (
-                <button
-                  key={key}
-                  onClick={() => handleShare(action)}
-                  className="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 w-full text-left"
-                  role="menuitem"
-                >
-                  {icon}
-                  <span className="ml-2">{name}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
       </div>
     );
   };
