@@ -56,11 +56,10 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={cn("antialiased", GeistSans.className, mono.className)}
+        className={cn("antialiased min-h-screen flex flex-col", GeistSans.className, mono.className)}
       >
         <Providers>
           <ThemeProvider
@@ -69,7 +68,9 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            {children}
+            <div className="flex-grow flex flex-col">
+              {children}
+            </div>
             <Toaster />
             <GoogleAnalytics gaId="G-89BPLVVYGM" />
           </ThemeProvider>

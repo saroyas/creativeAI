@@ -570,7 +570,7 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
   };
 
   return (
-    <div className="w-full h-[100dvh] flex flex-col">
+    <div className="w-full h-full flex flex-col">
       <div className="flex-grow flex flex-col justify-between p-4 overflow-hidden">
         <div className="w-full max-w-md mx-auto flex-grow flex flex-col justify-center">
           {error && (
