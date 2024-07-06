@@ -11,6 +11,9 @@ import { env } from "../env.mjs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/components/ui/use-toast";
 import { event } from 'nextjs-google-analytics';
+import Image from 'next/image';
+
+
 
 const BASE_URL = env.NEXT_PUBLIC_API_URL;
 const FREEIMAGE_HOST_API_KEY = "2c8b0486abf7f088f0c8a4fc68853f8e";
@@ -435,16 +438,20 @@ export const ImageCard: React.FC<ImagePanelProps> = ({ initialImageCode, hidden 
             {isLoading && (
               <div className="absolute inset-0 flex items-center justify-center">
                 {imageUrl ? (
-                  <img
+                  <Image
                     src={imageUrl}
                     alt="Background"
-                    className="absolute inset-0 w-full h-full object-cover opacity-30"
+                    layout="fill"
+                    objectFit="cover"
+                    className="opacity-30"
                   />
                 ) : (
-                  <img
+                  <Image
                     src="https://i.ibb.co/5Kf5nwH/0622.gif"
                     alt="Loading"
-                    className={`object-cover ${getLoadingGifClass()}`}
+                    layout="fill"
+                    objectFit="cover"
+                    className={getLoadingGifClass()}
                   />
                 )}
                 <div className="absolute inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center"></div>
@@ -461,9 +468,11 @@ export const ImageCard: React.FC<ImagePanelProps> = ({ initialImageCode, hidden 
 
             {imageUrl && !isLoading && (
               <div className="w-full h-full overflow-hidden rounded-lg relative">
-                <canvas
-                  ref={canvasRef}
-                  className="w-full h-full object-cover"
+                <Image
+                  src={imageUrl}
+                  alt="Generated Image"
+                  layout="fill"
+                  objectFit="cover"
                   onContextMenu={preventRightClick}
                 />
                 <div
