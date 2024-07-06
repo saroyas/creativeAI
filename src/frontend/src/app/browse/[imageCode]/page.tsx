@@ -180,7 +180,7 @@ function Card({ imageCode, onSwipe, index, total }: { imageCode: string, onSwipe
             <motion.div
                 className="absolute inset-y-0 left-0 pointer-events-none"
                 style={{
-                    background: `radial-gradient(ellipse 50% 90% at left, rgba(255, 100, 100, ${leftGlowOpacity.get()}) 0%, transparent 70%)`,
+                    background: `radial-gradient(ellipse 80% 90% at left, rgba(255, 100, 100, ${leftGlowOpacity.get()}) 0%, transparent 70%)`,
                     width: leftGlowSize,
                 }}
             />
@@ -188,7 +188,7 @@ function Card({ imageCode, onSwipe, index, total }: { imageCode: string, onSwipe
             <motion.div
                 className="absolute inset-y-0 right-0 pointer-events-none"
                 style={{
-                    background: `radial-gradient(ellipse 50% 90% at right, rgba(100, 255, 100, ${rightGlowOpacity.get()}) 0%, transparent 70%)`,
+                    background: `radial-gradient(ellipse 80% 90% at right, rgba(100, 255, 100, ${rightGlowOpacity.get()}) 0%, transparent 70%)`,
                     width: rightGlowSize,
                 }}
             />
