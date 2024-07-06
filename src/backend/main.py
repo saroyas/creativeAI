@@ -291,6 +291,7 @@ async def generate_image_async(task_id: str, prompt: str, imageURL: str, model: 
     }
     if imageURL and imageURL != "":
         print("Using image URL", imageURL)
+        payload["prompt"] = ""
         payload["imageUrl"] = imageURL
         payload["denoising_strength"] = 0.8
 
@@ -373,12 +374,13 @@ async def generate_image_route(image_request: ImageRequest, request: Request, ba
         prompt = prompt.replace("teen", "adult")
         
         # print(f"Image Generation Prompt: {prompt}")
-        if sexual_content_flag:
-            original_prompt = prompt
-            prompt = original_prompt + ". " + (await improve_prompt(prompt + ". \n In your reply, focus on the sexually explicit details. Make clear all individuals are are adults and fully developed. Subtley make all characters over the age of 24."))
-        else:
-            original_prompt = prompt
-            prompt = original_prompt + ". " + (await improve_prompt(prompt))
+        if prompt != "":
+            if sexual_content_flag:
+                original_prompt = prompt
+                prompt = original_prompt + ". " + (await improve_prompt(prompt + ". \n In your reply, focus on the sexually explicit details. Make clear all individuals are are adults and fully developed. Subtley make all characters over the age of 24."))
+            else:
+                original_prompt = prompt
+                prompt = original_prompt + ". " + (await improve_prompt(prompt))
             # print(f"Prompt: {prompt}")
         print(f"Prompt: {prompt}")
         
