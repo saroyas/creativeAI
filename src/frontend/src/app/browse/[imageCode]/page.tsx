@@ -56,7 +56,7 @@ function Card({ imageCode, onSwipe, index, total }: {
   total: number;
 }) {
   const x = useMotionValue(0);
-  const rotate = useTransform(x, [-100, 100], [-2, 2]);
+  const rotate = useTransform(x, [-100, 0, 100], [-2, 0, 2]);
   const opacity = useTransform(x, [-100, 0, 100], [0.5, 1, 0.5]);
 
   const animControls = {
@@ -67,13 +67,10 @@ function Card({ imageCode, onSwipe, index, total }: {
       opacity: 1 - index * 0.1,
       zIndex: total - index,
     },
-    exit: {
-      x: 300,
-      opacity: 0,
-      transition: { duration: 0.2 }
-    },
     transition: { type: "spring", stiffness: 300, damping: 20 }
   };
+
+  const [exitX, setExitX] = useState(0);
 
   return (
     <motion.div
@@ -85,10 +82,16 @@ function Card({ imageCode, onSwipe, index, total }: {
       onDragEnd={(_, { offset, velocity }) => {
         const swipe = offset.x * velocity.x;
         if (Math.abs(swipe) > 20000 || Math.abs(offset.x) > 100) {
+          setExitX(offset.x > 0 ? 1000 : -1000);
           onSwipe();
         }
       }}
       {...animControls}
+      exit={{
+        x: exitX,
+        opacity: 0,
+        transition: { duration: 0.2 }
+      }}
     >
       <ImageCard initialImageCode={imageCode} hidden={index !== 0} />
     </motion.div>
