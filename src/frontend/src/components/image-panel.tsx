@@ -573,14 +573,14 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
     );
   };
   return (
-    <div className="w-full h-screen flex flex-col">
-      <div className="flex-grow h-[70%] overflow-auto p-4 flex items-center justify-center">
-        <div className="w-full max-w-md flex flex-col items-center justify-center h-full">
+    <div className="w-full h-[100dvh] flex flex-col">
+      <div className="flex-grow overflow-auto p-4 flex items-center justify-center">
+        <div className="w-full max-w-md flex flex-col items-center justify-center">
           {error && (
             <div className="text-red-400 mb-2 text-sm px-2">{error}</div>
           )}
   
-          <div className={`relative overflow-hidden rounded-lg bg-opacity-50 bg-gray-800 backdrop-blur-sm ${getAspectRatioClass()} max-h-[calc(100%-60px)] w-full`}>
+          <div className={`relative overflow-hidden rounded-lg bg-opacity-50 bg-gray-800 backdrop-blur-sm ${getAspectRatioClass()} w-full`} style={{ maxHeight: 'calc(100dvh - 220px)' }}>
             {isLoading && (
               <div className="absolute inset-0 flex items-center justify-center">
                 {imageUrl ? (
@@ -647,8 +647,8 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
         </div>
       </div>
   
-      <div className="h-[30%] p-4 bg-gray-900 bg-opacity-90 backdrop-blur-md">
-        <div className="max-w-2xl mx-auto h-full flex flex-col justify-end">
+      <div className="p-4 bg-opacity-90 backdrop-blur-md">
+        <div className="max-w-2xl mx-auto">
           <div className="flex justify-center mb-2 space-x-3">
             <div className="flex space-x-3 max-w-[400px] w-full">
               <Select
