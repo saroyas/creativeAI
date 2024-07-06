@@ -398,8 +398,8 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
   const handleFaceSwap = async (sourceUrl: string) => {
     if (!sourceUrl || !imageUrl) {
       toast({
-        title: 'Error',
-        description: 'Both source and target images are required for face swap.'
+        title: 'Generate Image first',
+        description: 'Use the prompt to generate an image before swapping faces.',
       });
       return;
     }
