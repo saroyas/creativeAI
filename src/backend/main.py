@@ -284,7 +284,7 @@ async def generate_image_async(task_id: str, prompt: str, imageURL: str, model: 
         "negative_prompt": "underage, teenager, young, child, boy, girl, schoolchild, badly drawn, distorted, ugly, deformed, clothed, core_6, score_5, score_4, worst quality, low quality, text, censored, deformed, bad hand, blurry, (watermark), multiple phones, weights, bunny ears, extra hands",
         "steps": 50,
         "cfg_scale": 7,
-        "seed": -1,
+        # "seed": -1,
         "sampler": "DPM++ 2M Karras",
         "width": width,
         "height": height
