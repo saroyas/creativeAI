@@ -572,16 +572,15 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
       </Button>
     );
   };
-
   return (
     <div className="w-full h-screen flex flex-col">
-      <div className="flex-grow overflow-auto p-4 flex items-center justify-center">
-        <div className="w-full max-w-md flex flex-col items-center justify-center">
+      <div className="flex-grow h-[70%] overflow-auto p-4 flex items-center justify-center">
+        <div className="w-full max-w-md flex flex-col items-center justify-center h-full">
           {error && (
             <div className="text-red-400 mb-2 text-sm px-2">{error}</div>
           )}
-
-          <div className={`relative overflow-hidden rounded-lg bg-opacity-50 bg-gray-800 backdrop-blur-sm ${getAspectRatioClass()} max-h-[70vh] w-full`}>
+  
+          <div className={`relative overflow-hidden rounded-lg bg-opacity-50 bg-gray-800 backdrop-blur-sm ${getAspectRatioClass()} max-h-[calc(100%-60px)] w-full`}>
             {isLoading && (
               <div className="absolute inset-0 flex items-center justify-center">
                 {imageUrl ? (
@@ -608,7 +607,7 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
                 </div>
               </div>
             )}
-
+  
             {imageUrl && !isLoading && (
               <div className="w-full h-full overflow-hidden rounded-lg relative">
                 <canvas
@@ -623,7 +622,7 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
                 />
               </div>
             )}
-
+  
             {!imageUrl && !isLoading && (
               <div className="w-full h-full flex flex-col items-center justify-center text-center text-gray-300 p-2">
                 <ImageIcon size={36} className="mb-2" />
@@ -631,7 +630,7 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
               </div>
             )}
           </div>
-
+  
           {imageUrl && !isLoading && (
             <div className="mt-4 flex justify-center space-x-4">
               <Button
@@ -643,14 +642,13 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
               </Button>
               <ShareButton />
               <RegenerateButton />
-              {/* <FaceSwapButton /> */}
             </div>
           )}
         </div>
       </div>
-
-      <div className="p-4 sticky bottom-0 left-0 right-0 backdrop-blur-md">
-        <div className="max-w-2xl mx-auto">
+  
+      <div className="h-[30%] p-4 bg-gray-900 bg-opacity-90 backdrop-blur-md">
+        <div className="max-w-2xl mx-auto h-full flex flex-col justify-end">
           <div className="flex justify-center mb-2 space-x-3">
             <div className="flex space-x-3 max-w-[400px] w-full">
               <Select
@@ -727,7 +725,7 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
               </Button>
             </div>
           </div>
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} className="mt-2">
             <div className="w-full flex items-center rounded-full focus:outline-none max-h-[30vh] px-3 py-2 bg-opacity-50 bg-gray-800 backdrop-blur-md shadow-lg">
               <TextareaAutosize
                 className="w-full bg-transparent text-base sm:text-lg resize-none h-[36px] focus:outline-none text-white"
@@ -749,7 +747,7 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
           </form>
         </div>
       </div>
-
+  
       <canvas ref={canvasRef} style={{ display: 'none' }} />
       <input
         type="file"
