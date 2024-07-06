@@ -13,7 +13,6 @@ interface PageProps {
 export default function Home({ params }: PageProps) {
   const { imageCode } = params;
   const [stack, setStack] = useState([imageCode, imageCode, imageCode, imageCode, imageCode]);
-  const [direction, setDirection] = useState<'left' | 'right' | null>(null);
 
   useEffect(() => {
     event('Share_Image_Opened', {
@@ -23,15 +22,14 @@ export default function Home({ params }: PageProps) {
     });
   }, [imageCode]);
 
-  const removeCard = (dir: 'left' | 'right') => {
-    setDirection(dir);
+  const removeCard = () => {
     setStack((current) => current.slice(1));
   };
 
   return (
     <div className="h-[100dvh] flex flex-col">
-      <main className="flex-grow flex items-center justify-center overflow-hidden">
-        <div className="relative w-full max-w-md h-[70vh] mx-auto">
+      <main className="flex-grow flex items-stretch justify-center">
+        <div className="relative w-full h-full">
           <AnimatePresence initial={false}>
             {stack.map((code, index) => (
               <Card
@@ -51,48 +49,45 @@ export default function Home({ params }: PageProps) {
 
 function Card({ imageCode, onSwipe, index, total }: { 
   imageCode: string; 
-  onSwipe: (dir: 'left' | 'right') => void; 
+  onSwipe: () => void; 
   index: number;
   total: number;
 }) {
-  const cardRef = useRef<HTMLDivElement>(null);
   const x = useMotionValue(0);
-  const rotate = useTransform(x, [-200, 200], [-25, 25]);
-  const opacity = useTransform(x, [-200, -150, 0, 150, 200], [0, 1, 1, 1, 0]);
+  const rotate = useTransform(x, [-100, 100], [-5, 5]);
 
   const animControls = {
-    initial: { scale: 1, y: index * -10, opacity: 1 - index * 0.15 },
+    initial: { scale: 1, y: 0, opacity: 1 },
     animate: { 
-      scale: 1 - index * 0.05,
-      y: index * -20,
-      opacity: 1 - index * 0.2,
+      scale: 1 - index * 0.02,
+      y: index * -5,
+      opacity: 1 - index * 0.1,
       zIndex: total - index,
     },
-      x: (custom: 'left' | 'right') => custom === 'left' ? -300 : 300,
-      scale: 0.5,
+    exit: {
+      x: 300,
+      opacity: 0,
+      transition: { duration: 0.2 }
+    },
+    transition: { duration: 0.2 }
+  };
 
-    }
   return (
     <motion.div
-      ref={cardRef}
-      className="absolute inset-0 cursor-grab active:cursor-grabbing"
-      style={{ x, rotate, opacity }}
+      className="absolute inset-0"
+      style={{ x, rotate }}
       drag="x"
       dragConstraints={{ left: 0, right: 0 }}
-      dragElastic={1}
+      dragElastic={0.7}
       onDragEnd={(e, { offset, velocity }) => {
         const swipe = Math.abs(offset.x) * velocity.x;
-        if (swipe < -200000) {
-          onSwipe('left');
-        } else if (swipe > 200000) {
-          onSwipe('right');
+        if (Math.abs(swipe) > 50000) {
+          onSwipe();
         }
       }}
       {...animControls}
     >
-      <div className="w-full h-full rounded-2xl overflow-hidden shadow-xl">
-        <ImagePanel initialImageCode={imageCode} />
-      </div>
+      <ImagePanel initialImageCode={imageCode} />
     </motion.div>
   );
 }
