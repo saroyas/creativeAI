@@ -66,9 +66,23 @@ PERMANENT_BLOCKLIST = set()
 
 # Constants for image generation
 PRODIA_API_KEY = os.getenv('PRODIA_API_KEY')
+GEOAPIFY_API_KEY = os.getenv('GEOAPIFY_API_KEY')
 
 # Store for image generation tasks
 IMAGE_TASKS: Dict[str, Dict] = {}
+
+async def get_ip_location(ip_address: str):
+    GEOAPIFY_API_KEY = "c7e51cfe24c647bcb78eb96abaf1874b"
+    url = f"https://api.geoapify.com/v1/ipinfo?ip={ip_address}&apiKey={GEOAPIFY_API_KEY}"
+    
+    async with httpx.AsyncClient() as client:
+        response = await client.get(url)
+    
+    if response.status_code == 200:
+        data = response.json()
+        return f"IP: {ip_address}, Location: {data.get('city', {}).get('name', 'Unknown')}, {data.get('country', {}).get('name', 'Unknown')}"
+    else:
+        return f"Failed to get location for IP: {ip_address}"
 
 def create_error_event(detail: str):
     obj = ChatResponseEvent(
@@ -176,6 +190,10 @@ async def block_ip_middleware(request: Request, call_next):
             status_code=status.HTTP_429_TOO_MANY_REQUESTS,
         )
     response = await call_next(request)
+    # Get and print IP location after processing the request
+    location_info = await get_ip_location(ip_address)
+    print(location_info)
+    
     return response
 
 async def check_child_sexual_content(input_text: str) -> bool:
