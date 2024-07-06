@@ -2,7 +2,10 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import TextareaAutosize from "react-textarea-autosize";
 import { Button } from "./ui/button";
-import { ArrowUp, ScanFace, Camera, Brush, Image as ImageIcon, Square, RectangleHorizontal, RectangleVertical, Download, Link as LinkIcon, Facebook, MessageCircle, Copy } from "lucide-react";
+import {
+  ArrowUp, ScanFace, Camera, Brush, Image as ImageIcon, Square, RectangleHorizontal,
+  RectangleVertical, Download, Link as LinkIcon, Facebook, MessageCircle, Copy
+} from "lucide-react";
 import { Twitter as XLogo } from "lucide-react"; // Import the X logo
 import axios from 'axios';
 import { env } from "../env.mjs";
@@ -441,32 +444,6 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
     }
   };
 
-  // const FaceSwapButton = () => {
-  //   const handleFaceSwapClick = () => {
-  //     if (!imageUrl) {
-  //       toast({
-  //         title: 'Generate an image first',
-  //         description: 'You need to generate an image before performing a face swap.',
-  //         duration: 3000,
-  //       });
-  //     } else {
-  //       triggerFileInput();
-  //     }
-  //   };
-
-  //   return (
-  //     <Button
-  //       onClick={handleFaceSwapClick}
-  //       className="flex-grow basis-0 min-w-0 bg-transparent border border-gray-700 focus:ring-0 shadow-none transition-all duration-200 ease-in-out hover:scale-[1.05] text-xs sm:text-sm px-2 py-1.5 relative overflow-hidden"
-  //     >
-  //       <div className="flex items-center space-x-1 relative z-10 truncate">
-  //         <ScanFace size={16} className="text-purple-400 flex-shrink-0" />
-  //         <span className="font-semibold text-white truncate">Face swap</span>
-  //       </div>
-  //     </Button>
-  //   );
-  // };
-
   const shareMap: Record<string, { name: string; icon: React.ReactNode; action: () => void }> = {
     copy: {
       name: "Copy Link",
@@ -498,20 +475,6 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
   const ShareButton = () => {
     const [isOpen, setIsOpen] = useState(false);
 
-    // const handleToggle = () => {
-    //   copyLinkToClipboard();
-
-    //   if (!isOpen) {
-    //     copyLinkToClipboard();
-    //   }
-    //   event('SHARE_BUTTON_CLICKED', {
-    //     category: 'image_link_copied',
-    //     label: "image_link_copied",
-    //   });
-
-    //   setIsOpen(!isOpen);
-    // };
-
     const handleShare = (action: () => void) => {
       action();
       setIsOpen(false);
@@ -535,12 +498,10 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
         <Button
           onClick={copyLinkToClipboard}
           className="bg-transparent border border-gray-700 p-2 rounded-full hover:bg-gray-800 transition-colors duration-200 ring-1 ring-purple-500"
-
           aria-label="Share"
           aria-expanded={isOpen}
         >
           <Copy size={18} className="text-purple-500" />
-
         </Button>
         {isOpen && (
           <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-gray-800 ring-1 ring-black ring-opacity-5 z-50">
@@ -598,7 +559,6 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
       setIsLoading(false);
     }
   };
-  
 
   const RegenerateButton = () => {
     return (
@@ -630,16 +590,14 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
                     alt="Background"
                     className="absolute inset-0 w-full h-full object-cover opacity-30"
                   />
-                ) :
+                ) : (
                   <img
                     src="https://i.ibb.co/5Kf5nwH/0622.gif"
                     alt="Loading"
                     className={`object-cover ${getLoadingGifClass()}`}
                   />
-                }
-                <div className="absolute inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center">
-
-                </div>
+                )}
+                <div className="absolute inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center"></div>
                 <div className="absolute bottom-2 left-2 right-2 z-10">
                   <div className="w-full h-1 bg-gray-200 bg-opacity-30 rounded-full overflow-hidden">
                     <div
