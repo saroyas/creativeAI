@@ -6,15 +6,15 @@ import {
   ArrowUp, ScanFace, Camera, Brush, Image as ImageIcon, Square, RectangleHorizontal,
   RectangleVertical, Download, Link as LinkIcon, Facebook, MessageCircle, Copy
 } from "lucide-react";
-import { Twitter as XLogo } from "lucide-react"; // Import the X logo
+import { Twitter as XLogo } from "lucide-react";
 import axios from 'axios';
 import { env } from "../env.mjs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useToast } from "@/components/ui/use-toast"; // Import the useToast hook
-import { event } from 'nextjs-google-analytics'; // Import the event function from Google Analytics
+import { useToast } from "@/components/ui/use-toast";
+import { event } from 'nextjs-google-analytics';
 import { FiLink, FiTwitter, FiFacebook, FiDownload } from 'react-icons/fi';
 import { FaRedditAlien, FaWhatsapp } from 'react-icons/fa';
-import { UserPlus, UserCheck, Loader2, RefreshCw } from 'lucide-react'; // Import RefreshCw for the regenerate button
+import { UserPlus, UserCheck, Loader2, RefreshCw } from 'lucide-react';
 
 const BASE_URL = env.NEXT_PUBLIC_API_URL;
 const FREEIMAGE_HOST_API_KEY = "2c8b0486abf7f088f0c8a4fc68853f8e";
@@ -54,7 +54,7 @@ interface ImagePanelProps {
 
 export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
   const [prompt, setPrompt] = useState<string>("");
-  const [currentPrompt, setCurrentPrompt] = useState<string>(""); // Add current prompt state
+  const [currentPrompt, setCurrentPrompt] = useState<string>("");
   const [imageUrl, setImageUrl] = useState<string>("");
   const [imageCode, setImageCode] = useState<string | null>(initialImageCode || null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -68,7 +68,7 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const overlayRef = useRef<HTMLDivElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { toast } = useToast(); // Use the useToast hook
+  const { toast } = useToast();
   const [isUploading, setIsUploading] = useState(false);
 
   useEffect(() => {
@@ -106,7 +106,7 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
     setError("");
     setProgress(0);
     setTaskId(null);
-    setCurrentPrompt(promptText); // Store the current prompt
+    setCurrentPrompt(promptText);
     event('Generating_Image_Started', {
       category: 'Generating_Image',
       label: "Generating Image",
@@ -275,7 +275,7 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
   const getImageCode = (url: string) => {
     const parts = url.split('/');
     const fileName = parts[parts.length - 1];
-    return fileName.split('.')[0]; // Remove the file extension
+    return fileName.split('.')[0];
   };
 
   const getShareUrl = () => {
@@ -319,7 +319,6 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
       });
     } catch (error) {
       console.error('Failed to open Reddit sharing window:', error);
-      // Optionally, show a user-friendly error message
     }
   };
 
@@ -381,7 +380,6 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
       try {
         const uploadedUrl = await uploadImageToFreeImageHost(file);
         setSourceImageUrl(uploadedUrl);
-        // Automatically trigger face swap after uploading
         await handleFaceSwap(uploadedUrl);
       } catch (error) {
         console.error('Failed to upload image or perform face swap:', error);
@@ -439,8 +437,6 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
     } catch (err) {
       setError("Face swap request failed. Try again after a short break.");
       console.error("Error initiating face swap:", err);
-    } finally {
-      // setIsLoading(false);
     }
   };
 
@@ -496,7 +492,7 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
     return (
       <div className="relative share-button-container">
         <Button
-          onClick={copyLinkToClipboard}
+          onClick={() => setIsOpen(!isOpen)}
           className="bg-transparent border border-gray-700 p-2 rounded-full hover:bg-gray-800 transition-colors duration-200 ring-1 ring-purple-500"
           aria-label="Share"
           aria-expanded={isOpen}
@@ -572,6 +568,7 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
       </Button>
     );
   };
+
   return (
     <div className="w-full h-[100dvh] flex flex-col">
       <div className="flex-grow overflow-auto p-4 flex items-center justify-center">
@@ -579,7 +576,7 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
           {error && (
             <div className="text-red-400 mb-2 text-sm px-2">{error}</div>
           )}
-  
+
           <div className={`relative overflow-hidden rounded-lg bg-opacity-50 bg-gray-800 backdrop-blur-sm ${getAspectRatioClass()} w-full`} style={{ maxHeight: 'calc(100dvh - 220px)' }}>
             {isLoading && (
               <div className="absolute inset-0 flex items-center justify-center">
@@ -607,7 +604,7 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
                 </div>
               </div>
             )}
-  
+
             {imageUrl && !isLoading && (
               <div className="w-full h-full overflow-hidden rounded-lg relative">
                 <canvas
@@ -622,7 +619,7 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
                 />
               </div>
             )}
-  
+
             {!imageUrl && !isLoading && (
               <div className="w-full h-full flex flex-col items-center justify-center text-center text-gray-300 p-2">
                 <ImageIcon size={36} className="mb-2" />
@@ -630,7 +627,7 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
               </div>
             )}
           </div>
-  
+
           {imageUrl && !isLoading && (
             <div className="mt-4 flex justify-center space-x-4">
               <Button
@@ -646,7 +643,7 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
           )}
         </div>
       </div>
-  
+
       <div className="p-4 bg-opacity-90 backdrop-blur-md">
         <div className="max-w-2xl mx-auto">
           <div className="flex justify-center mb-2 space-x-3">
@@ -747,7 +744,7 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
           </form>
         </div>
       </div>
-  
+
       <canvas ref={canvasRef} style={{ display: 'none' }} />
       <input
         type="file"
