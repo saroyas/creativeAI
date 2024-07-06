@@ -250,7 +250,12 @@ class ImageRequest(BaseModel):
     aspect: str = "square"  # Add aspect ratio to the request model
 
 async def generate_image_async(task_id: str, prompt: str, imageURL: str, model: str, aspect: str):
-    url = "https://api.prodia.com/v1/sdxl/generate"
+    # Use a different URL if imageURL is provided
+    if imageURL and imageURL != "":
+        url = "https://api.prodia.com/v1/sdxl/transform"
+    else:
+        url = "https://api.prodia.com/v1/sdxl/generate"
+    
     headers = {
         'X-Prodia-Key': PRODIA_API_KEY,
         'accept': 'application/json',
