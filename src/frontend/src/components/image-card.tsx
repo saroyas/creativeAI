@@ -479,11 +479,22 @@ interface ImagePanelProps {
     };
   
     const handleRegenerate = async () => {
-      if (!imageUrl || !currentPrompt) return;
+      console.log("regenerating image with prompt:", currentPrompt, " imageUrl:", imageUrl);
+      if (!imageUrl) {
+        toast({
+          title: 'Generate Image first',
+          description: 'Enter a prompt to generate an image before regenerating.',
+        });
+        return;
+      };
+      if (!currentPrompt) {
+        setCurrentPrompt("");
+      };
       setIsLoading(true);
       setError("");
       setProgress(0);
       setTaskId(null);
+  
       event('Regenerating_Image_Started', {
         category: 'Regenerating_Image',
         label: "Regenerating Image",
