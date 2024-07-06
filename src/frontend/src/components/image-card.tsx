@@ -63,7 +63,7 @@ export const ImageCard: React.FC<ImagePanelProps> = ({ initialImageCode, hidden 
 
   useEffect(() => {
     if (imageUrl) {
-      const img = new (Image as any)();
+      const img = new window.Image();
       img.crossOrigin = "Anonymous";
       img.onload = () => {
         const canvas = canvasRef.current;
@@ -150,7 +150,7 @@ export const ImageCard: React.FC<ImagePanelProps> = ({ initialImageCode, hidden 
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
-    const img = new (Image as any)();
+    const img = new window.Image();
     img.crossOrigin = "Anonymous";
     img.onload = () => {
       canvas.width = img.width;
