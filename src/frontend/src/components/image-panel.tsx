@@ -334,7 +334,7 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
     navigator.clipboard.writeText(shareUrl).then(() => {
       toast({
         title: 'Link Copied',
-        description: 'The link has been copied to your clipboard.'
+        description: 'The image url has been copied to your clipboard.'
       });
 
       event('Link_Copied_Share', {

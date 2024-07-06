@@ -51,7 +51,7 @@ export const ShareButtons: React.FC<ShareButtonsProps> = ({ code }) => {
       setTimeout(() => setCopied(false), 2000);
       toast({
         title: 'Link Copied',
-        description: 'The link has been copied to your clipboard.'
+        description: 'The image url has been copied to your clipboard.'
       });
       event('Chat_Link_Copied_Share', { category: 'Link_Copied_Share', label: "Link Copied" });
     }).catch(err => {
