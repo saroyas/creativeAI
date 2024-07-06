@@ -22,8 +22,8 @@ export default function Home({ params }: PageProps) {
   }, [imageCode]);
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <main className="flex-grow flex items-center justify-center">
+    <div className="h-[100dvh] flex flex-col">
+      <main className="flex-grow flex items-stretch justify-center">
         <ImagePanel initialImageCode={imageCode} />
       </main>
     </div>
