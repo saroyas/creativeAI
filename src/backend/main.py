@@ -383,7 +383,7 @@ async def generate_image_route(image_request: ImageRequest, request: Request, ba
             original_prompt = prompt
             prompt = original_prompt + ". " + (await improve_prompt(prompt))
             # print(f"Prompt: {prompt}")
-        
+        print(f"Prompt: {prompt}")
         
         # Generate a unique task ID
         task_id = f"task_{len(IMAGE_TASKS) + 1}"
