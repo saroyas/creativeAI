@@ -63,7 +63,7 @@ export const ImageCard: React.FC<ImagePanelProps> = ({ initialImageCode, hidden 
 
   useEffect(() => {
     if (imageUrl) {
-      const img = new Image();
+      const img = new (Image as any)();
       img.crossOrigin = "Anonymous";
       img.onload = () => {
         const canvas = canvasRef.current;
@@ -77,7 +77,6 @@ export const ImageCard: React.FC<ImagePanelProps> = ({ initialImageCode, hidden 
       img.src = imageUrl;
     }
   }, [imageUrl]);
-
   const preventRightClick = (e: React.MouseEvent) => e.preventDefault();
 
   const generateImage = async (promptText: string) => {
@@ -151,7 +150,7 @@ export const ImageCard: React.FC<ImagePanelProps> = ({ initialImageCode, hidden 
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
-    const img = new Image();
+    const img = new (Image as any)();
     img.crossOrigin = "Anonymous";
     img.onload = () => {
       canvas.width = img.width;
