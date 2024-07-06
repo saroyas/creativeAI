@@ -11,7 +11,7 @@ import { useToast } from "@/components/ui/use-toast"; // Import the useToast hoo
 import { event } from 'nextjs-google-analytics'; // Import the event function from Google Analytics
 import { FiLink, FiTwitter, FiFacebook, FiDownload } from 'react-icons/fi';
 import { FaRedditAlien, FaWhatsapp } from 'react-icons/fa';
-import { UserPlus, UserCheck, Loader2 } from 'lucide-react';
+import { UserPlus, UserCheck, Loader2, RefreshCw } from 'lucide-react'; // Import RefreshCw for the regenerate button
 
 const BASE_URL = env.NEXT_PUBLIC_API_URL;
 const FREEIMAGE_HOST_API_KEY = "2c8b0486abf7f088f0c8a4fc68853f8e";
@@ -51,6 +51,7 @@ interface ImagePanelProps {
 
 export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
   const [prompt, setPrompt] = useState<string>("");
+  const [currentPrompt, setCurrentPrompt] = useState<string>(""); // Add current prompt state
   const [imageUrl, setImageUrl] = useState<string>("");
   const [imageCode, setImageCode] = useState<string | null>(initialImageCode || null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -102,6 +103,7 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
     setError("");
     setProgress(0);
     setTaskId(null);
+    setCurrentPrompt(promptText); // Store the current prompt
     event('Generating_Image_Started', {
       category: 'Generating_Image',
       label: "Generating Image",
@@ -560,6 +562,56 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
       </div>
     );
   };
+  
+  const handleRegenerate = async () => {
+    if (!imageUrl || !currentPrompt) return;
+    setIsLoading(true);
+    setError("");
+    setProgress(0);
+    setTaskId(null);
+    event('Regenerating_Image_Started', {
+      category: 'Regenerating_Image',
+      label: "Regenerating Image",
+    });
+    try {
+      const response = await axios.post(`${BASE_URL}/image`, {
+        prompt: currentPrompt,
+        imageURL: imageUrl,
+        model: selectedModel,
+        aspect: selectedAspect,
+      }, {
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      if (response.data.task_id) {
+        setTaskId(response.data.task_id);
+        pollTaskStatus(response.data.task_id);
+      } else if (response.data.error) {
+        setError(response.data.error);
+        setIsLoading(false);
+      }
+    } catch (err) {
+      setError("Regeneration failed. Please try again.");
+      console.error("Error regenerating image:", err);
+      setIsLoading(false);
+    }
+  };
+  
+
+  const RegenerateButton = () => {
+    return (
+      <Button
+        onClick={handleRegenerate}
+        className="bg-transparent border border-gray-700 p-2 rounded-full hover:bg-gray-800 transition-colors duration-200 ring-1 ring-green-500"
+        aria-label="Regenerate image"
+        disabled={isLoading || !imageUrl}
+      >
+        <RefreshCw size={18} className="text-green-500" />
+      </Button>
+    );
+  };
 
   return (
     <div className="w-full h-screen flex flex-col">
@@ -632,6 +684,7 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
                 <FiDownload size={18} className="text-orange-500" />
               </Button>
               <ShareButton />
+              <RegenerateButton />
               {/* <FaceSwapButton /> */}
             </div>
           )}
