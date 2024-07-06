@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { ImageCard } from "@/components/image-card";
 import { event } from 'nextjs-google-analytics';
-import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
+import { motion, AnimatePresence, useMotionValue, useTransform, useAnimation } from 'framer-motion';
 
 interface PageProps {
     params: { imageCode: string };
@@ -153,7 +153,7 @@ function Card({ imageCode, onSwipe, index, total }: {
     total: number;
 }) {
     const x = useMotionValue(0);
-    const rotate = useTransform(x, [-100, 0, 100], [-2, 0, 2]);
+    const rotate = useTransform(x, [-200, 0, 200], [-8, 0, 8]); // More pronounced rotation
     const opacity = useTransform(x, [-100, 0, 100], [0.5, 1, 0.5]);
 
     const animControls = {
