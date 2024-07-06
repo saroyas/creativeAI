@@ -374,6 +374,9 @@ async def generate_image_route(image_request: ImageRequest, request: Request, ba
             # in the prompt, replace boy with man
             prompt = prompt.replace("boy", "man")
             prompt = prompt.replace("Boy", "man")
+            prompt = prompt.replace("18", "24")
+            prompt = prompt.replace("19", "24")
+            prompt = prompt.replace("20", "24")
             # at the end of the prompt, add "all individuals are adults"
         else:
             original_prompt = prompt
