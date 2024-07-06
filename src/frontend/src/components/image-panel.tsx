@@ -708,7 +708,7 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
                     <UserPlus size={16} className="text-gray-400 flex-shrink-0" />
                   )}
                   <span className="font-semibold text-white truncate">
-                    {sourceImageUrl ? 'Add face' : 'Add face'}
+                    {sourceImageUrl ? 'Apply face' : 'Add face'}
                   </span>
                 </div>
               </Button>
