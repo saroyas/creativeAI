@@ -10,7 +10,6 @@ import { cn } from "@/lib/utils";
 import { Navbar } from "@/components/nav";
 import { Footer } from "@/components/footer";
 import { GoogleAnalytics } from "@next/third-parties/google";
-import { usePathname } from 'next/navigation';
 
 const mono = Mono({
   subsets: ["latin"],
@@ -57,8 +56,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const pathname = usePathname();
-  const isImagePage = pathname === '/image';
 
   return (
     <html lang="en" suppressHydrationWarning>
@@ -72,7 +69,6 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            {!isImagePage && <Navbar />}
             {children}
             <Toaster />
             <GoogleAnalytics gaId="G-89BPLVVYGM" />
