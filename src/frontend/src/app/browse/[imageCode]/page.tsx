@@ -5,14 +5,18 @@ import { event } from 'nextjs-google-analytics';
 import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
 
 interface PageProps {
-  params: {
-    imageCode: string;
-  };
+  params: { imageCode: string };
 }
 
 export default function Home({ params }: PageProps) {
   const { imageCode } = params;
-  const [stack, setStack] = useState(["7ae535a2-a505-4d20-8e0a-0ace9cabea8c", "d7b6ac82-530b-45ed-8f51-140fd9cf63f0", "f70723ab-a9e2-48d9-a138-f8b376d9f416", "1aa79fa8-afec-4700-a8bb-8e43940be63d", "6514ec87-a417-40dd-8696-1b19064c449b"]);
+  const [stack, setStack] = useState([
+    "7ae535a2-a505-4d20-8e0a-0ace9cabea8c",
+    "d7b6ac82-530b-45ed-8f51-140fd9cf63f0",
+    "f70723ab-a9e2-48d9-a138-f8b376d9f416",
+    "1aa79fa8-afec-4700-a8bb-8e43940be63d",
+    "6514ec87-a417-40dd-8696-1b19064c449b"
+  ]);
 
   useEffect(() => {
     event('Share_Image_Opened', {
@@ -22,9 +26,7 @@ export default function Home({ params }: PageProps) {
     });
   }, [imageCode]);
 
-  const removeCard = () => {
-    setStack((current) => current.slice(1));
-  };
+  const removeCard = () => setStack(current => current.slice(1));
 
   return (
     <div className="h-[100dvh] flex flex-col">
@@ -33,12 +35,11 @@ export default function Home({ params }: PageProps) {
           <AnimatePresence initial={false}>
             {stack.map((code, index) => (
               <Card
-                key={code + index}
+                key={code}
                 imageCode={code}
                 onSwipe={removeCard}
                 index={index}
                 total={stack.length}
-                hidden={index !== 0}  // Only the top card is not hidden
               />
             ))}
           </AnimatePresence>
@@ -48,15 +49,15 @@ export default function Home({ params }: PageProps) {
   );
 }
 
-function Card({ imageCode, onSwipe, index, total, hidden }: { 
+function Card({ imageCode, onSwipe, index, total }: { 
   imageCode: string; 
   onSwipe: () => void; 
   index: number;
   total: number;
-  hidden: boolean;
 }) {
   const x = useMotionValue(0);
-  const rotate = useTransform(x, [-100, 100], [-5, 5]);
+  const rotate = useTransform(x, [-100, 100], [-2, 2]);
+  const opacity = useTransform(x, [-100, 0, 100], [0.5, 1, 0.5]);
 
   const animControls = {
     initial: { scale: 1, y: 0, opacity: 1 },
@@ -71,25 +72,25 @@ function Card({ imageCode, onSwipe, index, total, hidden }: {
       opacity: 0,
       transition: { duration: 0.2 }
     },
-    transition: { duration: 0.2 }
+    transition: { type: "spring", stiffness: 300, damping: 20 }
   };
 
   return (
     <motion.div
       className="absolute inset-0"
-      style={{ x, rotate }}
-      drag="x"
+      style={{ x, rotate, opacity }}
+      drag={index === 0 ? "x" : false}
       dragConstraints={{ left: 0, right: 0 }}
-      dragElastic={0.7}
-      onDragEnd={(e, { offset, velocity }) => {
-        const swipe = Math.abs(offset.x) * velocity.x;
-        if (Math.abs(swipe) > 50000) {
+      dragElastic={0.9}
+      onDragEnd={(_, { offset, velocity }) => {
+        const swipe = offset.x * velocity.x;
+        if (Math.abs(swipe) > 20000 || Math.abs(offset.x) > 100) {
           onSwipe();
         }
       }}
       {...animControls}
     >
-      <ImageCard initialImageCode={imageCode} hidden={hidden} />
+      <ImageCard initialImageCode={imageCode} hidden={index !== 0} />
     </motion.div>
   );
 }
