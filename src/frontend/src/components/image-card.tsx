@@ -441,33 +441,7 @@ interface ImagePanelProps {
       }
     };
   
-    const shareMap: Record<string, { name: string; icon: React.ReactNode; action: () => void }> = {
-      copy: {
-        name: "Copy Link",
-        icon: <FiLink size={18} className="text-gray-400" />,
-        action: copyLinkToClipboard,
-      },
-      twitter: {
-        name: "Twitter",
-        icon: <FiTwitter size={18} className="text-blue-400" />,
-        action: shareOnTwitter,
-      },
-      facebook: {
-        name: "Facebook",
-        icon: <FiFacebook size={18} className="text-blue-600" />,
-        action: shareOnFacebook,
-      },
-      reddit: {
-        name: "Reddit",
-        icon: <FaRedditAlien size={18} className="text-orange-500" />,
-        action: shareOnReddit,
-      },
-      whatsapp: {
-        name: "WhatsApp",
-        icon: <FaWhatsapp size={18} className="text-green-500" />,
-        action: shareOnWhatsApp,
-      },
-    };
+
   
     const ShareButton = () => {
       const [isOpen, setIsOpen] = useState(false);
@@ -493,30 +467,13 @@ interface ImagePanelProps {
       return (
         <div className="relative share-button-container">
           <Button
-            onClick={() => setIsOpen(!isOpen)}
+            onClick={() => copyLinkToClipboard()}
             className="bg-transparent border border-gray-700 p-2 rounded-full hover:bg-gray-800 transition-colors duration-200 ring-1 ring-purple-500"
             aria-label="Share"
             aria-expanded={isOpen}
           >
             <Copy size={18} className="text-purple-500" />
           </Button>
-          {isOpen && (
-            <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-gray-800 ring-1 ring-black ring-opacity-5 z-50">
-              <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-                {Object.entries(shareMap).map(([key, { name, icon, action }]) => (
-                  <button
-                    key={key}
-                    onClick={() => handleShare(action)}
-                    className="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 w-full text-left"
-                    role="menuitem"
-                  >
-                    {icon}
-                    <span className="ml-2">{name}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
         </div>
       );
     };
@@ -631,9 +588,7 @@ interface ImagePanelProps {
                 </div>
               )}
             </div>
-
             {imageUrl && !isLoading && (
-
               <div className={`mt-4 flex justify-center space-x-4 ${hidden ? 'invisible' : ''}`}>
                 <Button
                   onClick={addWatermarkAndDownload}
@@ -644,7 +599,6 @@ interface ImagePanelProps {
                 </Button>
                 <ShareButton />
                 <RegenerateButton />
-
               </div>
             )}
           </div>
