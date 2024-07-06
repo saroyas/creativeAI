@@ -631,9 +631,10 @@ interface ImagePanelProps {
                 </div>
               )}
             </div>
-    
+
             {imageUrl && !isLoading && (
-              <div className="mt-4 flex justify-center space-x-4">
+
+              <div className={`mt-4 flex justify-center space-x-4 ${hidden ? 'invisible' : ''}`}>
                 <Button
                   onClick={addWatermarkAndDownload}
                   className="bg-transparent border border-gray-700 p-2 rounded-full hover:bg-gray-800 transition-colors duration-200 ring-1 ring-orange-500"
@@ -643,6 +644,7 @@ interface ImagePanelProps {
                 </Button>
                 <ShareButton />
                 <RegenerateButton />
+
               </div>
             )}
           </div>
