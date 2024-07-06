@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { ImageCard } from "@/components/image-card";
 import { event } from 'nextjs-google-analytics';
-import { motion, AnimatePresence, useMotionValue, useTransform, useAnimation } from 'framer-motion';
+import { motion, useMotionValue, useTransform, useDragControls, PanInfo, AnimatePresence } from 'framer-motion';
 
 interface PageProps {
     params: { imageCode: string };
@@ -145,16 +145,16 @@ export default function Home({ params }: PageProps) {
         </div>
     );
 }
-
-function Card({ imageCode, onSwipe, index, total }: {
-    imageCode: string;
-    onSwipe: () => void;
-    index: number;
-    total: number;
-}) {
+function Card({ imageCode, onSwipe, index, total }: { imageCode: string, onSwipe: () => void, index: number, total: number }) {
     const x = useMotionValue(0);
-    const rotate = useTransform(x, [-200, 0, 200], [-8, 0, 8]); // More pronounced rotation
+    const rotate = useTransform(x, [-200, 0, 200], [-8, 0, 8]);
     const opacity = useTransform(x, [-100, 0, 100], [0.5, 1, 0.5]);
+
+    // Calculate the size and position of the glow based on swipe distance
+    const leftGlowSize = useTransform(x, [-200, 0], ['50%', '0%']);
+    const rightGlowSize = useTransform(x, [0, 200], ['0%', '50%']);
+    const leftGlowOpacity = useTransform(x, [-200, 0], [0.7, 0]);
+    const rightGlowOpacity = useTransform(x, [0, 200], [0, 0.7]);
 
     const animControls = {
         initial: { scale: 1, y: 0, opacity: 1 },
@@ -169,28 +169,52 @@ function Card({ imageCode, onSwipe, index, total }: {
 
     const [exitX, setExitX] = useState(0);
 
+    const handleDrag = (event: any, info: PanInfo) => {
+        // Update x value as the card is being dragged
+        x.set(info.offset.x);
+    };
+
     return (
-        <motion.div
-            className="absolute inset-0"
-            style={{ x, rotate, opacity }}
-            drag={index === 0 ? "x" : false}
-            dragConstraints={{ left: 0, right: 0 }}
-            dragElastic={0.9}
-            onDragEnd={(_, { offset, velocity }) => {
-                const swipe = offset.x * velocity.x;
-                if (Math.abs(swipe) > 20000 || Math.abs(offset.x) > 100) {
-                    setExitX(offset.x > 0 ? 1000 : -1000);
-                    onSwipe();
-                }
-            }}
-            {...animControls}
-            exit={{
-                x: exitX,
-                opacity: 0,
-                transition: { duration: 0.2 }
-            }}
-        >
-            <ImageCard initialImageCode={imageCode} hidden={index !== 0} />
-        </motion.div>
+        <>
+            {/* Left swipe glow */}
+            <motion.div
+                className="absolute inset-y-0 left-0 pointer-events-none"
+                style={{
+                    background: `radial-gradient(circle at left, rgba(255, 100, 100, ${leftGlowOpacity.get()}) 0%, transparent 70%)`,
+                    width: leftGlowSize,
+                }}
+            />
+            {/* Right swipe glow */}
+            <motion.div
+                className="absolute inset-y-0 right-0 pointer-events-none"
+                style={{
+                    background: `radial-gradient(circle at right, rgba(100, 255, 100, ${rightGlowOpacity.get()}) 0%, transparent 70%)`,
+                    width: rightGlowSize,
+                }}
+            />
+            <motion.div
+                className="absolute inset-0"
+                style={{ x, rotate, opacity }}
+                drag={index === 0 ? "x" : false}
+                dragConstraints={{ left: 0, right: 0 }}
+                dragElastic={0.9}
+                onDrag={handleDrag}
+                onDragEnd={(_, { offset, velocity }) => {
+                    const swipe = offset.x * velocity.x;
+                    if (Math.abs(swipe) > 20000 || Math.abs(offset.x) > 100) {
+                        setExitX(offset.x > 0 ? 1000 : -1000);
+                        onSwipe();
+                    }
+                }}
+                {...animControls}
+                exit={{
+                    x: exitX,
+                    opacity: 0,
+                    transition: { duration: 0.2 }
+                }}
+            >
+                <ImageCard initialImageCode={imageCode} hidden={index !== 0} />
+            </motion.div>
+        </>
     );
 }
