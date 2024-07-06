@@ -1,6 +1,6 @@
 "use client";
-import { useState, useEffect, useRef } from 'react';
-import { ImagePanel } from "@/components/image-panel";
+import { useState, useEffect } from 'react';
+import { ImageCard } from "@/components/image-card";
 import { event } from 'nextjs-google-analytics';
 import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
 
@@ -38,6 +38,7 @@ export default function Home({ params }: PageProps) {
                 onSwipe={removeCard}
                 index={index}
                 total={stack.length}
+                hidden={index !== 0}  // Only the top card is not hidden
               />
             ))}
           </AnimatePresence>
@@ -47,11 +48,12 @@ export default function Home({ params }: PageProps) {
   );
 }
 
-function Card({ imageCode, onSwipe, index, total }: { 
+function Card({ imageCode, onSwipe, index, total, hidden }: { 
   imageCode: string; 
   onSwipe: () => void; 
   index: number;
   total: number;
+  hidden: boolean;
 }) {
   const x = useMotionValue(0);
   const rotate = useTransform(x, [-100, 100], [-5, 5]);
@@ -87,7 +89,7 @@ function Card({ imageCode, onSwipe, index, total }: {
       }}
       {...animControls}
     >
-      <ImagePanel initialImageCode={imageCode} />
+      <ImageCard initialImageCode={imageCode} hidden={hidden} />
     </motion.div>
   );
 }
