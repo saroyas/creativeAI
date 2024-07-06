@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import TextareaAutosize from "react-textarea-autosize";
 import { Button } from "./ui/button";
-import { ArrowUp, ScanFace, Camera, Brush, Image as ImageIcon, Square, RectangleHorizontal, RectangleVertical, Download, Link as LinkIcon, Facebook, MessageCircle, Share2 } from "lucide-react";
+import { ArrowUp, ScanFace, Camera, Brush, Image as ImageIcon, Square, RectangleHorizontal, RectangleVertical, Download, Link as LinkIcon, Facebook, MessageCircle, Copy } from "lucide-react";
 import { Twitter as XLogo } from "lucide-react"; // Import the X logo
 import axios from 'axios';
 import { env } from "../env.mjs";
@@ -530,13 +530,13 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
       <div className="relative share-button-container">
         <Button
           onClick={handleToggle}
-          className={`bg-transparent border border-gray-700 p-2 rounded-full transition-colors duration-200 ${
-            isOpen ? 'bg-gray-700' : 'hover:bg-gray-800'
-          }`}
+          className="bg-transparent border border-gray-700 p-2 rounded-full hover:bg-gray-800 transition-colors duration-200 ring-1 ring-purple-500"
+
           aria-label="Share"
           aria-expanded={isOpen}
         >
-          <Share2 size={18} className={isOpen ? 'text-white' : 'text-gray-400'} />
+                          <Copy size={18} className="text-purple-500" />
+
         </Button>
         {isOpen && (
           <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-gray-800 ring-1 ring-black ring-opacity-5 z-50">
@@ -621,13 +621,13 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
           </div>
 
           {imageUrl && !isLoading && (
-            <div className="mt-4 flex justify-center space-x-2">
+            <div className="mt-4 flex justify-center space-x-4">
               <Button
                 onClick={addWatermarkAndDownload}
-                className="bg-transparent border border-gray-700 p-2 rounded-full hover:bg-gray-800 transition-colors duration-200 ring-2 ring-green-500"
+                className="bg-transparent border border-gray-700 p-2 rounded-full hover:bg-gray-800 transition-colors duration-200 ring-1 ring-orange-500"
                 aria-label="Download image"
               >
-                <FiDownload size={18} className="text-green-500" />
+                <FiDownload size={18} className="text-orange-500" />
               </Button>
               <ShareButton />
               {/* <FaceSwapButton /> */}
