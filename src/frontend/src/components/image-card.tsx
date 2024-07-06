@@ -599,7 +599,7 @@ interface ImagePanelProps {
                 </div>
               )}
             </div>
-            {imageUrl && !isLoading && (
+            {imageUrl && (
               <div className={`mt-4 flex justify-center space-x-4 ${hidden ? 'invisible' : ''}`}>
                 <Button
                   onClick={addWatermarkAndDownload}
