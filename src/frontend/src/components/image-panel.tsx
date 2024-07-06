@@ -492,50 +492,52 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
       action: shareOnWhatsApp,
     },
   };
-  
+
   const ShareButton = () => {
     const [isOpen, setIsOpen] = useState(false);
-  
-    const handleToggle = () => {
-      if (!isOpen) {
-        copyLinkToClipboard();
-      }
-      event('SHARE_BUTTON_CLICKED', {
-        category: 'image_link_copied',
-        label: "image_link_copied",
-      });
 
-      setIsOpen(!isOpen);
-    };
-  
+    // const handleToggle = () => {
+    //   copyLinkToClipboard();
+
+    //   if (!isOpen) {
+    //     copyLinkToClipboard();
+    //   }
+    //   event('SHARE_BUTTON_CLICKED', {
+    //     category: 'image_link_copied',
+    //     label: "image_link_copied",
+    //   });
+
+    //   setIsOpen(!isOpen);
+    // };
+
     const handleShare = (action: () => void) => {
       action();
       setIsOpen(false);
     };
-  
+
     useEffect(() => {
       const handleClickOutside = (event: MouseEvent) => {
         if (isOpen && !(event.target as Element).closest('.share-button-container')) {
           setIsOpen(false);
         }
       };
-  
+
       document.addEventListener('mousedown', handleClickOutside);
       return () => {
         document.removeEventListener('mousedown', handleClickOutside);
       };
     }, [isOpen]);
-  
+
     return (
       <div className="relative share-button-container">
         <Button
-          onClick={handleToggle}
+          onClick={copyLinkToClipboard}
           className="bg-transparent border border-gray-700 p-2 rounded-full hover:bg-gray-800 transition-colors duration-200 ring-1 ring-purple-500"
 
           aria-label="Share"
           aria-expanded={isOpen}
         >
-                          <Copy size={18} className="text-purple-500" />
+          <Copy size={18} className="text-purple-500" />
 
         </Button>
         {isOpen && (
