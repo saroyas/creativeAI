@@ -59,7 +59,7 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
   const [progress, setProgress] = useState<number>(0);
   const [taskId, setTaskId] = useState<string | null>(null);
   const [selectedModel, setSelectedModel] = useState<ImageModel>('photo');
-  const [selectedAspect, setSelectedAspect] = useState<ImageAspect>('square');
+  const [selectedAspect, setSelectedAspect] = useState<ImageAspect>('portrait');
   const [selectedShare, setSelectedShare] = useState<string>('twitter');
   const [sourceImageUrl, setSourceImageUrl] = useState<string>("");
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -562,7 +562,7 @@ export const ImagePanel: React.FC<ImagePanelProps> = ({ initialImageCode }) => {
       </div>
     );
   };
-  
+
   const handleRegenerate = async () => {
     if (!imageUrl || !currentPrompt) return;
     setIsLoading(true);
