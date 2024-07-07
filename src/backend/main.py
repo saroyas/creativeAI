@@ -293,7 +293,7 @@ async def generate_image_async(task_id: str, prompt: str, imageURL: str, model: 
         print("Using image URL", imageURL)
         # payload["prompt"] = ""
         payload["imageUrl"] = imageURL
-        payload["denoising_strength"] = 0.8
+        payload["denoising_strength"] = 0.3
 
     async with httpx.AsyncClient() as client:
         try:
