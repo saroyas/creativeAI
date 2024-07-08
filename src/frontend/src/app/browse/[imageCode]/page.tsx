@@ -1180,6 +1180,7 @@ export default function Home({ params }: PageProps) {
         </div>
     );
 }
+
 function Card({ imageCode, onSwipe, index, total }: { imageCode: string, onSwipe: () => void, index: number, total: number }) {
     const x = useMotionValue(0);
     const rotate = useTransform(x, [-200, 0, 200], [-8, 0, 8]);
@@ -1210,11 +1211,17 @@ function Card({ imageCode, onSwipe, index, total }: { imageCode: string, onSwipe
         const handleKeyDown = (event: KeyboardEvent) => {
             if (index === 0) {
                 if (event.key === 'ArrowLeft') {
-                    setExitX(-1000);
-                    onSwipe();
+                    x.set(-75); // Set a negative value to trigger left glow
+                    setTimeout(() => {
+                        setExitX(-1000);
+                        onSwipe();
+                    }, 100); // Short delay to show the glow effect
                 } else if (event.key === 'ArrowRight') {
-                    setExitX(1000);
-                    onSwipe();
+                    x.set(75); // Set a positive value to trigger right glow
+                    setTimeout(() => {
+                        setExitX(1000);
+                        onSwipe();
+                    }, 50); // Short delay to show the glow effect
                 }
             }
         };
@@ -1223,7 +1230,7 @@ function Card({ imageCode, onSwipe, index, total }: { imageCode: string, onSwipe
         return () => {
             window.removeEventListener('keydown', handleKeyDown);
         };
-    }, [index, onSwipe]);
+    }, [index, onSwipe, x]);
 
     return (
         <>
