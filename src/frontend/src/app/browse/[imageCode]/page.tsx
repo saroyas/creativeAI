@@ -1180,17 +1180,14 @@ export default function Home({ params }: PageProps) {
         </div>
     );
 }
-
 function Card({ imageCode, onSwipe, index, total }: { imageCode: string, onSwipe: () => void, index: number, total: number }) {
     const x = useMotionValue(0);
     const rotate = useTransform(x, [-200, 0, 200], [-8, 0, 8]);
     const opacity = useTransform(x, [-100, 0, 100], [0.5, 1, 0.5]);
 
-    // Glow effect calculations
-    const leftGlowSize = useTransform(x, [-200, 0, 200], ['50%', '0%', '0%']);
-    const rightGlowSize = useTransform(x, [-200, 0, 200], ['0%', '0%', '50%']);
-    const leftGlowOpacity = useTransform(x, [-200, 0, 200], [0.7, 0, 0]);
-    const rightGlowOpacity = useTransform(x, [-200, 0, 200], [0, 0, 0.7]);
+    // More sensitive glow effect calculations
+    const leftGlowOpacity = useTransform(x, [-50, 0, 50], [0.7, 0, 0]);
+    const rightGlowOpacity = useTransform(x, [-50, 0, 50], [0, 0, 0.7]);
 
     const animControls = {
         initial: { scale: 1, y: 0, opacity: 1 },
@@ -1232,22 +1229,18 @@ function Card({ imageCode, onSwipe, index, total }: { imageCode: string, onSwipe
         <>
             {/* Left swipe glow */}
             <motion.div
-                className="absolute inset-y-0 left-0 pointer-events-none"
+                className="absolute inset-0 pointer-events-none"
                 style={{
-                    background: leftGlowOpacity.get() > 0 
-                        ? `radial-gradient(ellipse 50% 90% at left, rgba(255, 100, 100, ${leftGlowOpacity.get()}) 0%, transparent 70%)`
-                        : 'none',
-                    width: leftGlowSize
+                    background: `linear-gradient(to right, rgba(255, 100, 100, ${leftGlowOpacity.get()}), transparent)`,
+                    opacity: leftGlowOpacity
                 }}
             />
             {/* Right swipe glow */}
             <motion.div
-                className="absolute inset-y-0 right-0 pointer-events-none"
+                className="absolute inset-0 pointer-events-none"
                 style={{
-                    background: rightGlowOpacity.get() > 0
-                        ? `radial-gradient(ellipse 50% 90% at right, rgba(100, 255, 100, ${rightGlowOpacity.get()}) 0%, transparent 70%)`
-                        : 'none',
-                    width: rightGlowSize
+                    background: `linear-gradient(to left, rgba(100, 255, 100, ${rightGlowOpacity.get()}), transparent)`,
+                    opacity: rightGlowOpacity
                 }}
             />
             <motion.div
@@ -1276,4 +1269,3 @@ function Card({ imageCode, onSwipe, index, total }: { imageCode: string, onSwipe
         </>
     );
 }
-
