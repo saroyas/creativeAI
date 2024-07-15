@@ -20,10 +20,15 @@ export function Navbar() {
     // Use a short timeout to allow for navigation before reload
   }, [router]);
   
+  const handleImageGeneratorClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    window.location.href = 'https://www.ai-porn.tv/';
+  };
+  
   return (
     <header className="w-full flex fixed p-1 z-50 px-2 bg-background justify-between items-center">
       <div>
-      <Link href="/" passHref onClick={handleLogoClick}>
+        <Link href="/" passHref onClick={handleLogoClick}>
           <img
             src={theme === "light" ? "/logo.png" : "/logo.png"}
             alt="Logo"
@@ -37,10 +42,10 @@ export function Navbar() {
           variant="outline"
           className="flex items-center gap-2 hover:bg-primary hover:text-primary-foreground transition-colors duration-200"
         >
-          <Link href="/image">
+          <a href="https://www.ai-porn.tv/" onClick={handleImageGeneratorClick}>
             <ImageIcon className="w-4 h-4" />
             Image Generator
-          </Link>
+          </a>
         </Button>
       </div>
     </header>
