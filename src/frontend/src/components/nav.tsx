@@ -36,18 +36,7 @@ export function Navbar() {
           />
         </Link>
       </div>
-      <div>
-        <Button
-          asChild
-          variant="outline"
-          className="flex items-center gap-2 hover:bg-primary hover:text-primary-foreground transition-colors duration-200"
-        >
-          <a href="https://www.ai-porn.tv/" onClick={handleImageGeneratorClick}>
-            <ImageIcon className="w-4 h-4" />
-            Image Generator
-          </a>
-        </Button>
-      </div>
+
     </header>
   );
 }
