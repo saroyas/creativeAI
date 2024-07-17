@@ -3,6 +3,7 @@ import { ChatPanel } from "@/components/chat-panel";
 import { useParams } from 'next/navigation';
 import { useEffect } from 'react';
 import { event } from 'nextjs-google-analytics';
+import { Navbar } from "@/components/nav";
 
 export default function Home() {
   const params = useParams();
@@ -18,10 +19,13 @@ export default function Home() {
   }, [chatCode]);
 
   return (
+    <div>
+    <Navbar />
     <div className="h-screen">
       <div className="flex grow h-full mx-auto max-w-screen-md px-4 md:px-8">
         <ChatPanel chatCode={chatCode} />
       </div>
+    </div>
     </div>
   );
 }
