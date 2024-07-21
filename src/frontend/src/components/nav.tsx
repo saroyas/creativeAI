@@ -44,7 +44,7 @@ export function Navbar() {
         >
           <a href="https://www.ai-game.io/" onClick={handleImageGeneratorClick}>
             <Gamepad2 className="w-4 h-4" />
-            AI Games
+            AI Games (18+)
           </a>
         </Button>
       </div>
