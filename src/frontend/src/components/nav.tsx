@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
-import { ImageIcon } from "lucide-react";
+import { Gamepad2 } from "lucide-react";
 
 export function Navbar() {
   const { theme } = useTheme();
@@ -22,7 +22,7 @@ export function Navbar() {
   
   const handleImageGeneratorClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
-    window.location.href = 'https://www.ai-porn.tv/';
+    window.location.href = 'https://www.ai-game.io/';
   };
   
   return (
@@ -36,7 +36,18 @@ export function Navbar() {
           />
         </Link>
       </div>
-
+      <div>
+        <Button
+          asChild
+          variant="outline"
+          className="flex items-center gap-2 hover:bg-primary hover:text-primary-foreground transition-colors duration-200"
+        >
+          <a href="https://www.ai-game.io/" onClick={handleImageGeneratorClick}>
+            <Gamepad2 className="w-4 h-4" />
+            AI Game
+          </a>
+        </Button>
+      </div>
     </header>
   );
 }
