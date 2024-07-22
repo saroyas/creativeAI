@@ -231,7 +231,7 @@ async def improve_prompt(prompt: str) -> str:
                     "Content-Type": "application/json"
                 },
                 json={
-                    "model": "nousresearch/hermes-2-pro-llama-3-8b",
+                    "model": "cognitivecomputations/dolphin-llama-3-70b",
                     "messages": messages
                 }
             )
