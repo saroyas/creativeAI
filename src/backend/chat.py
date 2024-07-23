@@ -41,6 +41,8 @@ We recommend you generally use a VPN.
 If you can, use a local ai model.
 
 **We believe in revolutions.**
+
+P.S. We are grateful to our sponsers at AI-Game.io
 """
 
 async def stream_text_chunks(text: str, delay: float = 0.01) -> AsyncIterator[str]:
