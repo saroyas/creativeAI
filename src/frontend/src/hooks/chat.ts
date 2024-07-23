@@ -135,6 +135,7 @@ export const useChat = () => {
         images: [],
       };
       addMessage({ role: MessageType.USER, content: request.query });
+      console.log("sending request", request);
 
       const req = {
         ...request,

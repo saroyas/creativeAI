@@ -168,7 +168,7 @@ async def chat(
     
     async def generator():
         try:
-            validate_model(chat_request.model)
+            # validate_model(chat_request.model)
             async for obj in stream_qa_objects(chat_request):
                 if await request.is_disconnected():
                     break
