@@ -205,8 +205,7 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
                     "stream": True,
                     "provider": {
                         "order": [
-                            "Fireworks",
-                            "Together"
+                            "Fireworks"
                         ]
                     },
 
