@@ -200,13 +200,7 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
                 async with client.stream("POST", api_url, headers=headers, json={
                     "model": "meta-llama/llama-3.1-405b-instruct",
                     "messages": message_history,
-                    "stream": True,
-                    "provider": {
-                        "order": [
-                            "Fireworks",
-                            "Together"
-                        ]
-                    },
+                    "stream": True
                 }) as response:
                     if response.status_code != 200:
                         error_msg = f"API request failed with status {response.status_code}: {response.text}"
