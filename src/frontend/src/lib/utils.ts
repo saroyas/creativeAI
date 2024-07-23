@@ -8,9 +8,11 @@ export function cn(...inputs: ClassValue[]) {
 
 export function isLocalModel(model: ChatModel) {
   return ![
+    ChatModel.LLAMA_3_405B,
     ChatModel.LLAMA_3_70B,
     ChatModel.GPT_4O,
     ChatModel.GPT_3_5_TURBO,
+
   ].includes(model);
 }
 

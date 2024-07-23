@@ -17,6 +17,7 @@ import {
   RabbitIcon,
   SparklesIcon,
   WandSparklesIcon,
+  Flame
 } from "lucide-react";
 import { useConfigStore, useMessageStore } from "@/stores";
 import { ChatModel } from "../../generated";
@@ -32,6 +33,13 @@ type Model = {
 };
 
 const modelMap: Record<ChatModel, Model> = {
+  [ChatModel.LLAMA_3_405B]: {
+    name: "Llama 3 405B (censored)",
+    description: "SiliconSoulAI/Llama-405B",
+    value: ChatModel.LLAMA_3_405B,
+    smallIcon: <Flame className="w-4 h-4 text-red-500" />,
+    icon: <Flame className="w-5 h-5 text-red-500" />,
+  },
   [ChatModel.LLAMA_3_70B]: {
     name: "Advisor",
     description: "SiliconSoulAI/Devil-70B",
@@ -53,13 +61,6 @@ const modelMap: Record<ChatModel, Model> = {
     smallIcon: <BrainIcon className="w-4 h-4 text-pink-500" />,
     icon: <BrainIcon className="w-5 h-5 text-pink-500" />,
   },
-  [ChatModel.LLAMA3]: {
-    name: "Llama3",
-    description: "ollama/llama3",
-    value: ChatModel.LLAMA3,
-    smallIcon: <WandSparklesIcon className="w-4 h-4 text-purple-500" />,
-    icon: <WandSparklesIcon className="w-5 h-5 text-purple-500" />,
-  },
   [ChatModel.GEMMA]: {
     name: "Gemma",
     description: "ollama/gemma",
@@ -74,6 +75,13 @@ const modelMap: Record<ChatModel, Model> = {
     smallIcon: <AtomIcon className="w-4 h-4 text-[#FF7000]" />,
     icon: <AtomIcon className="w-5 h-5 text-[#FF7000]" />,
   },
+  [ChatModel.LLAMA3]: {
+    name: "",
+    description: "",
+    value: "",
+    smallIcon: undefined,
+    icon: undefined
+  }
 };
 
 const localModelMap: Partial<Record<ChatModel, Model>> = _.pickBy(

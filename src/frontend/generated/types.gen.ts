@@ -11,7 +11,8 @@ export enum ChatModel {
     GPT_3_5_TURBO = 'gpt-3.5-turbo',
     LLAMA3 = 'llama3',
     GEMMA = 'gemma',
-    MISTRAL = 'mistral'
+    MISTRAL = 'mistral',
+    LLAMA_3_405B = 'llama-3-405b',
 }
 
 export type ChatRequest = {

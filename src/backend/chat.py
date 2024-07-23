@@ -195,65 +195,127 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
                 "Content-Type": "application/json"
             }
 
-            async with httpx.AsyncClient() as client:
-                async with client.stream("POST", api_url, headers=headers, json={
-                    "model": "nousresearch/hermes-2-pro-llama-3-8b",
-                    "messages": message_history,
-                    "stream": True
-                }) as response:
-                    if response.status_code != 200:
-                        error_msg = f"API request failed with status {response.status_code}: {response.text}"
-                        # print(error_msg)
-                        raise HTTPException(
-                            status_code=response.status_code,
-                            detail=error_msg
+            if request.model == "llama-3-405b":
+                async with httpx.AsyncClient() as client:
+                    async with client.stream("POST", api_url, headers=headers, json={
+                        "model": "meta-llama/llama-3.1-405b-instruct",
+                        "messages": message_history,
+                        "stream": True
+                    }) as response:
+                        if response.status_code != 200:
+                            error_msg = f"API request failed with status {response.status_code}: {response.text}"
+                            # print(error_msg)
+                            raise HTTPException(
+                                status_code=response.status_code,
+                                detail=error_msg
+                            )
+
+                        content = ""
+                        async for line in response.aiter_lines():
+                            if line:
+                                try:
+                                    if line.startswith(":"):  # SSE comment
+                                        continue
+                                    if line.startswith("data: "):  # SSE data line
+                                        data_str = line[len("data: "):]
+                                        data = json.loads(data_str)
+                                        if "choices" in data:
+                                            for choice in data["choices"]:
+                                                if "delta" in choice and "content" in choice["delta"]:
+                                                    content_chunk = choice["delta"]["content"]
+                                                    content += content_chunk
+                                                    yield ChatResponseEvent(
+                                                        event=StreamEvent.TEXT_CHUNK,
+                                                        data=TextChunkStream(text=content_chunk),
+                                                    )
+                                except json.JSONDecodeError as e:
+                                    # print("JSON decode error:", e)
+                                    continue
+                                
+                        # also do another moderation check of content here
+
+                        try:
+                            moderation_result = await check_moderation(content[:2000])
+                            print("Post chat gen moderation result:", moderation_result)
+                            
+                            if moderation_result["category_scores"]["sexual/minors"] > 0.5:
+                                # print("Post flagged message_history", message_history)
+                                content = "Content violation detected."
+                        except:
+                            pass
+
+                        yield ChatResponseEvent(
+                            event=StreamEvent.STREAM_END,
+                            data=StreamEndStream(),
+                        )
+                        
+                        # print("Final response:", content)
+
+                        yield ChatResponseEvent(
+                            event=StreamEvent.FINAL_RESPONSE,
+                            data=FinalResponseStream(message=content),
                         )
 
-                    content = ""
-                    async for line in response.aiter_lines():
-                        if line:
-                            try:
-                                if line.startswith(":"):  # SSE comment
+            else:
+                async with httpx.AsyncClient() as client:
+                    async with client.stream("POST", api_url, headers=headers, json={
+                        "model": "nousresearch/hermes-2-pro-llama-3-8b",
+                        "messages": message_history,
+                        "stream": True
+                    }) as response:
+                        if response.status_code != 200:
+                            error_msg = f"API request failed with status {response.status_code}: {response.text}"
+                            # print(error_msg)
+                            raise HTTPException(
+                                status_code=response.status_code,
+                                detail=error_msg
+                            )
+
+                        content = ""
+                        async for line in response.aiter_lines():
+                            if line:
+                                try:
+                                    if line.startswith(":"):  # SSE comment
+                                        continue
+                                    if line.startswith("data: "):  # SSE data line
+                                        data_str = line[len("data: "):]
+                                        data = json.loads(data_str)
+                                        if "choices" in data:
+                                            for choice in data["choices"]:
+                                                if "delta" in choice and "content" in choice["delta"]:
+                                                    content_chunk = choice["delta"]["content"]
+                                                    content += content_chunk
+                                                    yield ChatResponseEvent(
+                                                        event=StreamEvent.TEXT_CHUNK,
+                                                        data=TextChunkStream(text=content_chunk),
+                                                    )
+                                except json.JSONDecodeError as e:
+                                    # print("JSON decode error:", e)
                                     continue
-                                if line.startswith("data: "):  # SSE data line
-                                    data_str = line[len("data: "):]
-                                    data = json.loads(data_str)
-                                    if "choices" in data:
-                                        for choice in data["choices"]:
-                                            if "delta" in choice and "content" in choice["delta"]:
-                                                content_chunk = choice["delta"]["content"]
-                                                content += content_chunk
-                                                yield ChatResponseEvent(
-                                                    event=StreamEvent.TEXT_CHUNK,
-                                                    data=TextChunkStream(text=content_chunk),
-                                                )
-                            except json.JSONDecodeError as e:
-                                # print("JSON decode error:", e)
-                                continue
+                                
+                        # also do another moderation check of content here
+
+                        try:
+                            moderation_result = await check_moderation(content[:2000])
+                            print("Post chat gen moderation result:", moderation_result)
                             
-                    # also do another moderation check of content here
+                            if moderation_result["category_scores"]["sexual/minors"] > 0.5:
+                                # print("Post flagged message_history", message_history)
+                                content = "Content violation detected."
+                        except:
+                            pass
 
-                    try:
-                        moderation_result = await check_moderation(content[:2000])
-                        print("Post chat gen moderation result:", moderation_result)
+                        yield ChatResponseEvent(
+                            event=StreamEvent.STREAM_END,
+                            data=StreamEndStream(),
+                        )
                         
-                        if moderation_result["category_scores"]["sexual/minors"] > 0.5:
-                            # print("Post flagged message_history", message_history)
-                            content = "Content violation detected."
-                    except:
-                        pass
+                        # print("Final response:", content)
 
-                    yield ChatResponseEvent(
-                        event=StreamEvent.STREAM_END,
-                        data=StreamEndStream(),
-                    )
-                    
-                    # print("Final response:", content)
-
-                    yield ChatResponseEvent(
-                        event=StreamEvent.FINAL_RESPONSE,
-                        data=FinalResponseStream(message=content),
-                    )
+                        yield ChatResponseEvent(
+                            event=StreamEvent.FINAL_RESPONSE,
+                            data=FinalResponseStream(message=content),
+                        )
 
         else:
             llm = get_llm(request.model)

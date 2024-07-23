@@ -11,6 +11,7 @@ LOCAL_MISTRAL_MODEL = "mistral"
 
 
 class ChatModel(str, Enum):
+    
     LLAMA_3_70B = "llama-3-70b"
     GPT_4o = "gpt-4o"
     GPT_3_5_TURBO = "gpt-3.5-turbo"
