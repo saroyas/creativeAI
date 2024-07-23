@@ -196,6 +196,7 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
             }
 
             if request.model == "llama-3-405b":
+                print("llama-3-405b being used")
                 async with httpx.AsyncClient() as client:
                     async with client.stream("POST", api_url, headers=headers, json={
                         "model": "meta-llama/llama-3.1-405b-instruct",
