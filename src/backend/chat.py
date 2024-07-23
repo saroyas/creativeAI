@@ -201,7 +201,13 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
                     async with client.stream("POST", api_url, headers=headers, json={
                         "model": "meta-llama/llama-3.1-405b-instruct",
                         "messages": message_history,
-                        "stream": True
+                        "stream": True,
+                        "provider": {
+                            "order": [
+                                "Fireworks",
+                                "Together"
+                            ]
+                        },
                     }) as response:
                         if response.status_code != 200:
                             error_msg = f"API request failed with status {response.status_code}: {response.text}"
@@ -233,17 +239,7 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
                                     # print("JSON decode error:", e)
                                     continue
                                 
-                        # also do another moderation check of content here
 
-                        try:
-                            moderation_result = await check_moderation(content[:2000])
-                            print("Post chat gen moderation result:", moderation_result)
-                            
-                            if moderation_result["category_scores"]["sexual/minors"] > 0.5:
-                                # print("Post flagged message_history", message_history)
-                                content = "Content violation detected."
-                        except:
-                            pass
 
                         yield ChatResponseEvent(
                             event=StreamEvent.STREAM_END,
