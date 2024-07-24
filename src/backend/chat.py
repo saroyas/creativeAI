@@ -200,15 +200,9 @@ async def stream_qa_objects(request: ChatRequest) -> AsyncIterator[ChatResponseE
             print("llama-3-405b being used")
             async with httpx.AsyncClient() as client:
                 async with client.stream("POST", api_url, headers=headers, json={
-                    "model": "meta-llama/llama-3.1-405b-instruct",
+                    "model": "openai/gpt-4o-mini",
                     "messages": message_history,
                     "stream": True,
-                    "provider": {
-                        "order": [
-                            "Fireworks"
-                        ]
-                    },
-
                 }) as response:
                     if response.status_code != 200:
                         error_msg = f"API request failed with status {response.status_code}: {response.text}"
