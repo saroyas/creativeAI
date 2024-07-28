@@ -34,7 +34,7 @@ type Model = {
 
 const modelMap: Record<ChatModel, Model> = {
   [ChatModel.LLAMA_3_405B]: {
-    name: "Llama 3 405B (censored)",
+    name: "Powerful (censored)",
     description: "SiliconSoulAI/Llama-405B",
     value: ChatModel.LLAMA_3_405B,
     smallIcon: <Flame className="w-4 h-4 text-red-500" />,
