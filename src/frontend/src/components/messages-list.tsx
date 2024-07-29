@@ -1,11 +1,9 @@
-// src/components/messages-list.tsx
 "use client";
 import { AssistantMessage, ChatMessage, MessageType } from "@/types";
 import { AssistantMessageContent } from "./assistant-message";
 import { Separator } from "./ui/separator";
 import { UserMessageContent } from "./user-message";
-import { ShareButtons } from "./share-button";
-import { useMemo } from "react";
+import AppStoreButtons from "./app-store-buttons";import { useMemo } from "react";
 
 const MessagesList = ({
   messages,
@@ -26,8 +24,22 @@ const MessagesList = ({
     [messages]
   );
 
+  const styles = {
+    container: {
+      display: 'flex',
+      flexDirection: 'column' as 'column', // Type assertion to ensure TypeScript knows the exact type
+      paddingBottom: '7rem', // pb-28
+    },
+    shareButtonContainer: {
+      display: 'flex',
+      justifyContent: 'flex-end' as 'flex-end', // Type assertion to ensure TypeScript knows the exact type
+      marginTop: '0.5rem', // mt-2
+      marginBottom: '1rem', // mb-4
+    },
+  };
+
   return (
-    <div className="flex flex-col pb-28">
+    <div style={styles.container}>
       {messages.map((message, index) => (
         <div key={index}>
           {message.role === MessageType.USER ? (
@@ -38,9 +50,9 @@ const MessagesList = ({
                 message={message}
                 onRelatedQuestionSelect={onRelatedQuestionSelect}
               />
-                <div className="flex justify-end mt-2 mb-4">
-                  <ShareButtons code={firstUserMessage} />
-                </div>
+              <div style={styles.shareButtonContainer}>
+                <AppStoreButtons/>
+              </div>
             </>
           )}
           {index !== messages.length - 1 && <Separator />}
@@ -54,7 +66,7 @@ const MessagesList = ({
             onRelatedQuestionSelect={onRelatedQuestionSelect}
           />
           {/* {lastAssistantMessageIndex === -1 && (
-            <div className="flex justify-end mt-2 mb-4">
+            <div style={styles.shareButtonContainer}>
               <ShareButton code={firstUserMessage} />
             </div>
           )} */}
