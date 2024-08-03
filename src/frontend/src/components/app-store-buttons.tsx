@@ -46,12 +46,13 @@ const AppStoreButtons = () => {
         <span>App Store</span>
       </a>
       <a
-        href="#"
-        style={{ ...styles.button, ...styles.buttonDisabled }}
-        onClick={(e) => e.preventDefault()}
+        href="https://play.google.com/store/apps/details?id=info.aiuncensored.app"
+        style={{ ...styles.button}}
+        onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = styles.buttonHover.backgroundColor)}
+        onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = styles.button.backgroundColor)}
       >
         <FaGooglePlay size={25} style={styles.icon} />
-        <span>Coming Soon</span>
+        <span>Play Store</span>
       </a>
     </div>
   );
